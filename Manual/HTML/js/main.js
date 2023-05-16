@@ -1,17 +1,9 @@
 
 let json;
-let ktaneData;
-let geographyData;
-let languageData;
-let wildlifeData;
-let biologyData;
-let mathData;
-let otherData;
 
 const init = () => {
 	downloadFile("../JSON/quiz-bank.json", (str) => {
 	    json = JSON.parse(str);
-        console.log(json);
         initalizeKtaneTables();
 		initalizeGeographyTables();
 		initalizeLanguageTables();
@@ -44,7 +36,7 @@ const initalizeKtaneTables = () => {
     let table4 = document.querySelector("#ktane-table4");
     let table5 = document.querySelector("#ktane-table5");
 
-    ktaneData = json.QuizBank.filter(s => s.Category == "KTANE");
+    let ktaneData = json.QuizBank.filter(s => s.Category == "KTANE");
 
     let table1Length = 19;
 	let table2Start = table1Length;
@@ -68,7 +60,7 @@ const initalizeGeographyTables = () => {
     let table2 = document.querySelector("#geography-table2");
     let table3 = document.querySelector("#geography-table3");
 
-    geographyData = json.QuizBank.filter(s => s.Category == "Geography");
+    let geographyData = json.QuizBank.filter(s => s.Category == "Geography");
 
     let table1Length = 17;
 	let table2Start = table1Length;
@@ -86,7 +78,7 @@ const initalizeLanguageTables = () => {
     let table2 = document.querySelector("#language-table2");
     let table3 = document.querySelector("#language-table3");
 
-    languageData = json.QuizBank.filter(s => s.Category == "Language");
+    let languageData = json.QuizBank.filter(s => s.Category == "Language");
 	
     let table1Length = 18;
 	let table2Start = table1Length;
@@ -103,7 +95,7 @@ const initalizeWildlifeTables = () => {
     let table1 = document.querySelector("#wildlife-table1");
     let table2 = document.querySelector("#wildlife-table2");
 
-    wildlifeData = json.QuizBank.filter(s => s.Category == "Wildlife");
+    let wildlifeData = json.QuizBank.filter(s => s.Category == "Wildlife");
 	
     let table1Length = 18;
 	let table2Start = table1Length;
@@ -116,7 +108,7 @@ const initalizeWildlifeTables = () => {
 const initalizeBiologyTables = () => {
     let table1 = document.querySelector("#biology-table1");
 
-    biologyData = json.QuizBank.filter(s => s.Category == "Biology");
+    let biologyData = json.QuizBank.filter(s => s.Category == "Biology");
 	
     let table1Length = 100;
 
@@ -127,7 +119,7 @@ const initalizeMathTables = () => {
     let table1 = document.querySelector("#math-table1");
     let table2 = document.querySelector("#math-table2");
 
-    mathData = json.QuizBank.filter(s => s.Category == "Maths");
+    let mathData = json.QuizBank.filter(s => s.Category == "Maths");
 	
     let table1Length = 21;
 	let table2Start = table1Length;
@@ -146,7 +138,7 @@ const initalizeOtherTables = () => {
 
 
 
-    otherData = json.QuizBank.filter(s => s.Category == "Other");
+    let otherData = json.QuizBank.filter(s => s.Category == "Other");
 	
     let table1Length = 17;
 	let table2Start = table1Length;
