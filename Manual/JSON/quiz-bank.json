@@ -1815,7 +1815,8 @@
                 "Timetable"
             ],
             "WrongAnswers": [
-                "automobile", "period"
+                "automobile",
+                "period"
             ],
             "Category": "Language"
         },
@@ -1835,7 +1836,31 @@
                 "Y"
             ],
             "WrongAnswers": [
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Z"
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Z"
             ],
             "Category": "Language"
         },
@@ -1866,7 +1891,8 @@
                 "Bison"
             ],
             "WrongAnswers": [
-                "Beeffalo", "Boar"
+                "Beeffalo",
+                "Boar"
             ],
             "Category": "Language"
         },
@@ -1927,17 +1953,20 @@
                 "Living"
             ],
             "WrongAnswers": [
-                "Live", "Life"
+                "Live",
+                "Life"
             ],
             "Category": "Language"
         },
         {
             "Question": "What is the name of the large absorbent cloth used to dry the body after a bath or shower? ",
             "Answers": [
-                "Towel", "Rag"
+                "Towel",
+                "Rag"
             ],
             "WrongAnswers": [
-                "Shamwow", "Scrub daddy"
+                "Shamwow",
+                "Scrub daddy"
             ],
             "Category": "Language"
         },
@@ -1947,7 +1976,9 @@
                 "Sky"
             ],
             "WrongAnswers": [
-                "Base", "Background", "Wallpaper"
+                "Base",
+                "Background",
+                "Wallpaper"
             ],
             "Category": "Language"
         },
@@ -1970,7 +2001,7 @@
             "WrongAnswers": [
                 "Ape",
                 "Apple",
-               "Anagram"
+                "Anagram"
             ],
             "Category": "Language"
         },
@@ -1980,7 +2011,8 @@
                 "Uniform"
             ],
             "WrongAnswers": [
-                " Unicorn", "Same"
+                " Unicorn",
+                "Same"
             ],
             "Category": "Language"
         },
@@ -2000,8 +2032,31 @@
                 "Q"
             ],
             "WrongAnswers": [
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+                "Z"
             ],
             "Category": "Language"
         },
@@ -2021,7 +2076,8 @@
                 "The"
             ],
             "WrongAnswers": [
-                "Def","An"
+                "Def",
+                "An"
             ],
             "Category": "Language"
         },
@@ -2082,7 +2138,8 @@
                 "U"
             ],
             "WrongAnswers": [
-                "O","R"
+                "O",
+                "R"
             ],
             "Category": "Language"
         },
@@ -2102,7 +2159,31 @@
                 "K"
             ],
             "WrongAnswers": [
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+                "Z"
             ],
             "Category": "Language"
         },
@@ -2152,7 +2233,31 @@
                 "S"
             ],
             "WrongAnswers": [
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "T", "U", "V", "W", "X", "Y", "Z"
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+                "Z"
             ],
             "Category": "Language"
         },
@@ -2162,7 +2267,11 @@
                 "English"
             ],
             "WrongAnswers": [
-                "Italian", "French", "Spanish", "Portuguese", "Latin"
+                "Italian",
+                "French",
+                "Spanish",
+                "Portuguese",
+                "Latin"
             ],
             "Category": "Language"
         },
@@ -2172,7 +2281,8 @@
                 "Torch"
             ],
             "WrongAnswers": [
-                "Lantern", "lamp"
+                "Lantern",
+                "lamp"
             ],
             "Category": "Language"
         },
@@ -2182,7 +2292,32 @@
                 "e"
             ],
             "WrongAnswers": [
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+                "Z"
             ],
             "Category": "Language"
         },
@@ -2214,10 +2349,11 @@
                 "Mike"
             ],
             "WrongAnswers": [
-                "Cat", "Zebra",
-               "Two",
-               "Can",
-               "Echo"
+                "Cat",
+                "Zebra",
+                "Two",
+                "Can",
+                "Echo"
             ],
             "Category": "Language"
         },
@@ -2267,7 +2403,9 @@
                 "Auxiliary"
             ],
             "WrongAnswers": [
-                "Charades", "Sign", " lingua franca"
+                "Charades",
+                "Sign",
+                " lingua franca"
             ],
             "Category": "Language"
         },
@@ -2287,7 +2425,8 @@
                 "India"
             ],
             "WrongAnswers": [
-                " The United States", "China"
+                " The United States",
+                "China"
             ],
             "Category": "Language"
         },
