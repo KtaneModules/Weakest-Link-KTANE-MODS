@@ -143,7 +143,6 @@ const initalizeOtherTables = () => {
     let table2 = document.querySelector("#other-table2");
     let table3 = document.querySelector("#other-table3");
     let table4 = document.querySelector("#other-table4");
-    let table5 = document.querySelector("#other-table5");
 
 
 
@@ -152,19 +151,14 @@ const initalizeOtherTables = () => {
     let table1Length = 17;
 	let table2Start = table1Length;
 	let table2Length = 15;
-	let table3Start = table2Length;
-	let table3Length = 16;
-	let table4Start = table3Length;
-	let table4Length = 16;
-	let table5Start = table4Length;
-	let table5Length = 100;
+	let table3Start = table2Length + table2Start;
+	let table3Length = 15;
+	let table4Start = table3Length + table3Start;
+	let table4Length = 100;
 	initialzeTable(table1, otherData, 0, table1Length);
 	initialzeTable(table2, otherData, table2Start, table2Length);
 	initialzeTable(table3, otherData, table3Start, table3Length);
 	initialzeTable(table4, otherData, table4Start, table4Length);
-	initialzeTable(table5, otherData, table5Start, table5Length);
-
-
 }
 
 const initialzeTable = (tableElement, dataArr, startIndex=0, length=0) => 

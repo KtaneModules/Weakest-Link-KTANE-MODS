@@ -174,7 +174,7 @@
         {
             "Question": "Which button position is the dollar sign in Listening?",
             "Answers": [
-                "2ND"
+                "2nd"
             ],
             "WrongAnswers": [
                 "1ST",
@@ -213,7 +213,7 @@
         {
             "Question": "In Modules Against Humanity, what word does a card need to spell to have it set at position Two?",
             "Answers": [
-                "POOP"
+                "Poop"
             ],
             "WrongAnswers": [
                 "Pee",
@@ -747,10 +747,10 @@
         {
             "Question": "What button is mentioned in the first condition in Broken Buttons?",
             "Answers": [
-                "SEA"
+                "Sea"
             ],
             "WrongAnswers": [
-                "SEE"
+                "See"
             ],
             "Category": "KTANE"
         },
@@ -945,8 +945,8 @@
         {
             "Question": "What edgework do you need to get a 0 Caesar shift condition from Caesar Cipher?",
             "Answers": [
-                "Parallel and lit NSA",
-                "lit NSA and Parallel"
+                "Parallel and Lit NSA",
+                "Lit NSA and Parallel"
             ],
             "WrongAnswers": [
                 "lit SND and parallel",
@@ -985,7 +985,7 @@
         {
             "Question": "If the numbers on Connection Check are all different, what character from the serial number do you use?",
             "Answers": [
-                "6TH",
+                "6th",
                 "Last"
             ],
             "WrongAnswers": [
@@ -2200,7 +2200,7 @@
         {
             "Question": "What common Latin phrase literally means “something for something”",
             "Answers": [
-                "quid pro quo"
+                "Quid Pro Quo"
             ],
             "WrongAnswers": [
                 "sum fo sum"
@@ -2289,7 +2289,7 @@
         {
             "Question": "In the International Phonetic Alphabet, an unstressed central vowel is called a “schwa”, and is represented by what lowercase letter, upside down?",
             "Answers": [
-                "e"
+                "E"
             ],
             "WrongAnswers": [
                 "A",
@@ -2659,7 +2659,7 @@
             "Question": "What colour is the tongue of a giraffe?",
             "Answers": [
                 "Purple",
-                "black"
+                "Black"
             ],
             "WrongAnswers": [
                 "Pink",
@@ -2681,7 +2681,7 @@
         {
             "Question": "Under their white fur, what colour is a polar bear’s skin?",
             "Answers": [
-                "black"
+                "Black"
             ],
             "WrongAnswers": [
                 "Brown",
@@ -2994,7 +2994,7 @@
         {
             "Question": "What is the name of the part of the brain in the frontal lobe that is heavily involved in speech?",
             "Answers": [
-                "Broca's area"
+                "Broca's Area"
             ],
             "WrongAnswers": [
                 "Hippocampus"
@@ -3096,7 +3096,7 @@
         {
             "Question": "BRCA1 is a human gene and protein pairing most commonly associated with what disease?",
             "Answers": [
-                "Breast cancer"
+                "Breast Cancer"
             ],
             "WrongAnswers": [
                 "Diabetes"
@@ -3593,8 +3593,8 @@
         {
             "Question": "In athletics in which discipline does the competitor hold a metal ball under their chin before throwing it?",
             "Answers": [
-                "Shot-putt",
-                "shot putt"
+                "Shot-Putt",
+                "Shot Putt"
             ],
             "WrongAnswers": [
                 "Discus"
