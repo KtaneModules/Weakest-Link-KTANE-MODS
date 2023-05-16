@@ -2431,464 +2431,481 @@
             "Category": "Language"
         },
         {
-            "Question": "",
+            "Question": "Macaws are from which family of birds?",
             "Answers": [
-                ""
+                "Parrots"
             ],
             "WrongAnswers": [
-                ""
+                "Penguins"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is the name of the insect which makes honey?",
             "Answers": [
-                ""
+                "Bee", "Bees"
             ],
             "WrongAnswers": [
-                ""
+                "Wasps"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is the name commonly given to the hard protective covering of a crab?",
             "Answers": [
-                ""
+                "Shell"
             ],
             "WrongAnswers": [
-                ""
+                "Helmet"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What term for a young deer is also a light brown colour?",
             "Answers": [
-                ""
+                "Fawn"
             ],
             "WrongAnswers": [
-                ""
+                "Dirt", "Tan"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which animals build dams and lodges?",
             "Answers": [
-                ""
+                "Beaver", "Beavers"
             ],
             "WrongAnswers": [
-                ""
+                "Bears"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which bird gives its name to a straight-legged marching step?",
             "Answers": [
-                ""
+                "Goose"
             ],
             "WrongAnswers": [
-                ""
+                "Penguin"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is the correct name for the Australian wild dog?",
             "Answers": [
-                ""
+                "Dingo"
             ],
             "WrongAnswers": [
-                ""
+                "Hyena",
+                "Coyote",
+                "Feral",
+                "Mate"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What 'C' is a large North American reindeer?",
             "Answers": [
-                ""
+                "Caribou"
             ],
             "WrongAnswers": [
-                ""
+                "Crab"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which bodily fluid makes up the major part of the diet of vampire bats?",
             "Answers": [
-                ""
+                "Blood"
             ],
             "WrongAnswers": [
-                ""
+                "Water"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "The llama and alpaca are related to which humped animal of South Asia and North Africa?",
             "Answers": [
-                ""
+                "Camel"
             ],
             "WrongAnswers": [
-                ""
+                "Hippo"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What insect has many limbs, although the name would suggest that it has one hundred?",
             "Answers": [
-                ""
+                "Centipede"
             ],
             "WrongAnswers": [
-                ""
+                "Giraffe"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What F is a pink African wading bird?",
             "Answers": [
-                ""
+                "Flamingo"
             ],
             "WrongAnswers": [
-                ""
+                "Albatross"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": " What name of an amphibian is also the word for the elastic substance in a horse's hoof?",
             "Answers": [
-                ""
+                "Frog"
             ],
             "WrongAnswers": [
-                ""
+                "Sole", "Rubber", 
+                "Keratin"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is the largest dolphin of all dolphins?",
             "Answers": [
-                ""
+                "Orca", "Killer Whale"
             ],
             "WrongAnswers": [
-                ""
+                "King of the dolphins"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is another name for a North American marsupial?",
             "Answers": [
-                ""
+                "possum"
             ],
             "WrongAnswers": [
-                ""
+                "raccoons"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which fish start their lives as male and can change into females as they grow?",
             "Answers": [
-                ""
+                "Anemone", "clownfish"
             ],
             "WrongAnswers": [
-                ""
+                "Seahorse"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which mammal is known to have the most powerful bite in the world",
             "Answers": [
-                ""
+                "Hippopotamus", "Hippo"
             ],
             "WrongAnswers": [
-                ""
+                "Crocodile","Alligator",
+                "Turtle",
+                "Shark"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What object does a male penguin often gifted to a female penguin to win her over?",
             "Answers": [
-                ""
+                "Pebble", "Rock"
             ],
             "WrongAnswers": [
-                ""
+                "Fish"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "How many months is an elephant pregnant before it gives birth?",
             "Answers": [
-                ""
+                "22"
             ],
             "WrongAnswers": [
-                ""
+                "1", "2", "3", "4", "5", "6", "7", "8", "9"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "A dog sweats through which part of its body?",
             "Answers": [
-                ""
+                "Paws"
             ],
             "WrongAnswers": [
-                ""
+                "skin",
+                "tongue",
+                "eyes"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What colour is the tongue of a giraffe?",
             "Answers": [
-                ""
+                "Purple", "black"
             ],
             "WrongAnswers": [
-                ""
+                "Pink", "Red",
+                "White"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which animal’s poop is known to take the shape of cubes?",
             "Answers": [
-                ""
+                "Wombat"
             ],
             "WrongAnswers": [
-                ""
+                "Armadillo"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Under their white fur, what colour is a polar bear’s skin?",
             "Answers": [
-                ""
+                "black"
             ],
             "WrongAnswers": [
-                ""
+                "Brown",
+                "white"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "How many compartments are in a cow’s stomach?",
             "Answers": [
-                ""
+                "4"
             ],
             "WrongAnswers": [
-                ""
+                "1", "2", "3", "5", "6", "7", "8", "9"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is the name of the fastest land animal?",
             "Answers": [
-                ""
+                "Cheetah"
             ],
             "WrongAnswers": [
-                ""
+                "Lion",
+                "Tiger",
+                "Ostrich"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "A baby goat is called what?",
             "Answers": [
-                ""
+                "Kid"
             ],
             "WrongAnswers": [
-                ""
+                "Goat"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is a group of kittens called?",
             "Answers": [
-                ""
+                "Kindle"
             ],
             "WrongAnswers": [
-                ""
+                "litter",
+                "colony",
+                "Adoption agency"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "How many humps does a Bactrian camel have?",
             "Answers": [
-                ""
+                "2"
             ],
             "WrongAnswers": [
-                ""
+                "1", "3", "4", "5", "6", "7", "8", "9"
+
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What name is given to a female deer?",
             "Answers": [
-                ""
+                "Doe"
             ],
             "WrongAnswers": [
-                ""
+                "Female deer"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What animal is known by the nickname “sea cow”?",
             "Answers": [
-                ""
+                "Mantee"
             ],
             "WrongAnswers": [
-                ""
+                "seal", "Sea lion"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What animal is said to have nine lives?",
             "Answers": [
-                ""
+                "Cat"
             ],
             "WrongAnswers": [
-                ""
+                "dogs"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What animal eats mainly bamboo?",
             "Answers": [
-                ""
+                "Panda"
             ],
             "WrongAnswers": [
-                ""
+                "sloths"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What animal is known to be “man’s best friend”?",
             "Answers": [
-                ""
+                "Dog"
             ],
             "WrongAnswers": [
-                ""
+                "cats"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What animal is covered in quills?",
             "Answers": [
-                ""
+                "Porcupine"
             ],
             "WrongAnswers": [
-                ""
+                "armadillo"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What kind of turtle can’t retract into its shell?",
             "Answers": [
-                ""
+                "Sea turtle"
             ],
             "WrongAnswers": [
-                ""
+                "Snapping turtle"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What kind of animal is a Komodo dragon?",
             "Answers": [
-                ""
+                "Lizard"
             ],
             "WrongAnswers": [
-                ""
+                "Reptile"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What part of a snake does it shed a few times a year?",
             "Answers": [
-                ""
+                "Skin"
             ],
             "WrongAnswers": [
-                ""
+                "nose"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What animal breathes out of its butt?",
             "Answers": [
-                ""
+                "Turtles"
             ],
             "WrongAnswers": [
-                ""
+                "platypus",
+                "Frogs"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which part of its body does a snake use to smell?",
             "Answers": [
-                ""
+                "Tongue"
             ],
             "WrongAnswers": [
-                ""
+                "Skin"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Are most reptiles cold-blooded or warm-blooded?",
             "Answers": [
-                ""
+                "Cold-blooded"
             ],
             "WrongAnswers": [
-                ""
+                "warm-blooded"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What’s the name of the largest snake in the world?",
             "Answers": [
-                ""
+                "Anaconda"
             ],
             "WrongAnswers": [
-                ""
+                "King Cobra",
+                "Python"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What type of reptile can detach its tail when it’s in danger and then regrow it",
             "Answers": [
-                ""
+                "Lizard"
             ],
             "WrongAnswers": [
-                ""
+                "wolf"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "What is the three-letter name of the second-tallest (standing) bird on the planet?",
             "Answers": [
-                ""
+                "Emu"
             ],
             "WrongAnswers": [
-                ""
+                "ostrich"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Which insect gets its name from the Spanish word for “little fly”?",
             "Answers": [
-                ""
+                "Mosquito"
             ],
             "WrongAnswers": [
-                ""
+                "Gnat"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "How many fingers does a raccoon have on each front paw?",
             "Answers": [
-                ""
+                "5"
             ],
             "WrongAnswers": [
-                ""
+                "1", "2", "3", "4", "6", "7", "8", "9"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
-            "Question": "",
+            "Question": "Found in mostly Asia, the macaque is a type of animal?",
             "Answers": [
-                ""
+                "Monkey"
             ],
             "WrongAnswers": [
-                ""
+                "Bear", "Bird"
             ],
-            "Category": ""
+            "Category": "Wildlife"
         },
         {
             "Question": "",

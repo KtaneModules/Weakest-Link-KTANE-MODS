@@ -3,6 +3,8 @@ let json;
 let ktaneData;
 let geographyData;
 let languageData;
+let wildlifeData;
+
 const init = () => {
 	downloadFile("../JSON/quiz-bank.json", (str) => {
 	    json = JSON.parse(str);
@@ -10,6 +12,7 @@ const init = () => {
         initalizeKtaneTables();
 		initalizeGeographyTables();
 		initalizeLanguageTables();
+		initalizeWildlifeTables();
 	});
 
 };
@@ -90,6 +93,22 @@ const initalizeLanguageTables = () => {
 	initialzeTable(table1, languageData, 0, table1Length);
 	initialzeTable(table2, languageData, table2Start, table2Length);
 	initialzeTable(table3, languageData, table3Start, table3Length);
+}
+
+const initalizeWildlifeTables = () => {
+    let table1 = document.querySelector("#wildlife-table1");
+    let table2 = document.querySelector("#wildlife-table2");
+
+    wildlifeData = json.QuizBank.filter(s => s.Category == "Wildlife");
+	
+	console.log(wildlifeData);
+
+    let table1Length = 18;
+	let table2Start = table1Length;
+	let table2Length = 16;
+
+	initialzeTable(table1, wildlifeData, 0, table1Length);
+	initialzeTable(table2, wildlifeData, table2Start, table2Length);
 }
 
 const initialzeTable = (tableElement, dataArr, startIndex=0, length=0) => 
