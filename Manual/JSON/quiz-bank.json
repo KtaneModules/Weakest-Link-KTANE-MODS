@@ -2443,7 +2443,8 @@
         {
             "Question": "What is the name of the insect which makes honey?",
             "Answers": [
-                "Bee", "Bees"
+                "Bee",
+                "Bees"
             ],
             "WrongAnswers": [
                 "Wasps"
@@ -2466,14 +2467,16 @@
                 "Fawn"
             ],
             "WrongAnswers": [
-                "Dirt", "Tan"
+                "Dirt",
+                "Tan"
             ],
             "Category": "Wildlife"
         },
         {
             "Question": "Which animals build dams and lodges?",
             "Answers": [
-                "Beaver", "Beavers"
+                "Beaver",
+                "Beavers"
             ],
             "WrongAnswers": [
                 "Bears"
@@ -2559,7 +2562,8 @@
                 "Frog"
             ],
             "WrongAnswers": [
-                "Sole", "Rubber", 
+                "Sole",
+                "Rubber",
                 "Keratin"
             ],
             "Category": "Wildlife"
@@ -2567,7 +2571,8 @@
         {
             "Question": "What is the largest dolphin of all dolphins?",
             "Answers": [
-                "Orca", "Killer Whale"
+                "Orca",
+                "Killer Whale"
             ],
             "WrongAnswers": [
                 "King of the dolphins"
@@ -2587,7 +2592,8 @@
         {
             "Question": "Which fish start their lives as male and can change into females as they grow?",
             "Answers": [
-                "Anemone", "clownfish"
+                "Anemone",
+                "clownfish"
             ],
             "WrongAnswers": [
                 "Seahorse"
@@ -2597,10 +2603,12 @@
         {
             "Question": "Which mammal is known to have the most powerful bite in the world",
             "Answers": [
-                "Hippopotamus", "Hippo"
+                "Hippopotamus",
+                "Hippo"
             ],
             "WrongAnswers": [
-                "Crocodile","Alligator",
+                "Crocodile",
+                "Alligator",
                 "Turtle",
                 "Shark"
             ],
@@ -2609,7 +2617,8 @@
         {
             "Question": "What object does a male penguin often gifted to a female penguin to win her over?",
             "Answers": [
-                "Pebble", "Rock"
+                "Pebble",
+                "Rock"
             ],
             "WrongAnswers": [
                 "Fish"
@@ -2622,7 +2631,15 @@
                 "22"
             ],
             "WrongAnswers": [
-                "1", "2", "3", "4", "5", "6", "7", "8", "9"
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
             "Category": "Wildlife"
         },
@@ -2641,10 +2658,12 @@
         {
             "Question": "What colour is the tongue of a giraffe?",
             "Answers": [
-                "Purple", "black"
+                "Purple",
+                "black"
             ],
             "WrongAnswers": [
-                "Pink", "Red",
+                "Pink",
+                "Red",
                 "White"
             ],
             "Category": "Wildlife"
@@ -2676,7 +2695,14 @@
                 "4"
             ],
             "WrongAnswers": [
-                "1", "2", "3", "5", "6", "7", "8", "9"
+                "1",
+                "2",
+                "3",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
             "Category": "Wildlife"
         },
@@ -2720,8 +2746,14 @@
                 "2"
             ],
             "WrongAnswers": [
-                "1", "3", "4", "5", "6", "7", "8", "9"
-
+                "1",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
             "Category": "Wildlife"
         },
@@ -2741,7 +2773,8 @@
                 "Mantee"
             ],
             "WrongAnswers": [
-                "seal", "Sea lion"
+                "seal",
+                "Sea lion"
             ],
             "Category": "Wildlife"
         },
@@ -2893,7 +2926,14 @@
                 "5"
             ],
             "WrongAnswers": [
-                "1", "2", "3", "4", "6", "7", "8", "9"
+                "1",
+                "2",
+                "3",
+                "4",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
             "Category": "Wildlife"
         },
@@ -2903,7 +2943,8 @@
                 "Monkey"
             ],
             "WrongAnswers": [
-                "Bear", "Bird"
+                "Bear",
+                "Bird"
             ],
             "Category": "Wildlife"
         },
@@ -2923,7 +2964,10 @@
                 "Four"
             ],
             "WrongAnswers": [
-                "1", "2", "3", "0"
+                "1",
+                "2",
+                "3",
+                "0"
             ],
             "Category": "Biology"
         },
@@ -2984,7 +3028,8 @@
                 "Sweat"
             ],
             "WrongAnswers": [
-                "Mucus","Oil"
+                "Mucus",
+                "Oil"
             ],
             "Category": "Biology"
         },
@@ -3084,7 +3129,8 @@
                 "Coral"
             ],
             "WrongAnswers": [
-                "Jellyfish","Sea urchin"
+                "Jellyfish",
+                "Sea urchin"
             ],
             "Category": "Biology"
         },
@@ -3115,7 +3161,7 @@
             ],
             "WrongAnswers": [
                 "Intelligence",
-            "Umbilical cord"
+                "Umbilical cord"
             ],
             "Category": "Biology"
         },
@@ -3164,434 +3210,856 @@
             "Category": "Biology"
         },
         {
-            "Question": "",
+            "Question": "In Maths, 'proper' and 'vulgar' are types of what number?",
             "Answers": [
-                ""
+                "Fractions"
             ],
             "WrongAnswers": [
-                ""
+                "Whole"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What imperial length is the equivalent to eight furlongs?",
             "Answers": [
-                ""
+                "Mile"
             ],
             "WrongAnswers": [
-                ""
+                "foot"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "A century celebrates how many years of a particular event?",
             "Answers": [
-                ""
+                "100"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "How many units are there in a dozen?",
             "Answers": [
-                ""
+                "12"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "Immediately before (UK) decimalisation, there were how many shillings to a pound?",
             "Answers": [
-                ""
+                "20"
             ],
             "WrongAnswers": [
-                ""
+                "12"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "In Roman numerals,  what number is represented by the letters IX?",
             "Answers": [
-                ""
+                "9"
             ],
             "WrongAnswers": [
-                ""
+                "11"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What is the highest double-figured number?",
             "Answers": [
-                ""
+                "99"
             ],
             "WrongAnswers": [
-                ""
+                "25"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What is the next prime number after 7?",
             "Answers": [
-                ""
+                "11"
             ],
             "WrongAnswers": [
-                ""
+                "13"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What is 65 minus 43?",
             "Answers": [
-                ""
+                "22"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What comes at the end of this pattern: million, billion, trillion?",
             "Answers": [
-                ""
+                "Quadrillion"
             ],
             "WrongAnswers": [
-                ""
+                "quintillion"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "How many sides does a nonagon have?",
             "Answers": [
-                ""
+                "9"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What is the next number in the Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 ?",
             "Answers": [
-                ""
+                "55"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What does 5 to the power of 0 equal to?",
             "Answers": [
-                ""
+                "1"
             ],
             "WrongAnswers": [
-                ""
+                "5",
+                "0"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "How many zeros are in 1 billion?",
             "Answers": [
-                ""
+                "9"
             ],
             "WrongAnswers": [
-                ""
+                "12"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "How many metres are there in a kilometre?",
             "Answers": [
-                ""
+                "1000"
             ],
             "WrongAnswers": [
-                ""
+                "10",
+                "100"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What’s 3/4 of 56?",
             "Answers": [
-                ""
+                "42"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "The roman numeral of LX is equivalent to what number?",
             "Answers": [
-                ""
+                "60"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "In the UK, how many teaspoons does it take to equal a tablespoon?",
             "Answers": [
-                ""
+                "3"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "How many seconds are in 200 minutes?",
             "Answers": [
-                ""
+                "12000"
             ],
             "WrongAnswers": [
-                ""
+                "1200",
+                "12000"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "In trigonometry, what is the reciprocal of cosine?",
             "Answers": [
-                ""
+                "Secant"
             ],
             "WrongAnswers": [
-                ""
+                "sin"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "Moving clockwise on a clock’s face, what number is 90 degrees from the 12?",
             "Answers": [
-                ""
+                "3"
             ],
             "WrongAnswers": [
-                ""
+                "9",
+                "6"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What is the square root of 256?",
             "Answers": [
-                ""
+                "16"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "Which is longer: 1 month or 1000 hours?",
             "Answers": [
-                ""
+                "1000 hours"
             ],
             "WrongAnswers": [
-                ""
+                "1 month"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "What is longer: 10 inches or 20 centimetres?",
             "Answers": [
-                ""
+                "10 inches"
             ],
             "WrongAnswers": [
-                ""
+                "20 centimetres"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "How many total days are in November and December combined?",
             "Answers": [
-                ""
+                "61"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "How many are in a baker’s dozen?",
             "Answers": [
-                ""
+                "13"
             ],
             "WrongAnswers": [
-                ""
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
-            "Category": ""
+            "Category": "Maths"
         },
         {
-            "Question": "",
+            "Question": "Cantaloupe, Galia and Honeydew are types of which fruit?",
             "Answers": [
-                ""
+                "Melon"
             ],
             "WrongAnswers": [
-                ""
+                "Grapefruits",
+                "Orange"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "What is the name for six children born to a mother at the same time?",
             "Answers": [
-                ""
+                "Sextuplets"
             ],
             "WrongAnswers": [
-                ""
+                "Quintuplets"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "What two words does a drill-sergeant use to make marching troops turn around?",
             "Answers": [
-                ""
+                "About Turn"
             ],
             "WrongAnswers": [
-                ""
+                "Reverse March"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "In athletics in which discipline does the competitor hold a metal ball under their chin before throwing it?",
             "Answers": [
-                ""
+                "Shot-putt",
+                "shot putt"
             ],
             "WrongAnswers": [
-                ""
+                "Discus"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "Which lively dance is the first name for a spotted pattern on fabric?",
             "Answers": [
-                ""
+                "Polka"
             ],
             "WrongAnswers": [
-                ""
+                "Calico"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "A clog is worn on which part of the body?",
             "Answers": [
-                ""
+                "Foot"
             ],
             "WrongAnswers": [
-                ""
+                "The bottom"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "What word connected to drum, disc and air is associated with slowing down a vehicle?",
             "Answers": [
-                ""
+                "Brake"
             ],
             "WrongAnswers": [
-                ""
+                "Gun"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "Donkeys and other load-bearing animals are known as 'beasts of ..' what?",
             "Answers": [
-                ""
+                "Burden"
             ],
             "WrongAnswers": [
-                ""
+                "Power"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "Cotton buds carry a warning not to insert them into which part of the body?",
             "Answers": [
-                ""
+                "Ears"
             ],
             "WrongAnswers": [
-                ""
+                "Eyes"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "In religion a customary expression refers to 'The Father..' and which other relative?",
             "Answers": [
-                ""
+                "Son"
             ],
             "WrongAnswers": [
-                ""
+                "Ghost"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "In the game 'scissors, paper, stone', what beats paper?",
             "Answers": [
-                ""
+                "Scissors"
             ],
             "WrongAnswers": [
-                ""
+                "Stone"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "What item in the kitchen might include an interior light, automatic defrost, and an egg-rack?",
             "Answers": [
-                ""
+                "Fridge"
             ],
             "WrongAnswers": [
-                ""
+                "Microwave"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "What word can mean a space-craft, a firework, and a severe reprimand?",
             "Answers": [
-                ""
+                "Rocket"
             ],
             "WrongAnswers": [
-                ""
+                "Shuttle"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "What fruit juice is in a pina colada?",
             "Answers": [
-                ""
+                "Pineapple"
             ],
             "WrongAnswers": [
-                ""
+                "Mango"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "In the Olympics what event includes the parallel bars and the high bar?",
             "Answers": [
-                ""
+                "Gymnastics"
             ],
             "WrongAnswers": [
-                ""
+                "The pentathlon"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "Fisherman's pie is a dish topped with which mashed vegetable?",
             "Answers": [
-                ""
+                "Potato"
             ],
             "WrongAnswers": [
-                ""
+                "Cabbage"
             ],
-            "Category": ""
+            "Category": "Other"
         },
         {
-            "Question": "",
+            "Question": "What is fixed into window frames using putty?",
             "Answers": [
-                ""
+                "Glass"
             ],
             "WrongAnswers": [
-                ""
+                "Cement"
             ],
-            "Category": ""
+            "Category": "Other"
+        },
+        {
+            "Question": "What is the acronym for 'Double Income No Kids Yet'?",
+            "Answers": [
+                "DINKY"
+            ],
+            "WrongAnswers": [
+                "DKNY"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "It is customary for Roman Catholics eat fish on which day of the week?",
+            "Answers": [
+                "Friday"
+            ],
+            "WrongAnswers": [
+                "Tuesday"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Which type of punishment shares its name with a rank in the army?",
+            "Answers": [
+                "Corporal"
+            ],
+            "WrongAnswers": [
+                "Capital"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What is the last letter of the Greek alphabet?",
+            "Answers": [
+                "Omega"
+            ],
+            "WrongAnswers": [
+                "Z"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Which beverage has varieties including latte and mocha?",
+            "Answers": [
+                "Coffee"
+            ],
+            "WrongAnswers": [
+                "Milk"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What word beginning with 'G' is the area of medicine specialising in the treatment of the elderly?",
+            "Answers": [
+                "Geriatrics"
+            ],
+            "WrongAnswers": [
+                "Gynaecology"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Which Cluedo character has a military rank?",
+            "Answers": [
+                "Colonel Mustard"
+            ],
+            "WrongAnswers": [
+                "Colonel Sanders"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What does the acronym NASA stand for?",
+            "Answers": [
+                "National Aeronautics and Space Administration"
+            ],
+            "WrongAnswers": [
+                "National Socialist Space Satellite"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "In nature, cumulus and cirrus are types of what?",
+            "Answers": [
+                "Cloud"
+            ],
+            "WrongAnswers": [
+                "Lion"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Which European language do the words Blitz, Kindergarten and Angst come from?",
+            "Answers": [
+                "German"
+            ],
+            "WrongAnswers": [
+                "Italian"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "The name of which famous racehorse was the word 'murder' spelt backwards?",
+            "Answers": [
+                "Red Rum"
+            ],
+            "WrongAnswers": [
+                "Shergar"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": " what language, spoken in part of the United Kingdom, was the hymn 'Guide Me O Thou Great Redeemer' originally written?",
+            "Answers": [
+                "Gaelic"
+            ],
+            "WrongAnswers": [
+                "Islam"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What is the name of the 1994 Oscar winning film which starred Ben Kingsley as Yitzak Stern?",
+            "Answers": [
+                "Schindler's List"
+            ],
+            "WrongAnswers": [
+                "Gandhi"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "In what European country was actor Antonio Banderas born?",
+            "Answers": [
+                "Spain"
+            ],
+            "WrongAnswers": [
+                "Mexico"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What 'Z' is used to describe a human who has returned from the dead?",
+            "Answers": [
+                "Zombie"
+            ],
+            "WrongAnswers": [
+                "Unicorn"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Which 'C' is a food colouring made from insects from South America which live in cactus plants?",
+            "Answers": [
+                "Cochineal"
+            ],
+            "WrongAnswers": [
+                "Crab"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": " What was the principal language used by the ancient Romans?",
+            "Answers": [
+                "Latin"
+            ],
+            "WrongAnswers": [
+                "Greek"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "The maxim 'Thou shall not get found out' is commonly known as the eleventh what?",
+            "Answers": [
+                "Commandment"
+            ],
+            "WrongAnswers": [
+                "Hour"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "In language the cockney rhyming slang for road is 'Frog and...' what?",
+            "Answers": [
+                "Toad"
+            ],
+            "WrongAnswers": [
+                "Pears"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Wholegrain, Dijon and English are varieties of which condiment",
+            "Answers": [
+                "Mustard"
+            ],
+            "WrongAnswers": [
+                "Rice"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "In law the principle that a person cannot be tried twice for the same offence is called 'Double...' what?",
+            "Answers": [
+                "Jeopardy"
+            ],
+            "WrongAnswers": [
+                "Whammy"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Uncle Sam is said to represent the USA, whereas John who represents Britain?",
+            "Answers": [
+                "Bull"
+            ],
+            "WrongAnswers": [
+                "Peel"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "The chef known for his Caribbean food is Levi who?",
+            "Answers": [
+                "Roots"
+            ],
+            "WrongAnswers": [
+                "Strauss"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What girl's name is a term for a short prayer or thanks before a meal?",
+            "Answers": [
+                "Grace"
+            ],
+            "WrongAnswers": [
+                "Mary"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What T is the name of the person who made decorative glassware and lamps?",
+            "Answers": [
+                "Tiffany"
+            ],
+            "WrongAnswers": [
+                "Trotsky"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "The nickname of the Duke of Wellington included which metallic element?",
+            "Answers": [
+                "Iron"
+            ],
+            "WrongAnswers": [
+                "Fire"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Apart from Earth, which planet in our solar system begins with a vowel?",
+            "Answers": [
+                "Uranus"
+            ],
+            "WrongAnswers": [
+                "Pluto"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "When spoken by a German, which letter does the letter W sound like?",
+            "Answers": [
+                "V"
+            ],
+            "WrongAnswers": [
+                "H"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What sport do you play on grass with rackets?",
+            "Answers": [
+                "Tennis", "Badminton"
+            ],
+            "WrongAnswers": [
+                "Cricket"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Mouldy cheese and the blood of aristocrats are said to be which colour?",
+            "Answers": [
+                "Blue"
+            ],
+            "WrongAnswers": [
+                "Purple"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "Traditionally what liquid is said to be poured on troubled waters?",
+            "Answers": [
+                "Oil"
+            ],
+            "WrongAnswers": [
+                "Cold Water"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "What very common five-letter surname is the word for a metal-worker?",
+            "Answers": [
+                "Smith"
+            ],
+            "WrongAnswers": [
+                "Jones"
+            ],
+            "Category": "Other"
+        },
+        {
+            "Question": "The trimming of the clothes worn by Santa Claus is traditionally what colour?",
+            "Answers": [
+                "White"
+            ],
+            "WrongAnswers": [
+                "Red"
+            ],
+            "Category": "Other"
         }
     ]
 }

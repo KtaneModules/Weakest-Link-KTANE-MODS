@@ -5,6 +5,8 @@ let geographyData;
 let languageData;
 let wildlifeData;
 let biologyData;
+let mathData;
+let otherData;
 
 const init = () => {
 	downloadFile("../JSON/quiz-bank.json", (str) => {
@@ -15,6 +17,8 @@ const init = () => {
 		initalizeLanguageTables();
 		initalizeWildlifeTables();
 		initalizeBiologyTables();
+		initalizeMathTables();
+		initalizeOtherTables();
 	});
 
 };
@@ -114,11 +118,53 @@ const initalizeBiologyTables = () => {
 
     biologyData = json.QuizBank.filter(s => s.Category == "Biology");
 	
-	console.log(biologyData);
-
     let table1Length = 100;
 
 	initialzeTable(table1, biologyData, 0, table1Length);
+}
+
+const initalizeMathTables = () => {
+    let table1 = document.querySelector("#math-table1");
+    let table2 = document.querySelector("#math-table2");
+
+    mathData = json.QuizBank.filter(s => s.Category == "Maths");
+	
+    let table1Length = 21;
+	let table2Start = table1Length;
+	let table2Length = 100;
+
+	initialzeTable(table1, mathData, 0, table1Length);
+	initialzeTable(table2, mathData, table2Start, table2Length);
+
+}
+
+const initalizeOtherTables = () => {
+    let table1 = document.querySelector("#other-table1");
+    let table2 = document.querySelector("#other-table2");
+    let table3 = document.querySelector("#other-table3");
+    let table4 = document.querySelector("#other-table4");
+    let table5 = document.querySelector("#other-table5");
+
+
+
+    otherData = json.QuizBank.filter(s => s.Category == "Other");
+	
+    let table1Length = 17;
+	let table2Start = table1Length;
+	let table2Length = 15;
+	let table3Start = table2Length;
+	let table3Length = 16;
+	let table4Start = table3Length;
+	let table4Length = 16;
+	let table5Start = table4Length;
+	let table5Length = 100;
+	initialzeTable(table1, otherData, 0, table1Length);
+	initialzeTable(table2, otherData, table2Start, table2Length);
+	initialzeTable(table3, otherData, table3Start, table3Length);
+	initialzeTable(table4, otherData, table4Start, table4Length);
+	initialzeTable(table5, otherData, table5Start, table5Length);
+
+
 }
 
 const initialzeTable = (tableElement, dataArr, startIndex=0, length=0) => 
