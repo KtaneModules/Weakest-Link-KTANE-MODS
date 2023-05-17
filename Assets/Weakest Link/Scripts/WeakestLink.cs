@@ -18,10 +18,8 @@ public class WeakestLink : MonoBehaviour {
 	//variables that will be used in all stages
 	#region Global Variables
 	JsonReader jsonData;
-
 	Contestant c1;
 	Contestant c2;
-
 	#endregion
 
 	//objects for the first stage
