@@ -40,13 +40,13 @@ const initalizeKtaneTables = () => {
 
     let table1Length = 19;
 	let table2Start = table1Length;
-	let table2Length = 21;
+	let table2Length = 20;
 	let table3Start = table2Start + table2Length;
-	let table3Length = 19;
+	let table3Length = 17;
 	let table4Start = table3Start + table3Length;
-	let table4Length = 17;
+	let table4Length = 15;
 	let table5Start = table4Start + table4Length;
-	let table5Length = 17;
+	let table5Length = 100;
 
     initialzeTable(table1, ktaneData, 0, table1Length);
 	initialzeTable(table2, ktaneData, table2Start, table2Length);
@@ -64,9 +64,9 @@ const initalizeGeographyTables = () => {
 
     let table1Length = 17;
 	let table2Start = table1Length;
-	let table2Length = 20;
+	let table2Length = 19;
 	let table3Start = table2Start + table2Length;
-	let table3Length = 19;
+	let table3Length = 100;
 
 	initialzeTable(table1, geographyData, 0, table1Length);
 	initialzeTable(table2, geographyData, table2Start, table2Length);
@@ -80,7 +80,7 @@ const initalizeLanguageTables = () => {
 
     let languageData = json.QuizBank.filter(s => s.Category == "Language");
 	
-    let table1Length = 18;
+    let table1Length = 17;
 	let table2Start = table1Length;
 	let table2Length = 16;
 	let table3Start = table2Start + table2Length;
@@ -107,12 +107,17 @@ const initalizeWildlifeTables = () => {
 
 const initalizeBiologyTables = () => {
     let table1 = document.querySelector("#biology-table1");
+    let table2 = document.querySelector("#biology-table2");
 
     let biologyData = json.QuizBank.filter(s => s.Category == "Biology");
 	
-    let table1Length = 100;
+    let table1Length = 14;
+    let table2Length = 100;
+
 
 	initialzeTable(table1, biologyData, 0, table1Length);
+	initialzeTable(table2, biologyData, table1Length, table2Length);
+
 }
 
 const initalizeMathTables = () => {
