@@ -2,17 +2,17 @@
 let json;
 
 const init = () => {
-	downloadFile("../JSON/quiz-bank.json", (str) => {
+	downloadFile("../JSON/data.json", (str) => {
 	    json = JSON.parse(str);
         initalizeKtaneTables();
 		initalizeGeographyTables();
 		initalizeLanguageTables();
 		initalizeWildlifeTables();
 		initalizeBiologyTables();
+		initalizeHistoryTables();
 		initalizeMathTables();
 		initalizeOtherTables();
 	});
-
 };
 
  const downloadFile = (url, callbackRef) => {
@@ -130,6 +130,30 @@ const initalizeMathTables = () => {
 
 }
 
+const initalizeHistoryTables = () => {
+    let table1 = document.querySelector("#history-table1");
+    let table2 = document.querySelector("#history-table2");
+    let table3 = document.querySelector("#history-table3");
+    let table4 = document.querySelector("#history-table4");
+
+
+
+    let historyData = json.QuizBank.filter(s => s.Category == "History");
+	
+    let table1Length = 16;
+	let table2Start = table1Length;
+	let table2Length = 19;
+	let table3Start = table2Length + table2Start;
+	let table3Length = 100;
+	let table4Start = table3Length + table3Start;
+	let table4Length = 100;
+	
+	initialzeTable(table1, historyData, 0, table1Length);
+	initialzeTable(table2, historyData, table2Start, table2Length);
+	initialzeTable(table3, historyData, table3Start, table3Length);
+	//initialzeTable(table4, historyData, table4Start, table4Length);
+}
+
 const initalizeOtherTables = () => {
     let table1 = document.querySelector("#other-table1");
     let table2 = document.querySelector("#other-table2");
@@ -171,7 +195,5 @@ const initialzeTable = (tableElement, dataArr, startIndex=0, length=0) =>
     html += "</tbody>";
     tableElement.innerHTML = html;
 }
-
-
 
 init();

@@ -1,4 +1,106 @@
 {
+    "CharacterNames": [
+        "John",
+        "William",
+        "James",
+        "Charles",
+        "George",
+        "Frank",
+        "Joseph",
+        "Thomas",
+        "Henry",
+        "Robert",
+        "Edward",
+        "Harry",
+        "Walter",
+        "Arthur",
+        "Fred",
+        "Albert",
+        "Samuel",
+        "David",
+        "Louis",
+        "Joe",
+        "Charlie",
+        "Clarence",
+        "Richard",
+        "Andrew",
+        "Daniel",
+        "Ernest",
+        "Will",
+        "Jesse",
+        "Oscar",
+        "Lewis",
+        "Peter",
+        "Benjamin",
+        "Frederick",
+        "Willie",
+        "Alfred",
+        "Sam",
+        "Roy",
+        "Herbert",
+        "Jacob",
+        "Tom",
+        "Elmer",
+        "Carl",
+        "Lee",
+        "Howard",
+        "Martin",
+        "Michael",
+        "Bert",
+        "Herman",
+        "Jim",
+        "Francis",
+        "Mary",
+        "Anna",
+        "Emma",
+        "Elizabeth",
+        "Minnie",
+        "Margaret",
+        "Ida",
+        "Alice",
+        "Bertha",
+        "Sarah",
+        "Annie",
+        "Clara",
+        "Ella",
+        "Florence",
+        "Cora",
+        "Martha",
+        "Laura",
+        "Nellie",
+        "Grace",
+        "Carrie",
+        "Maude",
+        "Mabel",
+        "Bessie",
+        "Jennie",
+        "Gertrude",
+        "Julia",
+        "Hattie",
+        "Edith",
+        "Mattie",
+        "Rose",
+        "Catherine",
+        "Lillian",
+        "Ada",
+        "Lillie",
+        "Helen",
+        "Jessie",
+        "Louise",
+        "Ethel",
+        "Lula",
+        "Myrtle",
+        "Eva",
+        "Frances",
+        "Lena",
+        "Lucy",
+        "Edna",
+        "Maggie",
+        "Pearl",
+        "Daisy",
+        "Fannie",
+        "Josephine"
+    ],
     "QuizBank": [
         {
             "Question": "What is a boss module that is red and has numbered keys 0-9 with a stage counter on the right and number on a wide display on the bottom?",
@@ -4014,7 +4116,8 @@
         {
             "Question": "What sport do you play on grass with rackets?",
             "Answers": [
-                "Tennis", "Badminton"
+                "Tennis",
+                "Badminton"
             ],
             "WrongAnswers": [
                 "Cricket"
@@ -4060,6 +4163,482 @@
                 "Red"
             ],
             "Category": "Other"
+        },
+        {
+            "Question": "Who became US president when Nixon resigned?",
+            "Answers": [
+                "Gerald Ford"
+            ],
+            "WrongAnswers": [
+                "Bill Gates",
+                "Bill Clinton"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Juan Peron was the president of which South American country?",
+            "Answers": [
+                "Argentina"
+            ],
+            "WrongAnswers": [
+                " Brazil",
+                "Peru",
+                "Chile"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who became manager of Manchester United in 1986?",
+            "Answers": [
+                "Alex Ferguson"
+            ],
+            "WrongAnswers": [
+                "Erik ten Hag",
+                "Ralf Rangnick",
+                "Michael Carrick",
+                "Ole Gunnar Solskjaer",
+                "Jose Mourinho"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "John Glenn was the first man from which country to orbit the Earth?",
+            "Answers": [
+                "USA",
+                "United States OR United States of America"
+            ],
+            "WrongAnswers": [
+                " Germany",
+                "Russia"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which Indian leader, whose last name began with 'G', took the name Mahatma? ",
+            "Answers": [
+                "Gandhi"
+            ],
+            "WrongAnswers": [
+                "Mikhail Gorbachev",
+                "Ulysses S. Grant",
+                "Muammar Gaddafi",
+                "Joseph Goebbels"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which calendar month was named after the first Roman Emperor?",
+            "Answers": [
+                "August"
+            ],
+            "WrongAnswers": [
+                "January", "February", "March", "April", "May", "June", "July", "September", "October", "November", "December"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "What was the last state to join the USA?",
+            "Answers": [
+                "Hawaii"
+            ],
+            "WrongAnswers": [
+                "New York", "Ohio", "Georgia"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "What man-made structure built during the 3rd century B.C. is often said to be visible from space?",
+            "Answers": [
+                "The Great Wall Of China"
+            ],
+            "WrongAnswers": [
+                "Great Pyramid of Giza", "Petra", "Machu Picchu"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which musician famous for playing the piano honky-tonk style died in the year 2000?",
+            "Answers": [
+                "Winifred Atwell"
+            ],
+            "WrongAnswers": [
+                "Ray Charles", "Stevie Wonder"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Pakistan was part of which other state until it achieved independence in 1947?",
+            "Answers": [
+                "India"
+            ],
+            "WrongAnswers": [
+                "Japan","Indonesia","China","South Korea","Thailand"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "The Battle of Rourke's Drift was between the British and which indigenous people of South Africa?",
+            "Answers": [
+                "Zulus"
+            ],
+            "WrongAnswers": [
+                "Aborigines "
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "The Mexican War was fought over a border dispute with which other country?",
+            "Answers": [
+                "The USA"
+            ],
+            "WrongAnswers": [
+                "Spain"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "In America, the 18th century protestation about taxes was called 'The Boston..' what?",
+            "Answers": [
+                "Tea-Party"
+            ],
+            "WrongAnswers": [
+                "Uprising"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "The United States bought Alaska from which country?",
+            "Answers": [
+                "Russia"
+            ],
+            "WrongAnswers": [
+                "Germany",
+                "United Kingdom",
+                "France",
+                "Italy",
+                "Spain"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who was the fourth president of the United States?",
+            "Answers": [
+                "James Madison"
+            ],
+            "WrongAnswers": [
+                "James Monroe","Qunincy Adams"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Fill in the blank: The 19th Amendment guarantees ____ the right to vote.",
+            "Answers": [
+                "Women"
+            ],
+            "WrongAnswers": [
+                "Corporations","Black people","Criminals"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who was president during the Cuban Missile Crisis?",
+            "Answers": [
+                "John F. Kennedy"
+            ],
+            "WrongAnswers": [
+                "Lydon B Johsnon"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "What year did the French Revolution start?",
+            "Answers": [
+                "1789"
+            ],
+            "WrongAnswers": [
+                "1812","1792","1728"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "In what year did Libya gain independence from Italy?",
+            "Answers": [
+                "1951"
+            ],
+            "WrongAnswers": [
+                "1922","1937","2023"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Where did Albert Einstein live before moving to the United States?",
+            "Answers": [
+                "Germany"
+            ],
+            "WrongAnswers": [
+                "Switzerland","Poaland","Austria"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "How old was Queen Elizabeth II when she was crowned the Queen of England?",
+            "Answers": [
+                "27"
+            ],
+            "WrongAnswers": [
+                "80", "72", "20"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who was the first ruler of the Mongol Empire?",
+            "Answers": [
+                "Genghis Khan"
+            ],
+            "WrongAnswers": [
+                "Donkey Kong"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "In which country was the Battle of Culloden fought in 1746?",
+            "Answers": [
+                "Scotland"
+            ],
+            "WrongAnswers": [
+                "South Sudan","Israel","Switzerland"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who was the first Emperor of Rome?",
+            "Answers": [
+                "Augustus Caesar"
+            ],
+            "WrongAnswers": [
+                "Julius Caesar"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which Greek goddess was the Parthenon dedicated to?",
+            "Answers": [
+                "Athena"
+            ],
+            "WrongAnswers": [
+                "Aphrodite"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "The Great Pyramid was built as a tomb for which pharaoh?",
+            "Answers": [
+                "Khufu"
+            ],
+            "WrongAnswers": [
+                "Ra","Tut","Ramses the Second"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who established the Xia Dynasty in China?",
+            "Answers": [
+                "Yu the Great"
+            ],
+            "WrongAnswers": [
+                "Qin Shi Huang"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who is the king of the Olympian gods in Greek mythology?",
+            "Answers": [
+                "Zeus"
+            ],
+            "WrongAnswers": [
+                "Hades","Poseidon"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "The Maya Empire was centred in what is now which country?",
+            "Answers": [
+                "Guatemala"
+            ],
+            "WrongAnswers": [
+                "Mexico"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which ancient figure is often considered the founder of Western philosophy?",
+            "Answers": [
+                "Socrates"
+            ],
+            "WrongAnswers": [
+                "Aristotle","Plateau"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "How old was King Tutankhamun when he died?",
+            "Answers": [
+                "19"
+            ],
+            "WrongAnswers": [
+                "13", "50", "55"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which fabric was invented in Ancient China?",
+            "Answers": [
+                "Silk"
+            ],
+            "WrongAnswers": [
+                "Velvet","Flannel","Chiffon","Silk"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "What was the acronym commonly used for the 2000 software problem that many thought would cause computers to become inoperable?",
+            "Answers": [
+                "Y2K"
+            ],
+            "WrongAnswers": [
+                "2k23"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which country hosted the 2016 Olympics?",
+            "Answers": [
+                "Brazil"
+            ],
+            "WrongAnswers": [
+                "Argentina","COlombia","Peru","Chile","Ecuador"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "The U.S. rover Curiosity landed on which planet in August 2012?",
+            "Answers": [
+                "Mars"
+            ],
+            "WrongAnswers": [
+                "Earth", "Jupiter", "Saturn"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "What year did the Berlin Wall fall?",
+            "Answers": [
+                "1989"
+            ],
+            "WrongAnswers": [
+                "1991"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "What was the name of the Category 5 hurricane that hit New Orleans and its surrounding areas in 2005?",
+            "Answers": [
+                "Katrina"
+            ],
+            "WrongAnswers": [
+                "Emily","Bret","Dorian"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "The U.S. hosted the FIFA World Cup in 1994. Which country won the game?",
+            "Answers": [
+                "Brazil"
+            ],
+            "WrongAnswers": [
+                "Argentina"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Which planet was downgraded to a dwarf planet in 2006?",
+            "Answers": [
+                "Pluto"
+            ],
+            "WrongAnswers": [
+                "Earth","Jupiter", "Saturn"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who won the 2008 U.S. Presidential election?",
+            "Answers": [
+                "Barack Obama"
+            ],
+            "WrongAnswers": [
+                "Bill Clinton", "Hilairy Clinton"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "What year was Nelson Mandela freed from prison?",
+            "Answers": [
+                "1990"
+            ],
+            "WrongAnswers": [
+                "2013"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Who was the first woman to be elected Vice President of the United States in 2020?",
+            "Answers": [
+                "Kamala Harris"
+            ],
+            "WrongAnswers": [
+                "Serina Williams"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "How many years did the 100 years war last?",
+            "Answers": [
+                "116"
+            ],
+            "WrongAnswers": [
+                "98","4","150"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "In which year did Hitler commit suicide?",
+            "Answers": [
+                "1945"
+            ],
+            "WrongAnswers": [
+                "1922","1932","1939"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "In which year was John F. Kennedy assassinated?",
+            "Answers": [
+                "1963"
+            ],
+            "WrongAnswers": [
+                "1962"
+            ],
+            "Category": "History"
+        },
+        {
+            "Question": "Greenland was a colony of which country until 1981?",
+            "Answers": [
+                "Denmark"
+            ],
+            "WrongAnswers": [
+                "Norway","Netherlands","Germany","Sweden","Belgium"
+            ],
+            "Category": "History"
         }
     ]
 }
