@@ -5,7 +5,8 @@ using System.Linq;
 
 public class JsonReader : MonoBehaviour {
 
-    private List<Trivia> triviaList;
+    public List<Trivia> TriviaList { get; private set; }
+    public List<string> ContestantNames { get; private set; }
 
     private void Start()
     {
@@ -22,7 +23,7 @@ public class JsonReader : MonoBehaviour {
     [System.Serializable]
     public class JsonData
     {
-        List<string> name; //list of all the names of the contestants
+        public List<string> CharacterNames; //list of all the names of the contestants
         public List<JsonTrivia> QuizBank; //list of all the questions and its respective data
     }
 
@@ -49,8 +50,6 @@ public class JsonReader : MonoBehaviour {
         //Debug.Log("Loading data...\n" + textJSON.text);
         json = JsonUtility.FromJson<JsonData>(textJSON.text);
 
-        Debug.Log($"Json Question Bank Count: {json.QuizBank.Count}");
-
         //debug line used to make sure data is getting extracted correctly
 
         //JsonTrivia firstData = json.QuizBank[0];
@@ -60,9 +59,9 @@ public class JsonReader : MonoBehaviour {
 
 
         //convert data into Trivia Class
-        triviaList = json.QuizBank.Select(q => ConvertJsonToTrivia(q)).ToList();
+        TriviaList = json.QuizBank.Select(q => ConvertJsonToTrivia(q)).ToList();
 
-        Debug.Log($"Question Bank Count: {triviaList.Count}");
+        ContestantNames = json.CharacterNames;
     }
 
     private Trivia ConvertJsonToTrivia(JsonTrivia j)
@@ -97,10 +96,5 @@ public class JsonReader : MonoBehaviour {
         }
 
         return new Trivia(j.Question, j.Answers, j.WrongAnswers, category);
-    }
-
-    private string ListToString(List<string> s)
-    {
-        return string.Join(", ", s.ToArray());
     }
 }
