@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class JsonReader : MonoBehaviour {
+
+    private List<Trivia> triviaList;
 
     private void Start()
     {
@@ -20,20 +23,21 @@ public class JsonReader : MonoBehaviour {
     public class JsonData
     {
         List<string> name; //list of all the names of the contestants
-        public List<JsonTrivia> allQuestions; //list of all the questions and its respective data
+        public List<JsonTrivia> QuizBank; //list of all the questions and its respective data
     }
 
+    [System.Serializable]
     public class JsonTrivia
     {
         public string Question; //the question being asked
-        public List<string> AcceptedAnswers;  //strings that will pass the questions
+        public List<string> Answers;  //strings that will pass the questions
         public List<string> WrongAnswers;  //strings that the cpu will use the when they need to get the question wrong
         public string Category;  //They category of the question
 
-        public JsonTrivia(string Question, List<string> AcceptedAnswers, List<string> WrongAnswers, string Category)
+        public JsonTrivia(string Question, List<string> Answers, List<string> WrongAnswers, string Category)
         {
             this.Question = Question;
-            this.AcceptedAnswers = AcceptedAnswers;
+            this.Answers = Answers;
             this.WrongAnswers = WrongAnswers;
             this.Category = Category;
         }
@@ -42,9 +46,61 @@ public class JsonReader : MonoBehaviour {
     //Loads the data from the json
     public void LoadData()
     {
-        Debug.Log("Loading data...\n" + textJSON.text);
+        //Debug.Log("Loading data...\n" + textJSON.text);
         json = JsonUtility.FromJson<JsonData>(textJSON.text);
 
+        Debug.Log($"Json Question Bank Count: {json.QuizBank.Count}");
 
+        //debug line used to make sure data is getting extracted correctly
+
+        //JsonTrivia firstData = json.QuizBank[0];
+
+        //Debug.Log($"First Question detail: question: {firstData.Question}, Accepted Answer: {ListToString(firstData.Answers)}, " +
+        //    $"Wrong Answers: {ListToString(firstData.WrongAnswers)}, Category: {firstData.Category}");
+
+
+        //convert data into Trivia Class
+        triviaList = json.QuizBank.Select(q => ConvertJsonToTrivia(q)).ToList();
+
+        Debug.Log($"Question Bank Count: {triviaList.Count}");
+    }
+
+    private Trivia ConvertJsonToTrivia(JsonTrivia j)
+    {
+        Category category;
+
+        switch (j.Category.ToUpper())
+        {
+            case "KTANE":
+                category = Category.KTANE;
+            break;
+
+            case "GEOGRAPHY":
+                category = Category.Geography;
+                break;
+
+            case "LANGUAGE":
+                category = Category.Language;
+                break;
+
+            case "WILDLIFE":
+                category = Category.Wildlife;
+                break;
+
+            case "BIOLOGY":
+                category = Category.Biology;
+                break;
+
+            default:
+                category = Category.Maths;
+                break;
+        }
+
+        return new Trivia(j.Question, j.Answers, j.WrongAnswers, category);
+    }
+
+    private string ListToString(List<string> s)
+    {
+        return string.Join(", ", s.ToArray());
     }
 }
