@@ -17,7 +17,7 @@ public class JsonReader : MonoBehaviour {
 
 	public TextAsset textJSON;
 
-    private JsonData json;
+    public JsonData json { get; private set; }
 
     //holds the data read from the json
     [System.Serializable]
@@ -47,6 +47,8 @@ public class JsonReader : MonoBehaviour {
     //Loads the data from the json
     public void LoadData()
     {
+        if (json != null)
+            return;
         //Debug.Log("Loading data...\n" + textJSON.text);
         json = JsonUtility.FromJson<JsonData>(textJSON.text);
 

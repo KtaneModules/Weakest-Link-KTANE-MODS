@@ -37,9 +37,16 @@ public class WeakestLink : MonoBehaviour {
 		//get json data
 		jsonData = gameObject.GetComponent<JsonReader>();
 
+		//load json data if loaded alreay
+		if(jsonData.json == null)
+        {
+			gameObject.GetComponent<JsonReader>().LoadData();
+		}
+
 		//create constestants
 		int categoryCount = 5;
 		int nameCount = jsonData.ContestantNames.Count;
+
 
 		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount));
 		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount));
