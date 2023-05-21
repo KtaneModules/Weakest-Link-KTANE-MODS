@@ -65,6 +65,7 @@ public class WeakestLink : MonoBehaviour {
 	float currentTime;
 	bool inQuestionPhase;
 	TextMesh timerTextMesh;
+	TextMesh questionTextMesh;
 	#endregion
 
 
@@ -87,19 +88,26 @@ public class WeakestLink : MonoBehaviour {
 		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
-		//initalize all varables
-		stage1Objects = transform.Find("Skill Check Phase").gameObject;
+        //initalize all varables
+        #region stage1
+        stage1Objects = transform.Find("Skill Check Phase").gameObject;
 		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
 		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
 		stage1NextStageButton = stage1Objects.transform.GetChild(2).gameObject.GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { Debug.Log("next stage pressed");  GoToNextStage(1); StartQuestionPhase(); return false;  };
+		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); StartQuestionPhase(); return false;  };
+        #endregion
 
-		stage2Objects = transform.Find("Question Phase").gameObject;
-
+        #region stage2
+        stage2Objects = transform.Find("Question Phase").gameObject;
 		inQuestionPhase = false;
-		timerTextMesh = stage2Objects.transform.GetChild(0).gameObject.GetComponent<TextMesh>();
+		GameObject timerGameObject = stage2Objects.transform.GetChild(0).gameObject;
+		timerTextMesh = timerGameObject.GetComponent<TextMesh>();
 
-		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
+		GameObject questionGameObject = stage2Objects.transform.GetChild(1).gameObject;
+		questionTextMesh = questionGameObject.GetComponent<TextMesh>();
+        #endregion
+
+        c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
 		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont);
 
 		//make sure the right game objects are visible
@@ -170,5 +178,23 @@ public class WeakestLink : MonoBehaviour {
 	{
 		currentTime = timerMax;
 		inQuestionPhase = true;
+
+		Trivia currentTrivia = GetQuestion();
+
+		Debug.Log(currentTrivia.Question);
+
+		questionTextMesh.text = currentTrivia.Question;
+	}
+
+	Trivia GetQuestion()
+	{
+		return jsonData.TriviaList[Rnd.Range(0, jsonData.TriviaList.Count)];
+	}
+
+	Trivia GetQuestion(Category category)
+	{
+		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
+
+		return a[Rnd.Range(0, jsonData.TriviaList.Count)];
 	}
 }
