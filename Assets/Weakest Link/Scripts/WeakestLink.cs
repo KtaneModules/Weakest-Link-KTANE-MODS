@@ -20,6 +20,19 @@ public class WeakestLink : MonoBehaviour {
 	JsonReader jsonData;
 	Contestant c1;
 	Contestant c2;
+
+	//fonts for the questions and the answers
+	[SerializeField]
+	List<Material> handWritingMaterials;
+
+	[SerializeField]
+	List<Font> handWritingFonts;
+
+	[SerializeField]
+	List<Material> questionMaterials;
+
+	[SerializeField]
+	List<Font> questionFonts;
 	#endregion
 
 	//objects for the first stage
@@ -47,29 +60,23 @@ public class WeakestLink : MonoBehaviour {
 		int categoryCount = 5;
 		int nameCount = jsonData.ContestantNames.Count;
 
+		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
+		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
-		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount));
-		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount));
+		//initalize all varables
+		stage1Objects = transform.Find("Skill Check Phase").gameObject;
+		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
+		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
+
+		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont]);
+		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2]);
 
 		Debug.Log($"C1: {c1.Name}, {c1.Category}");
 		Debug.Log($"C2: {c2.Name}, {c2.Category}");
 
-
-		//initalize all varables
-		stage1Objects = transform.Find("Skill Check Phase").gameObject;
-
-		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
-		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
-
 		//make sure the right game objects are visible
 		stage1Objects.SetActive(true);
 
-		//set the names for the conestants on the module
-		contestant1GameObject.transform.GetChild(0).GetComponent<TextMesh>().text = c1.Name;
-		contestant1GameObject.transform.GetChild(1).GetComponent<TextMesh>().text = c1.Category.ToString();
-
-		contestant2GameObject.transform.GetChild(0).GetComponent<TextMesh>().text = c2.Name;
-		contestant2GameObject.transform.GetChild(1).GetComponent<TextMesh>().text = c2.Category.ToString();
 	}
 
 	void Start () {
