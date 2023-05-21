@@ -15,12 +15,20 @@ public class WeakestLink : MonoBehaviour {
 	int ModuleId;
 	private bool ModuleSolved;
 
+	public KMBombInfo Bomb;
+	public KMAudio Audio;
+
 	//variables that will be used in all stages
 	#region Global Variables
 	JsonReader jsonData;
 	Contestant c1;
 	Contestant c2;
 
+	[SerializeField]
+	Material nameDisplayMaterial;
+	
+	[SerializeField]
+	Font nameDisplayFont;
 	//fonts for the questions and the answers
 	[SerializeField]
 	List<Material> handWritingMaterials;
@@ -68,8 +76,8 @@ public class WeakestLink : MonoBehaviour {
 		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
 		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
 
-		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont]);
-		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2]);
+		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
+		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont);
 
 		Debug.Log($"C1: {c1.Name}, {c1.Category}");
 		Debug.Log($"C2: {c2.Name}, {c2.Category}");

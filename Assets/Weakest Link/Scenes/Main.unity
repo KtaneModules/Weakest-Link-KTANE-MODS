@@ -631,7 +631,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1046464686}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0795, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0793, y: 0, z: -0.0461}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1836496681}
@@ -777,6 +777,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8515db1033ed23c46a8da44c7d0d008c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Bomb: {fileID: 1172508339}
+  Audio: {fileID: 1172508340}
+  nameDisplayMaterial: {fileID: 2100000, guid: c4780ac88b1e8694da49e8c7813f580c, type: 2}
+  nameDisplayFont: {fileID: 12800000, guid: 705441aeaf02fca44beb5f4d2d57d692, type: 3}
   handWritingMaterials:
   - {fileID: 2100000, guid: b4e0762d6617850498db7a596a131d92, type: 2}
   - {fileID: 2100000, guid: 352a69fa82694af42967eed05d4c76cb, type: 2}
@@ -1041,7 +1045,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1477281336}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0064, y: 0, z: -0.038}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 860699801}

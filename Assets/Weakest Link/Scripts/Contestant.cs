@@ -19,23 +19,29 @@ public class Contestant {
     public Material HandWritingMaterial { get; set; }
     public Font HandWritingFont { get; set; }
 
-    public GameObject GameObject; 
 
+    public GameObject GameObject;
+
+    public Material NameDisplayMaterial { get; set; }
+    public Font NameDisplayFont { get; set; }
 
     const float REGULAR_RIGHT_CHOICE = .50f; //the percentage the Contestant will answer correctly if they are not skilled in that category
     const float GOOD_RIGHT_CHOICE = .80f; //the percentage the Contestant will answer correctly if they are skilled in that category
 
-    public Contestant(string name, Category category, GameObject gameObject, Material handWritingMaterial, Font handWritingFont)
+    public Contestant(string name, Category category, GameObject gameObject, Material handWritingMaterial, Font handWritingFont, Material nameDisplayMaterial, Font nameDisplayFont)
     {
         Name = name;
         Category = category;
+        GameObject = gameObject;
+
         WrongNum = 0;
         CorrectAnswer = 0;
         QuestionsAsked = 0;
+
         HandWritingMaterial = handWritingMaterial;
         HandWritingFont = handWritingFont;
-        GameObject = gameObject;
-
+        NameDisplayMaterial = nameDisplayMaterial;
+        NameDisplayFont = nameDisplayFont;
 
         InitalizeContestant();
     }
@@ -43,14 +49,15 @@ public class Contestant {
     public void InitalizeContestant()
     {
         TextMesh nameTextMesh = GameObject.transform.GetChild(0).GetComponent<TextMesh>();
+        nameTextMesh.text = Name.ToUpper();
+        nameTextMesh.font = NameDisplayFont;
+        nameTextMesh.fontSize = 120;
+        GameObject.transform.GetChild(0).GetComponent<MeshRenderer>().materials = new Material[] { NameDisplayMaterial };
+
         TextMesh skillTextMesh = GameObject.transform.GetChild(1).GetComponent<TextMesh>();
-
-        nameTextMesh.text = Name;
-        skillTextMesh.text = Category.ToString();
-
-        nameTextMesh.font = skillTextMesh.font = HandWritingFont;
-
-        GameObject.transform.GetChild(0).GetComponent<MeshRenderer>().materials =
-        GameObject.transform.GetChild(1).GetComponent<MeshRenderer>().materials = new Material[] { HandWritingMaterial };
+        skillTextMesh.text = Category.ToString().ToUpper();
+        skillTextMesh.font = NameDisplayFont;
+        skillTextMesh.fontSize = 120;
+        GameObject.transform.GetChild(1).GetComponent<MeshRenderer>().materials = new Material[] { NameDisplayMaterial };
     }
 }
