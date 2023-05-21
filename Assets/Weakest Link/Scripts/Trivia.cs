@@ -9,7 +9,9 @@ public enum Category
     Wildlife,
     Biology,
     Maths,
-    KTANE
+    KTANE,
+    History,
+    Other
 }
 
 

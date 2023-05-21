@@ -29,6 +29,11 @@ public class WeakestLink : MonoBehaviour {
 	
 	[SerializeField]
 	Font nameDisplayFont;
+
+	Category playerCategory; //the skill the player is good at
+
+	string day; // the day of the week
+
 	//fonts for the questions and the answers
 	[SerializeField]
 	List<Material> handWritingMaterials;
@@ -49,6 +54,17 @@ public class WeakestLink : MonoBehaviour {
 
 	GameObject contestant1GameObject;
 	GameObject contestant2GameObject;
+
+	KMSelectable stage1NextStageButton;
+	#endregion
+
+	#region Stage 2 Objects
+	GameObject stage2Objects;
+
+	const int timerMax = 60 * 2; //the amount of time the user has to answers qustions in the first stage 
+	float currentTime;
+	bool inQuestionPhase;
+	TextMesh timerTextMesh;
 	#endregion
 
 
@@ -65,7 +81,7 @@ public class WeakestLink : MonoBehaviour {
 		}
 
 		//create constestants
-		int categoryCount = 5;
+		int categoryCount = 7;
 		int nameCount = jsonData.ContestantNames.Count;
 
 		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
@@ -75,25 +91,84 @@ public class WeakestLink : MonoBehaviour {
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
 		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
 		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
+		stage1NextStageButton = stage1Objects.transform.GetChild(2).gameObject.GetComponent<KMSelectable>();
+		stage1NextStageButton.OnInteract += delegate () { Debug.Log("next stage pressed");  GoToNextStage(1); StartQuestionPhase(); return false;  };
+
+		stage2Objects = transform.Find("Question Phase").gameObject;
+
+		inQuestionPhase = false;
+		timerTextMesh = stage2Objects.transform.GetChild(0).gameObject.GetComponent<TextMesh>();
 
 		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
 		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont);
 
-		Debug.Log($"C1: {c1.Name}, {c1.Category}");
-		Debug.Log($"C2: {c2.Name}, {c2.Category}");
-
 		//make sure the right game objects are visible
-		stage1Objects.SetActive(true);
-
+		GoToNextStage(0);
 	}
+
 
 	void Start () {
         ModuleId = ModuleIdCounter++;
 
 		SetUpModule();
+
+		//get the player's skill
+		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
+
+		switch (day)
+		{
+			case "SUNDAY":
+				playerCategory = Category.History;
+				break;
+			case "MONDAY":
+				playerCategory = Category.KTANE;
+				break;
+			case "TUESDAY":
+				playerCategory = Category.Geography;
+				break;
+			case "WEDNESDAY":
+				playerCategory = Category.Language;
+				break;
+			case "THURSDAY":
+				playerCategory = Category.Wildlife;
+				break;
+			case "FRIDAY":
+				playerCategory = Category.Biology;
+				break;
+			default:
+				playerCategory = Category.Maths;
+				break;
+		}
+
 	}
 
 	void Update () {
-		
+		if (inQuestionPhase)
+		{
+			currentTime -= Time.deltaTime;
+			timerTextMesh.text = $"{(int)currentTime / 60}:{(int)currentTime % 60}";
+		}
+	}
+
+	void GoToNextStage(int currentStage)
+	{
+		switch (currentStage)
+		{
+			case 0:
+				stage1Objects.SetActive(true);
+				stage2Objects.SetActive(false);
+
+				break;
+			case 1:
+				stage1Objects.SetActive(false);
+				stage2Objects.SetActive(true);
+				break;
+		}
+	}
+
+	void StartQuestionPhase()
+	{
+		currentTime = timerMax;
+		inQuestionPhase = true;
 	}
 }
