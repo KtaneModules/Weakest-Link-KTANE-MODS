@@ -84,7 +84,7 @@ public class WeakestLink : MonoBehaviour {
 	GameObject stage2Objects;
 
 	//const int timerMax = 60 * 3; // the amount of time the user has to answers qustions in the first stage 
-	const int timerMax = 10; // the amount of time the user has to answers qustions in the first stage 
+	const int timerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
 
 	float currentTime;
