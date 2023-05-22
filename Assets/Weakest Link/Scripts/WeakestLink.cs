@@ -462,6 +462,8 @@ void UpdateNameColors()
 
 	IEnumerator Submit()
 	{
+		bool turnChanged = false;
+
 		string response = answerText.text;
 
 		string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
@@ -469,7 +471,13 @@ void UpdateNameColors()
 		Contestant currentContestant = currentTurn == Turn.Player ? playerContestant : currentTurn ==
 													  Turn.C1 ? c1 : c2;
 
-		UpdateTurn(false);
+		if (currentTurn != Turn.C2)
+		{ 
+			UpdateTurn(false);
+			turnChanged = true;
+		}
+
+		string log = $"Question: \"{currentTrivia.Question}\". {(currentContestant.Name == "" ? "You" : currentContestant.Name)} answered \"{response}\", ";
 
 		currentContestant.QuestionsAsked++;
 
@@ -477,13 +485,20 @@ void UpdateNameColors()
 		{
 			questionText.color = correctColor;
 			currentContestant.CorrectAnswer++;
+			log += "which is correct";
 		}
 
 		else
 		{
 			questionText.color = incorrectColor;
+			log += "which is incorrect";
 		}
-		
+
+
+		log += $". Ratio is now ({currentContestant.CorrectAnswer}/{currentContestant.QuestionsAsked})";
+
+		Logging(log);
+
 		answerText.text = "";
 		yield return new WaitForSeconds(2f);
 
@@ -491,6 +506,11 @@ void UpdateNameColors()
 			yield break;
 
 		UpdateQuestion(false);
+
+		if (!turnChanged && currentTurn == Turn.C2)
+		{
+			UpdateTurn(false);
+		}
 
 		if (currentTurn != Turn.Player)
 		{
