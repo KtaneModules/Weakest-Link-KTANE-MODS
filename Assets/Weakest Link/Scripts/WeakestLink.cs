@@ -107,22 +107,25 @@ public class WeakestLink : MonoBehaviour {
 
 	Dictionary<char, char> letterToNumber = new Dictionary<char, char>()
 	{
-		{ 'A', '1' },
-		{ 'B', '2' },
-		{ 'C', '3' },
-		{ 'D', '4' },
-		{ 'E', '5' },
-		{ 'F', '6' },
-		{ 'G', '7' },
-		{ 'H', '8' },
-		{ 'I', '9' },
-		{ 'J', '0' }
+		{ '1', 'A' },
+		{ '2', 'B' },
+		{ '3', 'C' },
+		{ '4', 'D' },
+		{ '5', 'E' },
+		{ '6', 'F' },
+		{ '7', 'G' },
+		{ '8', 'H' },
+		{ '9', 'I' },
+		{ '0', 'J' }
 	};
-	#endregion
+    #endregion
+
+    #region Stage 3
+
+    #endregion
 
 
-
-	void SetUpModule()
+    void SetUpModule()
 	{
 		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
 		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
@@ -207,6 +210,7 @@ public class WeakestLink : MonoBehaviour {
 				Logging($"Player Stats: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
 				Logging($"{c1.Name} Stats: {c1.CorrectAnswer}/{c1.QuestionsAsked}");
 				Logging($"{c2.Name} Stats: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
+				GoToNextStage(2);
 			}
 
 			if (focused && currentTurn == Turn.Player) //keyboard input
@@ -281,9 +285,13 @@ public class WeakestLink : MonoBehaviour {
 			case 0:
 				stage1Objects.SetActive(true);
 				stage2Objects.SetActive(false);
-
 				break;
 			case 1:
+				stage1Objects.SetActive(false);
+				stage2Objects.SetActive(true);
+				break;
+
+			case 2:
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(true);
 				break;
@@ -315,8 +323,6 @@ public class WeakestLink : MonoBehaviour {
 
 		answerText.text = "";
 
-		Debug.Log("Question:" + currentTrivia.Question);
-
 		Debug.Log("Answers: " + string.Join(", ", currentTrivia.AcceptedAnswers.ToArray()));
 	}
 
@@ -327,7 +333,6 @@ public class WeakestLink : MonoBehaviour {
 		TextMesh[] names = new TextMesh[] { playerTextMesh, contestant1TextMesh, contestant2TextMesh };
 
 		names[(int)currentTurn].color = Color.white;
-
 	}
 
 	void CalculateStage2Answers()
@@ -373,11 +378,9 @@ public class WeakestLink : MonoBehaviour {
 
 					Array.Sort(a, (x, y) => String.Compare(x.Name, y.Name));
 
-
 					personToEliminate = a[0].Name;
 
 					Logging($"Elimation values are the same. {personToEliminate} comes first alphabetically. Eliminate them");
-
 				}
 
 				else
@@ -415,7 +418,6 @@ public class WeakestLink : MonoBehaviour {
 			else if (letterToNumber.ContainsKey(c) && serialNumber.Contains(letterToNumber[c]))
 			{
 				Logging($"Serial Number contains a {letterToNumber[c]} which counts as a {c}. Boost is now {boost++}");
-
 			}
 		}
 
@@ -428,7 +430,6 @@ public class WeakestLink : MonoBehaviour {
 
 	IEnumerator Submit()
 	{
-
 		string response = answerText.text;
 
 		string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
