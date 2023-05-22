@@ -21,12 +21,12 @@ public class WeakestLink : MonoBehaviour {
 	KeyCode[] TypableKeys =
 	{
 		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M,
-		KeyCode.Period, KeyCode.Return, KeyCode.Minus, 
+		KeyCode.Period, KeyCode.Return, KeyCode.Minus,
 		KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
 	};
 
 	enum Turn
-	{ 
+	{
 		Player,
 		C1,
 		C2
@@ -50,7 +50,6 @@ public class WeakestLink : MonoBehaviour {
 
 
 	Contestant playerContestant;
-	Category playerCategory; //the skill the player is good at
 
 	string day; // the day of the week
 
@@ -103,6 +102,22 @@ public class WeakestLink : MonoBehaviour {
 	TextMesh contestant2TextMesh;
 
 	Trivia currentTrivia;
+
+	string personToEliminate;
+
+	Dictionary<char, char> letterToNumber = new Dictionary<char, char>()
+	{
+		{ 'A', '1' },
+		{ 'B', '2' },
+		{ 'C', '3' },
+		{ 'D', '4' },
+		{ 'E', '5' },
+		{ 'F', '6' },
+		{ 'G', '7' },
+		{ 'H', '8' },
+		{ 'I', '9' },
+		{ 'J', '0' }
+	};
 	#endregion
 
 
@@ -168,6 +183,10 @@ public class WeakestLink : MonoBehaviour {
 		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
 		//make sure the right game objects are visible
 		GoToNextStage(0);
+
+		Logging($"First contestant is {c1.Name} who specializese in {c1.Category}");
+		Logging($"Second contestant is {c2.Name} who specializese in {c2.Category}");
+		Logging($"You specialize in {playerContestant.Category}");
 	}
 
 
@@ -185,10 +204,9 @@ public class WeakestLink : MonoBehaviour {
 			if (currentTime <= 0f)
 			{
 				inQuestionPhase = false;
-				Debug.Log($"Player stats: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
-				Debug.Log($"C1 stats: {c1.CorrectAnswer}/{c1.QuestionsAsked}");
-				Debug.Log($"C2 stats: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
-
+				Logging($"Player Stats: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
+				Logging($"{c1.Name} Stats: {c1.CorrectAnswer}/{c1.QuestionsAsked}");
+				Logging($"{c2.Name} Stats: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
 			}
 
 			if (focused && currentTurn == Turn.Player) //keyboard input
@@ -312,6 +330,102 @@ public class WeakestLink : MonoBehaviour {
 
 	}
 
+	void CalculateStage2Answers()
+	{
+		//Not answering at least 5 questions or not answering over 50% correctly will lead to a strike
+
+		bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 5;
+		bool lessThanThresholdCorrect = (float)playerContestant.QuestionsAsked / playerContestant.CorrectAnswer < .5f;
+
+		int playerPercentage = (int)((float)playerContestant.QuestionsAsked / playerContestant.CorrectAnswer * 100);
+		int contestant1Percentage = (int)((float)c1.QuestionsAsked / c1.CorrectAnswer * 100);
+		int contestant2Percentage = (int)((float)c2.QuestionsAsked / c2.CorrectAnswer * 100);
+
+		if (lessThanThresholdAsked)
+		{
+			Logging($"Strike! You only answered {playerContestant.QuestionsAsked} questions");
+		}
+
+		else if (lessThanThresholdCorrect)
+		{
+			Logging($"Strike! Your ratio was only {playerPercentage}%");
+		}
+
+		else
+		{
+			//If only one contestant has the same skill as you, type in their name to eliminate them.
+			if (c1.Category != c2.Category && (c1.Category == playerContestant.Category || c2.Category == playerContestant.Category))
+			{
+				Contestant c = c1.Category == playerContestant.Category ? c1 : c2;
+
+				Logging($"{c.Name} shares the same category as you. Eliminate them");
+			}
+
+			else
+			{
+				//if the character is in the serial number, add 1 to the percentage. Convert numbers into letters (1=A, 2=B, etc) with 0 meaning J.
+				contestant1Percentage = GetEliminationValue(c1, contestant1Percentage);
+				contestant2Percentage = GetEliminationValue(c2, contestant2Percentage);
+
+				if (contestant1Percentage == contestant2Percentage)
+				{
+					Contestant[] a = new Contestant[] { c1, c2 };
+
+					Array.Sort(a, (x, y) => String.Compare(x.Name, y.Name));
+
+
+					personToEliminate = a[0].Name;
+
+					Logging($"Elimation values are the same. {personToEliminate} comes first alphabetically. Eliminate them");
+
+				}
+
+				else
+				{
+					if (contestant1Percentage > contestant2Percentage)
+					{
+						personToEliminate = c2.Name;
+					}
+
+					else
+					{
+						personToEliminate = c1.Name;
+					}
+
+					Logging($"{personToEliminate} has the lower elimination value. Eliminate them");
+				}
+			}
+		}
+	}
+
+	int GetEliminationValue(Contestant contestant, int baseContestantValue)
+	{
+		Logging($"{contestant}'s base elimination value: {baseContestantValue}");
+
+		int boost = 0;
+
+		string serialNumber = Bomb.GetSerialNumber().ToUpper();
+		foreach (char c in contestant.Name.ToUpper())
+		{
+			if (serialNumber.Contains(c))
+			{
+				Logging($"Serial Number contains a {c}. Boost is now {boost++}");
+			}
+
+			else if (letterToNumber.ContainsKey(c) && serialNumber.Contains(letterToNumber[c]))
+			{
+				Logging($"Serial Number contains a {letterToNumber[c]} which counts as a {c}. Boost is now {boost++}");
+
+			}
+		}
+
+		baseContestantValue += boost;
+
+		Logging($"{contestant.Name}'s elimination value: {baseContestantValue}");
+
+		return baseContestantValue;
+	}
+
 	IEnumerator Submit()
 	{
 
@@ -394,5 +508,10 @@ public class WeakestLink : MonoBehaviour {
 		a.ForEach(x => b.AddRange(x.Split(',')));
 
 		return b.OrderByDescending(x => x.Length).First();
+	}
+
+	void Logging(string s)
+	{
+		LogFormat($"[The WeakestLink #{ModuleId}] {s}");
 	}
 }

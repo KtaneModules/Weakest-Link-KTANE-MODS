@@ -19,7 +19,6 @@ public class Contestant {
     public Material HandWritingMaterial { get; set; }
     public Font HandWritingFont { get; set; }
 
-
     public GameObject GameObject;
 
     public Material NameDisplayMaterial { get; set; }
