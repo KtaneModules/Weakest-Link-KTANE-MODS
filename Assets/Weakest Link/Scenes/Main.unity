@@ -580,9 +580,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: " In phonetics, what \u201Cs\u201D is used for a fricative consonant sound,
-    in which the top of the tongue is brought near the roof of the mouth and air is
-    pushed past the tongue to make a hissing sound?"
+  m_Text: National Aeronautics and Space Administration
 --- !u!222 &823792102
 CanvasRenderer:
   m_ObjectHideFlags: 0

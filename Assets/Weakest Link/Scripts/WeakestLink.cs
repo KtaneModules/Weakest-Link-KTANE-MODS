@@ -18,6 +18,13 @@ public class WeakestLink : MonoBehaviour {
 	public KMBombInfo Bomb;
 	public KMAudio Audio;
 
+	private KeyCode[] TypableKeys =
+	{
+		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M,
+		KeyCode.Period, KeyCode.Return, KeyCode.Minus, 
+		KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
+	};
+
 	//variables that will be used in all stages
 	#region Global Variables
 	JsonReader jsonData;
@@ -33,6 +40,9 @@ public class WeakestLink : MonoBehaviour {
 	Category playerCategory; //the skill the player is good at
 
 	string day; // the day of the week
+
+
+	bool focused; //if the module is selected
 
 	//fonts for the questions and the answers
 	[SerializeField]
@@ -73,6 +83,9 @@ public class WeakestLink : MonoBehaviour {
 
 	void SetUpModule()
 	{
+		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
+		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
+
 		//get json data
 		jsonData = gameObject.GetComponent<JsonReader>();
 
@@ -159,6 +172,33 @@ public class WeakestLink : MonoBehaviour {
 		{
 			currentTime -= Time.deltaTime;
 			timerTextMesh.text = $"{(int)currentTime / 60}:{(int)currentTime % 60}";
+
+
+			if (focused) //keyboard input
+			{
+				string currentText = answerText.text;
+
+				for (int i = 0; i < TypableKeys.Count(); i++)
+				{
+					if (TypableKeys[i] == KeyCode.Backspace && Input.GetKeyDown(TypableKeys[i]))
+					{
+						if (answerText.text != "")
+						{ 
+							answerText.text = currentText.Substring(0, currentText.Length - 1);
+						}
+					}
+
+					else if (TypableKeys[i] == KeyCode.Return && Input.GetKeyDown(TypableKeys[i]))
+                    {
+						Submit();
+					}
+
+					else if (Input.GetKeyDown(TypableKeys[i]))
+					{ 
+						answerText.text += TypableKeys[i].ToString().ToUpper();
+					}
+				}
+			}
 		}
 	}
 
@@ -185,29 +225,23 @@ public class WeakestLink : MonoBehaviour {
 
 		Trivia currentTrivia = GetQuestion();
 
-		Debug.Log(currentTrivia.Question);
-
 		questionText.text = currentTrivia.Question;
-		answerText.text = GetLongestAnswer();
+
+		answerText.text = "";
+
+		Debug.Log("Question:" + currentTrivia.Question);
+
+		Debug.Log("Answers: " + string.Join(", ", currentTrivia.AcceptedAnswers.ToArray()));
+	}
+
+	void Submit()
+	{
+		answerText.text = "";
 	}
 
 	Trivia GetQuestion()
 	{
-
 		return jsonData.TriviaList[Rnd.Range(0, jsonData.TriviaList.Count)];
-
-
-	}
-
-	string GetLongestAnswer()
-	{ 
-		List<string> a = jsonData.TriviaList.Select(x => string.Join(",", x.AcceptedAnswers.ToArray())).ToList();
-
-		List<string> b = new List<string>();
-
-		a.ForEach(x => b.AddRange(x.Split(',')));
-
-		return b.OrderByDescending(x => x.Length).First();
 	}
 
 	Trivia GetQuestion(Category category)
@@ -215,5 +249,17 @@ public class WeakestLink : MonoBehaviour {
 		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
 
 		return a[Rnd.Range(0, jsonData.TriviaList.Count)];
+	}
+
+	//debug function used to make sure font was big enough for answer
+	string GetLongestAnswer()
+	{
+		List<string> a = jsonData.TriviaList.Select(x => string.Join(",", x.AcceptedAnswers.ToArray())).ToList();
+
+		List<string> b = new List<string>();
+
+		a.ForEach(x => b.AddRange(x.Split(',')));
+
+		return b.OrderByDescending(x => x.Length).First();
 	}
 }
