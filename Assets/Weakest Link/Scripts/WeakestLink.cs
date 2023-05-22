@@ -215,7 +215,7 @@ public class WeakestLink : MonoBehaviour {
 						answerText.text += keyCode.ToString().Substring(5, 1);
 					}
 
-					else if (keyCode == KeyCode.Space)
+					else if (keyCode == KeyCode.Space && Input.GetKeyDown(keyCode))
 					{ 
 						answerText.text += " ";
 					}
