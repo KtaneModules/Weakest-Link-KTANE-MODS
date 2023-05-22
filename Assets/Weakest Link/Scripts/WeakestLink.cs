@@ -83,7 +83,6 @@ public class WeakestLink : MonoBehaviour {
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	//const int timerMax = 60 * 3; // the amount of time the user has to answers qustions in the first stage 
 	const int timerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
 
@@ -123,6 +122,9 @@ public class WeakestLink : MonoBehaviour {
 	#endregion
 
 	#region Stage 3
+
+	GameObject stage3Objects;
+
 	string personToEliminate;
 	bool inEliminationPhase;
 
@@ -151,9 +153,9 @@ public class WeakestLink : MonoBehaviour {
 
 		#region stage1
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
-		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
-		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
-		stage1NextStageButton = stage1Objects.transform.GetChild(2).gameObject.GetComponent<KMSelectable>();
+		contestant1GameObject = stage1Objects.transform.Find("Contestant 1").gameObject;
+		contestant2GameObject = stage1Objects.transform.Find("Contestant 2").gameObject;
+		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").gameObject.GetComponent<KMSelectable>();
 		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true); UpdateQuestion(true); return false; };
 		#endregion
 
@@ -162,18 +164,16 @@ public class WeakestLink : MonoBehaviour {
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
 		inQuestionPhase = false;
-		GameObject timerGameObject = stage2Objects.transform.GetChild(0).gameObject;
+		GameObject timerGameObject = stage2Objects.transform.Find("Timer").gameObject;
 		timerTextMesh = timerGameObject.GetComponent<TextMesh>();
 
-		GameObject questionCanvas = stage2Objects.transform.GetChild(1).gameObject;
-		questionText = questionCanvas.transform.GetChild(0).gameObject.GetComponent<Text>();
-		
-		GameObject answerCanvas = stage2Objects.transform.GetChild(2).gameObject;
-		answerText = answerCanvas.transform.GetChild(0).gameObject.GetComponent<Text>();
+		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
+		questionText = canvas.transform.Find("Question").gameObject.GetComponent<Text>();
+		answerText = canvas.transform.Find("Answer").gameObject.GetComponent<Text>();
 
-		playerTextMesh = stage2Objects.transform.GetChild(3).gameObject.GetComponent<TextMesh>();
-		contestant1TextMesh = stage2Objects.transform.GetChild(4).gameObject.GetComponent<TextMesh>();
-		contestant2TextMesh = stage2Objects.transform.GetChild(5).gameObject.GetComponent<TextMesh>();
+		playerTextMesh = stage2Objects.transform.Find("Player Name").gameObject.GetComponent<TextMesh>();
+		contestant1TextMesh = stage2Objects.transform.Find("Contestant 1 Name").gameObject.GetComponent<TextMesh>();
+		contestant2TextMesh = stage2Objects.transform.Find("Contestant 2 Name").gameObject.GetComponent<TextMesh>();
 
 		playerTextMesh.text = "PLAYER";
 		contestant1TextMesh.text = c1.Name.ToUpper();
@@ -182,6 +182,7 @@ public class WeakestLink : MonoBehaviour {
 
 		#region stage3
 		inEliminationPhase = false;
+		stage3Objects = transform.Find("Elimination Phase").gameObject;
 		#endregion
 
 
@@ -298,16 +299,22 @@ public class WeakestLink : MonoBehaviour {
 			case 0:
 				stage1Objects.SetActive(true);
 				stage2Objects.SetActive(false);
+				stage3Objects.SetActive(false);
+
 				break;
 			case 1:
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(true);
+				stage3Objects.SetActive(false);
+
 				Logging("Starting question phase");
 				break;
 
 			case 2:
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(false);
+				stage3Objects.SetActive(true);
+
 				Logging("Starting elimination phase");
 				break;
 		}
