@@ -83,7 +83,10 @@ public class WeakestLink : MonoBehaviour {
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	const int timerMax = 60 * 3; // the amount of time the user has to answers qustions in the first stage 
+	//const int timerMax = 60 * 3; // the amount of time the user has to answers qustions in the first stage 
+	const int timerMax = 60 * 1; // the amount of time the user has to answers qustions in the first stage 
+
+
 	float currentTime;
 	bool inQuestionPhase;
 	const int TIME_READ = 5; //the amount of time it would take the contestants to read the question 
@@ -103,9 +106,8 @@ public class WeakestLink : MonoBehaviour {
 
 	Trivia currentTrivia;
 
-	string personToEliminate;
 
-	Dictionary<char, char> letterToNumber = new Dictionary<char, char>()
+	Dictionary<char, char> numberToLettter = new Dictionary<char, char>()
 	{
 		{ '1', 'A' },
 		{ '2', 'B' },
@@ -118,14 +120,16 @@ public class WeakestLink : MonoBehaviour {
 		{ '9', 'I' },
 		{ '0', 'J' }
 	};
-    #endregion
+	#endregion
 
-    #region Stage 3
+	#region Stage 3
+	string personToEliminate;
+	bool inEliminationPhase;
 
-    #endregion
+	#endregion
 
 
-    void SetUpModule()
+	void SetUpModule()
 	{
 		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
 		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
@@ -155,7 +159,7 @@ public class WeakestLink : MonoBehaviour {
 		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
 		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
 		stage1NextStageButton = stage1Objects.transform.GetChild(2).gameObject.GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateQuestionPhase(true); return false; };
+		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true); UpdateQuestion(true); return false; };
 		#endregion
 
 		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
@@ -180,6 +184,10 @@ public class WeakestLink : MonoBehaviour {
 		playerTextMesh.text = "PLAYER";
 		contestant1TextMesh.text = c1.Name.ToUpper();
 		contestant2TextMesh.text = c2.Name.ToUpper();
+		#endregion
+
+		#region stage3
+		inEliminationPhase = false;
 		#endregion
 
 		//create player
@@ -211,6 +219,18 @@ public class WeakestLink : MonoBehaviour {
 				Logging($"{c1.Name} Stats: {c1.CorrectAnswer}/{c1.QuestionsAsked}");
 				Logging($"{c2.Name} Stats: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
 				GoToNextStage(2);
+
+
+				if (CalculatePersonToEliminate())
+				{
+					inEliminationPhase = true;
+				}
+
+				else
+				{
+					GetComponent<KMBombModule>().HandleStrike();
+					GoToNextStage(0);
+				}
 			}
 
 			if (focused && currentTurn == Turn.Player) //keyboard input
@@ -293,26 +313,18 @@ public class WeakestLink : MonoBehaviour {
 
 			case 2:
 				stage1Objects.SetActive(false);
-				stage2Objects.SetActive(true);
+				stage2Objects.SetActive(false);
 				break;
 		}
 	}
 
-	void UpdateQuestionPhase(bool init)
+	void UpdateQuestion(bool init)
 	{
 		if (init)
 		{
-			currentTurn = Turn.Player;
 			currentTime = timerMax;
 			inQuestionPhase = true;
 		}
-
-		else
-		{ 
-			currentTurn = (Turn)(((int)currentTurn + 1) % 3);
-		}
-
-		UpdateNameColors();
 
 		currentTrivia = GetQuestion();
 
@@ -326,7 +338,22 @@ public class WeakestLink : MonoBehaviour {
 		Debug.Log("Answers: " + string.Join(", ", currentTrivia.AcceptedAnswers.ToArray()));
 	}
 
-	void UpdateNameColors()
+	void UpdateTurn(bool init)
+	{
+		if (init)
+		{
+			currentTurn = Turn.Player;
+		}
+
+		else
+		{ 
+			currentTurn = (Turn)(((int)currentTurn + 1) % 3);
+		}
+
+		UpdateNameColors();
+	}
+
+void UpdateNameColors()
 	{
 		playerTextMesh.color = contestant1TextMesh.color = contestant2TextMesh.color = inactiveColor;
 
@@ -335,25 +362,28 @@ public class WeakestLink : MonoBehaviour {
 		names[(int)currentTurn].color = Color.white;
 	}
 
-	void CalculateStage2Answers()
+	//returns true if the player got enough questions right
+	bool CalculatePersonToEliminate()
 	{
 		//Not answering at least 5 questions or not answering over 50% correctly will lead to a strike
 
 		bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 5;
-		bool lessThanThresholdCorrect = (float)playerContestant.QuestionsAsked / playerContestant.CorrectAnswer < .5f;
+		bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer  / playerContestant.QuestionsAsked < .5f;
 
-		int playerPercentage = (int)((float)playerContestant.QuestionsAsked / playerContestant.CorrectAnswer * 100);
-		int contestant1Percentage = (int)((float)c1.QuestionsAsked / c1.CorrectAnswer * 100);
-		int contestant2Percentage = (int)((float)c2.QuestionsAsked / c2.CorrectAnswer * 100);
+		int playerPercentage = (int)((float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked * 100);
+		int contestant1Percentage = (int)((float)c1.CorrectAnswer / c1.QuestionsAsked * 100);
+		int contestant2Percentage = (int)((float)c2.CorrectAnswer / c2.QuestionsAsked * 100);
 
 		if (lessThanThresholdAsked)
 		{
 			Logging($"Strike! You only answered {playerContestant.QuestionsAsked} questions");
+			return false;
 		}
 
 		else if (lessThanThresholdCorrect)
 		{
 			Logging($"Strike! Your ratio was only {playerPercentage}%");
+			return false;
 		}
 
 		else
@@ -398,6 +428,8 @@ public class WeakestLink : MonoBehaviour {
 					Logging($"{personToEliminate} has the lower elimination value. Eliminate them");
 				}
 			}
+			inEliminationPhase = true;
+			return true;
 		}
 	}
 
@@ -415,9 +447,9 @@ public class WeakestLink : MonoBehaviour {
 				Logging($"Serial Number contains a {c}. Boost is now {boost++}");
 			}
 
-			else if (letterToNumber.ContainsKey(c) && serialNumber.Contains(letterToNumber[c]))
+			else if (numberToLettter.ContainsKey(c) && serialNumber.Contains(numberToLettter[c]))
 			{
-				Logging($"Serial Number contains a {letterToNumber[c]} which counts as a {c}. Boost is now {boost++}");
+				Logging($"Serial Number contains a {numberToLettter[c]} which counts as a {c}. Boost is now {boost++}");
 			}
 		}
 
@@ -436,6 +468,8 @@ public class WeakestLink : MonoBehaviour {
 
 		Contestant currentContestant = currentTurn == Turn.Player ? playerContestant : currentTurn ==
 													  Turn.C1 ? c1 : c2;
+
+		UpdateTurn(false);
 
 		currentContestant.QuestionsAsked++;
 
@@ -456,7 +490,7 @@ public class WeakestLink : MonoBehaviour {
 		if (currentTime <= 0)
 			yield break;
 
-		UpdateQuestionPhase(false);
+		UpdateQuestion(false);
 
 		if (currentTurn != Turn.Player)
 		{
