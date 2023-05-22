@@ -7,7 +7,7 @@ using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
 using static UnityEngine.Debug;
-
+using UnityEngine.UI;
 
 public class WeakestLink : MonoBehaviour {
 
@@ -26,7 +26,7 @@ public class WeakestLink : MonoBehaviour {
 
 	[SerializeField]
 	Material nameDisplayMaterial;
-	
+
 	[SerializeField]
 	Font nameDisplayFont;
 
@@ -65,7 +65,8 @@ public class WeakestLink : MonoBehaviour {
 	float currentTime;
 	bool inQuestionPhase;
 	TextMesh timerTextMesh;
-	TextMesh questionTextMesh;
+	Text questionText;
+	Text answerText;
 	#endregion
 
 
@@ -76,8 +77,8 @@ public class WeakestLink : MonoBehaviour {
 		jsonData = gameObject.GetComponent<JsonReader>();
 
 		//load json data if loaded alreay
-		if(jsonData.json == null)
-        {
+		if (jsonData.json == null)
+		{
 			gameObject.GetComponent<JsonReader>().LoadData();
 		}
 
@@ -88,26 +89,29 @@ public class WeakestLink : MonoBehaviour {
 		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
-        //initalize all varables
-        #region stage1
-        stage1Objects = transform.Find("Skill Check Phase").gameObject;
+		//initalize all varables
+		#region stage1
+		stage1Objects = transform.Find("Skill Check Phase").gameObject;
 		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
 		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
 		stage1NextStageButton = stage1Objects.transform.GetChild(2).gameObject.GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); StartQuestionPhase(); return false;  };
-        #endregion
+		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); StartQuestionPhase(); return false; };
+		#endregion
 
-        #region stage2
-        stage2Objects = transform.Find("Question Phase").gameObject;
+		#region stage2
+		stage2Objects = transform.Find("Question Phase").gameObject;
 		inQuestionPhase = false;
 		GameObject timerGameObject = stage2Objects.transform.GetChild(0).gameObject;
 		timerTextMesh = timerGameObject.GetComponent<TextMesh>();
 
-		GameObject questionGameObject = stage2Objects.transform.GetChild(1).gameObject;
-		questionTextMesh = questionGameObject.GetComponent<TextMesh>();
-        #endregion
+		GameObject questionCanvas = stage2Objects.transform.GetChild(1).gameObject;
+		questionText = questionCanvas.transform.GetChild(0).gameObject.GetComponent<Text>();
+		
+		GameObject answerCanvas = stage2Objects.transform.GetChild(2).gameObject;
+		answerText = answerCanvas.transform.GetChild(0).gameObject.GetComponent<Text>();
+		#endregion
 
-        c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
+		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
 		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont);
 
 		//make sure the right game objects are visible
@@ -115,8 +119,8 @@ public class WeakestLink : MonoBehaviour {
 	}
 
 
-	void Start () {
-        ModuleId = ModuleIdCounter++;
+	void Start() {
+		ModuleId = ModuleIdCounter++;
 
 		SetUpModule();
 
@@ -150,7 +154,7 @@ public class WeakestLink : MonoBehaviour {
 
 	}
 
-	void Update () {
+	void Update() {
 		if (inQuestionPhase)
 		{
 			currentTime -= Time.deltaTime;
@@ -183,12 +187,27 @@ public class WeakestLink : MonoBehaviour {
 
 		Debug.Log(currentTrivia.Question);
 
-		questionTextMesh.text = currentTrivia.Question;
+		questionText.text = currentTrivia.Question;
+		answerText.text = GetLongestAnswer();
 	}
 
 	Trivia GetQuestion()
 	{
+
 		return jsonData.TriviaList[Rnd.Range(0, jsonData.TriviaList.Count)];
+
+
+	}
+
+	string GetLongestAnswer()
+	{ 
+		List<string> a = jsonData.TriviaList.Select(x => string.Join(",", x.AcceptedAnswers.ToArray())).ToList();
+
+		List<string> b = new List<string>();
+
+		a.ForEach(x => b.AddRange(x.Split(',')));
+
+		return b.OrderByDescending(x => x.Length).First();
 	}
 
 	Trivia GetQuestion(Category category)
