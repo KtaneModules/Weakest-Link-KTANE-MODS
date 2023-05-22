@@ -84,7 +84,7 @@ public class WeakestLink : MonoBehaviour {
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	const int timerMax = 60 * 2; // the amount of time the user has to answers qustions in the first stage 
+	const int timerMax = 60 * 3; // the amount of time the user has to answers qustions in the first stage 
 	float currentTime;
 	bool inQuestionPhase;
 	const int TIME_READ = 5; //the amount of time it would take the contestants to read the question 
@@ -216,8 +216,13 @@ public class WeakestLink : MonoBehaviour {
 					}
 
 					else if (keyCode == KeyCode.Space && Input.GetKeyDown(keyCode))
-					{ 
+					{
 						answerText.text += " ";
+					}
+
+					else if (keyCode == KeyCode.Minus && Input.GetKeyDown(keyCode))
+					{
+						answerText.text += "-";
 					}
 
 					else if (Input.GetKeyDown(keyCode))
