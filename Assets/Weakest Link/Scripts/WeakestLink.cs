@@ -304,24 +304,12 @@ public class WeakestLink : MonoBehaviour {
 
 	void UpdateNameColors()
 	{
-		TextMesh[] names = new TextMesh[] { playerTextMesh, contestant1TextMesh, contestant2TextMesh };
-
 		playerTextMesh.color = contestant1TextMesh.color = contestant2TextMesh.color = inactiveColor;
 
-		switch (currentTurn)
-		{
-			case Turn.Player:
-				playerTextMesh.color = Color.white;
-				break;
+		TextMesh[] names = new TextMesh[] { playerTextMesh, contestant1TextMesh, contestant2TextMesh };
 
-			case Turn.C1:
-				contestant1TextMesh.color = Color.white;
-				break;
+		names[(int)currentTurn].color = Color.white;
 
-			case Turn.C2:
-				contestant2TextMesh.color = Color.white;
-				break;
-		}
 	}
 
 	IEnumerator Submit()
@@ -346,10 +334,12 @@ public class WeakestLink : MonoBehaviour {
 		{
 			questionText.color = incorrectColor;
 		}
-
 		
 		answerText.text = "";
 		yield return new WaitForSeconds(2f);
+
+		if (currentTime <= 0)
+			yield break;
 
 		UpdateQuestionPhase(false);
 
@@ -367,17 +357,19 @@ public class WeakestLink : MonoBehaviour {
 				                           currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
 			foreach (char ch in input)
 			{
+				if (currentTime <= 0)
+					yield break;
+
 				answerText.text += "" + ch;
 				yield return new WaitForSeconds(0.1f);
 			}
 
 			yield return new WaitForSeconds(1f);
 
-			if (currentTime > 0)
-			{ 
-				StartCoroutine(Submit());
-			}
+			if (currentTime <= 0)
+				yield break;
 
+			StartCoroutine(Submit());
 		}
 	}
 	Trivia GetQuestion()
