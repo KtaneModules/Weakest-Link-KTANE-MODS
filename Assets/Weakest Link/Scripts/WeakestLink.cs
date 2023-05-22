@@ -84,7 +84,7 @@ public class WeakestLink : MonoBehaviour {
 	GameObject stage2Objects;
 
 	//const int timerMax = 60 * 3; // the amount of time the user has to answers qustions in the first stage 
-	const int timerMax = 60 * 1; // the amount of time the user has to answers qustions in the first stage 
+	const int timerMax = 10; // the amount of time the user has to answers qustions in the first stage 
 
 
 	float currentTime;
@@ -144,11 +144,6 @@ public class WeakestLink : MonoBehaviour {
 		}
 
 		//create constestants
-		int categoryCount = 7;
-		int nameCount = jsonData.ContestantNames.Count;
-
-		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
-		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
 		//initalize all varables
 
@@ -162,8 +157,7 @@ public class WeakestLink : MonoBehaviour {
 		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true); UpdateQuestion(true); return false; };
 		#endregion
 
-		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
-		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont, true);
+		GetNewContestants(false);
 
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
@@ -190,6 +184,7 @@ public class WeakestLink : MonoBehaviour {
 		inEliminationPhase = false;
 		#endregion
 
+
 		//create player
 		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
 		//make sure the right game objects are visible
@@ -210,14 +205,11 @@ public class WeakestLink : MonoBehaviour {
 		if (inQuestionPhase)
 		{
 			currentTime -= Time.deltaTime;
-			timerTextMesh.text = string.Format("{0:00}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+			timerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
 			if (currentTime <= 0f)
 			{
 				inQuestionPhase = false;
-				Logging($"Player Stats: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
-				Logging($"{c1.Name} Stats: {c1.CorrectAnswer}/{c1.QuestionsAsked}");
-				Logging($"{c2.Name} Stats: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
 				GoToNextStage(2);
 
 
@@ -229,6 +221,7 @@ public class WeakestLink : MonoBehaviour {
 				else
 				{
 					GetComponent<KMBombModule>().HandleStrike();
+					GetNewContestants(true);
 					GoToNextStage(0);
 				}
 			}
@@ -309,11 +302,13 @@ public class WeakestLink : MonoBehaviour {
 			case 1:
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(true);
+				Logging("Starting question phase");
 				break;
 
 			case 2:
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(false);
+				Logging("Starting elimination phase");
 				break;
 		}
 	}
@@ -435,7 +430,7 @@ void UpdateNameColors()
 
 	int GetEliminationValue(Contestant contestant, int baseContestantValue)
 	{
-		Logging($"{contestant}'s base elimination value: {baseContestantValue}");
+		Logging($"{contestant.Name}'s base elimination value: {baseContestantValue}");
 
 		int boost = 0;
 
@@ -444,12 +439,14 @@ void UpdateNameColors()
 		{
 			if (serialNumber.Contains(c))
 			{
-				Logging($"Serial Number contains a {c}. Boost is now {boost++}");
+				boost++;
+				Logging($"Serial Number contains a {c}. Boost is now {boost}");
 			}
 
 			else if (numberToLettter.ContainsKey(c) && serialNumber.Contains(numberToLettter[c]))
 			{
-				Logging($"Serial Number contains a {numberToLettter[c]} which counts as a {c}. Boost is now {boost++}");
+				boost++;
+				Logging($"Serial Number contains a {numberToLettter[c]} which counts as a {c}. Boost is now {boost}");
 			}
 		}
 
@@ -512,6 +509,8 @@ void UpdateNameColors()
 			UpdateTurn(false);
 		}
 
+
+
 		if (currentTurn != Turn.Player)
 		{
 			yield return new WaitForSeconds(TIME_READ);
@@ -563,6 +562,24 @@ void UpdateNameColors()
 		a.ForEach(x => b.AddRange(x.Split(',')));
 
 		return b.OrderByDescending(x => x.Length).First();
+	}
+
+	void GetNewContestants(bool updatePlayer)
+	{
+		int categoryCount = 7;
+		int nameCount = jsonData.ContestantNames.Count;
+
+		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
+		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
+
+		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
+		
+		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont, true);
+
+		if (updatePlayer)
+		{
+			playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
+		}
 	}
 
 	void Logging(string s)
