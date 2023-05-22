@@ -48,6 +48,8 @@ public class WeakestLink : MonoBehaviour {
 	[SerializeField]
 	Font nameDisplayFont;
 
+
+	Contestant playerContestant;
 	Category playerCategory; //the skill the player is good at
 
 	string day; // the day of the week
@@ -82,7 +84,7 @@ public class WeakestLink : MonoBehaviour {
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	const int timerMax = 60 * 2; //the amount of time the user has to answers qustions in the first stage 
+	const int timerMax = 60 * 2; // the amount of time the user has to answers qustions in the first stage 
 	float currentTime;
 	bool inQuestionPhase;
 	const int TIME_READ = 5; //the amount of time it would take the contestants to read the question 
@@ -127,7 +129,8 @@ public class WeakestLink : MonoBehaviour {
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
 		//initalize all varables
-		
+
+		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
 
 		#region stage1
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
@@ -137,8 +140,8 @@ public class WeakestLink : MonoBehaviour {
 		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateQuestionPhase(true); return false; };
 		#endregion
 
-		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
-		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont);
+		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
+		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont, true);
 
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
@@ -161,7 +164,8 @@ public class WeakestLink : MonoBehaviour {
 		contestant2TextMesh.text = c2.Name.ToUpper();
 		#endregion
 
-
+		//create player
+		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
 		//make sure the right game objects are visible
 		GoToNextStage(0);
 	}
@@ -169,71 +173,76 @@ public class WeakestLink : MonoBehaviour {
 
 	void Start() {
 		ModuleId = ModuleIdCounter++;
-
 		SetUpModule();
-
-		//get the player's skill
-		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
-
-		switch (day)
-		{
-			case "SUNDAY":
-				playerCategory = Category.History;
-				break;
-			case "MONDAY":
-				playerCategory = Category.KTANE;
-				break;
-			case "TUESDAY":
-				playerCategory = Category.Geography;
-				break;
-			case "WEDNESDAY":
-				playerCategory = Category.Language;
-				break;
-			case "THURSDAY":
-				playerCategory = Category.Wildlife;
-				break;
-			case "FRIDAY":
-				playerCategory = Category.Biology;
-				break;
-			default:
-				playerCategory = Category.Maths;
-				break;
-		}
-
 	}
 
 	void Update() {
 		if (inQuestionPhase)
 		{
 			currentTime -= Time.deltaTime;
-			timerTextMesh.text = $"{(int)currentTime / 60}:{(int)currentTime % 60}";
+			timerTextMesh.text = string.Format("{0:00}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
+			if (currentTime <= 0f)
+			{
+				inQuestionPhase = false;
+				Debug.Log($"Player stats: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
+				Debug.Log($"C1 stats: {c1.CorrectAnswer}/{c1.QuestionsAsked}");
+				Debug.Log($"C2 stats: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
+
+			}
 
 			if (focused && currentTurn == Turn.Player) //keyboard input
 			{
 				string currentText = answerText.text;
 
-				for (int i = 0; i < TypableKeys.Count(); i++)
+				foreach(KeyCode keyCode in TypableKeys)
 				{
-					if (TypableKeys[i] == KeyCode.Backspace && Input.GetKeyDown(TypableKeys[i]))
+					if (keyCode == KeyCode.Backspace && Input.GetKeyDown(keyCode))
 					{
 						if (answerText.text != "")
-						{ 
+						{
 							answerText.text = currentText.Substring(0, currentText.Length - 1);
 						}
 					}
 
-					else if (TypableKeys[i] == KeyCode.Return && Input.GetKeyDown(TypableKeys[i]))
-                    {
+					else if (keyCode == KeyCode.Return && Input.GetKeyDown(keyCode))
+					{
 						StartCoroutine(Submit());
 					}
 
-					else if (Input.GetKeyDown(TypableKeys[i]))
-					{ 
-						answerText.text += TypableKeys[i].ToString().ToUpper();
+					else if ((int)keyCode >= 48 && (int)keyCode <= 57 && Input.GetKeyDown(keyCode))
+					{
+						answerText.text += keyCode.ToString().Substring(5, 1);
+					}
+
+					else if (Input.GetKeyDown(keyCode))
+					{
+						answerText.text += keyCode.ToString().ToUpper();
 					}
 				}
 			}
+
+		}
+	}
+
+	Category GetPlayerSkill()
+	{
+		switch (day)
+		{
+			case "SUNDAY":
+				return Category.History;
+			case "MONDAY":
+				return Category.KTANE;
+			case "TUESDAY":
+				return Category.Geography;
+			case "WEDNESDAY":
+				return Category.Language;
+			case "THURSDAY":
+				return Category.Wildlife;
+			case "FRIDAY":
+				return Category.Biology;
+			default:
+				return Category.Maths;
 		}
 	}
 
@@ -307,25 +316,60 @@ public class WeakestLink : MonoBehaviour {
 
 	IEnumerator Submit()
 	{
+
 		string response = answerText.text;
 
 		string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
 
+		Contestant currentContestant = currentTurn == Turn.Player ? playerContestant : currentTurn ==
+													  Turn.C1 ? c1 : c2;
+
+		currentContestant.QuestionsAsked++;
+
 		if (answers.Contains(response))
 		{
 			questionText.color = correctColor;
+			currentContestant.CorrectAnswer++;
 		}
 
 		else
 		{
 			questionText.color = incorrectColor;
 		}
+
+		
 		answerText.text = "";
 		yield return new WaitForSeconds(2f);
 
 		UpdateQuestionPhase(false);
-	}
 
+		if (currentTurn != Turn.Player)
+		{
+			yield return new WaitForSeconds(TIME_READ);
+
+			Contestant c =  currentTurn == Turn.C1 ? c1 : c2;
+
+			float percentage = currentTrivia.Category == c.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
+
+			bool correctAnswer = Rnd.Range(0f, 1f) < percentage;
+
+			string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() : 
+				                           currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
+			foreach (char ch in input)
+			{
+				answerText.text += "" + ch;
+				yield return new WaitForSeconds(0.1f);
+			}
+
+			yield return new WaitForSeconds(1f);
+
+			if (currentTime > 0)
+			{ 
+				StartCoroutine(Submit());
+			}
+
+		}
+	}
 	Trivia GetQuestion()
 	{
 		return jsonData.TriviaList[Rnd.Range(0, jsonData.TriviaList.Count)];

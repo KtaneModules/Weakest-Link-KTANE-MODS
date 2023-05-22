@@ -25,10 +25,10 @@ public class Contestant {
     public Material NameDisplayMaterial { get; set; }
     public Font NameDisplayFont { get; set; }
 
-    const float REGULAR_RIGHT_CHOICE = .50f; //the percentage the Contestant will answer correctly if they are not skilled in that category
-    const float GOOD_RIGHT_CHOICE = .80f; //the percentage the Contestant will answer correctly if they are skilled in that category
+    public const float REGULAR_RIGHT_CHOICE = .50f; //the percentage the Contestant will answer correctly if they are not skilled in that category
+    public const float GOOD_RIGHT_CHOICE = .80f; //the percentage the Contestant will answer correctly if they are skilled in that category
 
-    public Contestant(string name, Category category, GameObject gameObject, Material handWritingMaterial, Font handWritingFont, Material nameDisplayMaterial, Font nameDisplayFont)
+    public Contestant(string name, Category category, GameObject gameObject, Material handWritingMaterial, Font handWritingFont, Material nameDisplayMaterial, Font nameDisplayFont, bool setFonts)
     {
         Name = name;
         Category = category;
@@ -43,7 +43,10 @@ public class Contestant {
         NameDisplayMaterial = nameDisplayMaterial;
         NameDisplayFont = nameDisplayFont;
 
-        InitalizeContestant();
+        if (setFonts)
+        { 
+            InitalizeContestant();
+        }
     }
 
     public void InitalizeContestant()
