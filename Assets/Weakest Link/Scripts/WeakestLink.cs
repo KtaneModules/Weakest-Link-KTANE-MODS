@@ -18,18 +18,29 @@ public class WeakestLink : MonoBehaviour {
 	public KMBombInfo Bomb;
 	public KMAudio Audio;
 
-	private KeyCode[] TypableKeys =
+	KeyCode[] TypableKeys =
 	{
 		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M,
 		KeyCode.Period, KeyCode.Return, KeyCode.Minus, 
 		KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
 	};
 
+	enum Turn
+	{ 
+		Player,
+		C1,
+		C2
+	};
+
+
 	//variables that will be used in all stages
 	#region Global Variables
 	JsonReader jsonData;
 	Contestant c1;
 	Contestant c2;
+
+	Turn currentTurn = Turn.Player;
+
 
 	[SerializeField]
 	Material nameDisplayMaterial;
@@ -74,9 +85,22 @@ public class WeakestLink : MonoBehaviour {
 	const int timerMax = 60 * 2; //the amount of time the user has to answers qustions in the first stage 
 	float currentTime;
 	bool inQuestionPhase;
+	const int TIME_READ = 5; //the amount of time it would take the contestants to read the question 
+
+	Color inactiveColor = new Color(.55f, .55f, .55f); //the color the player's names will be when it's not their turn
+	Color correctColor = new Color(.38f, .97f, .43f); //the color the qustion will be if the answer is correct
+	Color incorrectColor = new Color(1, 0, 0); //the color the qustion will be if the answer is wrong
+
+
 	TextMesh timerTextMesh;
 	Text questionText;
 	Text answerText;
+
+	TextMesh playerTextMesh;
+	TextMesh contestant1TextMesh;
+	TextMesh contestant2TextMesh;
+
+	Trivia currentTrivia;
 	#endregion
 
 
@@ -103,13 +127,18 @@ public class WeakestLink : MonoBehaviour {
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
 		//initalize all varables
+		
+
 		#region stage1
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
 		contestant1GameObject = stage1Objects.transform.GetChild(0).gameObject;
 		contestant2GameObject = stage1Objects.transform.GetChild(1).gameObject;
 		stage1NextStageButton = stage1Objects.transform.GetChild(2).gameObject.GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); StartQuestionPhase(); return false; };
+		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateQuestionPhase(true); return false; };
 		#endregion
+
+		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
+		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont);
 
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
@@ -122,10 +151,16 @@ public class WeakestLink : MonoBehaviour {
 		
 		GameObject answerCanvas = stage2Objects.transform.GetChild(2).gameObject;
 		answerText = answerCanvas.transform.GetChild(0).gameObject.GetComponent<Text>();
+
+		playerTextMesh = stage2Objects.transform.GetChild(3).gameObject.GetComponent<TextMesh>();
+		contestant1TextMesh = stage2Objects.transform.GetChild(4).gameObject.GetComponent<TextMesh>();
+		contestant2TextMesh = stage2Objects.transform.GetChild(5).gameObject.GetComponent<TextMesh>();
+
+		playerTextMesh.text = "PLAYER";
+		contestant1TextMesh.text = c1.Name.ToUpper();
+		contestant2TextMesh.text = c2.Name.ToUpper();
 		#endregion
 
-		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont);
-		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont);
 
 		//make sure the right game objects are visible
 		GoToNextStage(0);
@@ -174,7 +209,7 @@ public class WeakestLink : MonoBehaviour {
 			timerTextMesh.text = $"{(int)currentTime / 60}:{(int)currentTime % 60}";
 
 
-			if (focused) //keyboard input
+			if (focused && currentTurn == Turn.Player) //keyboard input
 			{
 				string currentText = answerText.text;
 
@@ -190,7 +225,7 @@ public class WeakestLink : MonoBehaviour {
 
 					else if (TypableKeys[i] == KeyCode.Return && Input.GetKeyDown(TypableKeys[i]))
                     {
-						Submit();
+						StartCoroutine(Submit());
 					}
 
 					else if (Input.GetKeyDown(TypableKeys[i]))
@@ -218,12 +253,26 @@ public class WeakestLink : MonoBehaviour {
 		}
 	}
 
-	void StartQuestionPhase()
+	void UpdateQuestionPhase(bool init)
 	{
-		currentTime = timerMax;
-		inQuestionPhase = true;
+		if (init)
+		{
+			currentTurn = Turn.Player;
+			currentTime = timerMax;
+			inQuestionPhase = true;
+		}
 
-		Trivia currentTrivia = GetQuestion();
+		else
+		{ 
+			currentTurn = (Turn)(((int)currentTurn + 1) % 3);
+		}
+
+		UpdateNameColors();
+
+		currentTrivia = GetQuestion();
+
+		questionText.color = Color.white;
+
 
 		questionText.text = currentTrivia.Question;
 
@@ -234,9 +283,47 @@ public class WeakestLink : MonoBehaviour {
 		Debug.Log("Answers: " + string.Join(", ", currentTrivia.AcceptedAnswers.ToArray()));
 	}
 
-	void Submit()
+	void UpdateNameColors()
 	{
+		TextMesh[] names = new TextMesh[] { playerTextMesh, contestant1TextMesh, contestant2TextMesh };
+
+		playerTextMesh.color = contestant1TextMesh.color = contestant2TextMesh.color = inactiveColor;
+
+		switch (currentTurn)
+		{
+			case Turn.Player:
+				playerTextMesh.color = Color.white;
+				break;
+
+			case Turn.C1:
+				contestant1TextMesh.color = Color.white;
+				break;
+
+			case Turn.C2:
+				contestant2TextMesh.color = Color.white;
+				break;
+		}
+	}
+
+	IEnumerator Submit()
+	{
+		string response = answerText.text;
+
+		string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
+
+		if (answers.Contains(response))
+		{
+			questionText.color = correctColor;
+		}
+
+		else
+		{
+			questionText.color = incorrectColor;
+		}
 		answerText.text = "";
+		yield return new WaitForSeconds(2f);
+
+		UpdateQuestionPhase(false);
 	}
 
 	Trivia GetQuestion()
