@@ -99,9 +99,9 @@ public class WeakestLink : MonoBehaviour {
 	Text questionText;
 	Text answerText;
 
-	TextMesh playerTextMesh;
-	TextMesh contestant1TextMesh;
-	TextMesh contestant2TextMesh;
+	Text playerText;
+	Text contestant1Text;
+	Text contestant2Text;
 
 	Trivia currentTrivia;
 
@@ -133,6 +133,8 @@ public class WeakestLink : MonoBehaviour {
 
 	void SetUpModule()
 	{
+
+
 		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
 		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
 
@@ -144,6 +146,8 @@ public class WeakestLink : MonoBehaviour {
 		{
 			gameObject.GetComponent<JsonReader>().LoadData();
 		}
+
+		Debug.Log($"Longest Name {LongestName()}");
 
 		//create constestants
 
@@ -171,13 +175,13 @@ public class WeakestLink : MonoBehaviour {
 		questionText = canvas.transform.Find("Question").gameObject.GetComponent<Text>();
 		answerText = canvas.transform.Find("Answer").gameObject.GetComponent<Text>();
 
-		playerTextMesh = stage2Objects.transform.Find("Player Name").gameObject.GetComponent<TextMesh>();
-		contestant1TextMesh = stage2Objects.transform.Find("Contestant 1 Name").gameObject.GetComponent<TextMesh>();
-		contestant2TextMesh = stage2Objects.transform.Find("Contestant 2 Name").gameObject.GetComponent<TextMesh>();
+		playerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
+		contestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
+		contestant2Text = canvas.transform.Find("Contestant 2").transform.Find("Contestant 2 Name").GetComponent<Text>();
 
-		playerTextMesh.text = "PLAYER";
-		contestant1TextMesh.text = c1.Name.ToUpper();
-		contestant2TextMesh.text = c2.Name.ToUpper();
+		playerText.text = "PLAYER";
+		contestant1Text.text = c1.Name.ToUpper();
+		contestant2Text.text = c2.Name.ToUpper();
 		#endregion
 
 		#region stage3
@@ -231,7 +235,7 @@ public class WeakestLink : MonoBehaviour {
 			{
 				string currentText = answerText.text;
 
-				foreach(KeyCode keyCode in TypableKeys)
+				foreach (KeyCode keyCode in TypableKeys)
 				{
 					if (keyCode == KeyCode.Backspace && Input.GetKeyDown(keyCode))
 					{
@@ -348,18 +352,18 @@ public class WeakestLink : MonoBehaviour {
 		}
 
 		else
-		{ 
+		{
 			currentTurn = (Turn)(((int)currentTurn + 1) % 3);
 		}
 
 		UpdateNameColors();
 	}
 
-void UpdateNameColors()
+	void UpdateNameColors()
 	{
-		playerTextMesh.color = contestant1TextMesh.color = contestant2TextMesh.color = inactiveColor;
+		playerText.color = contestant1Text.color = contestant2Text.color = inactiveColor;
 
-		TextMesh[] names = new TextMesh[] { playerTextMesh, contestant1TextMesh, contestant2TextMesh };
+		Text[] names = new Text[] { playerText, contestant1Text, contestant2Text };
 
 		names[(int)currentTurn].color = Color.white;
 	}
@@ -370,7 +374,7 @@ void UpdateNameColors()
 		//Not answering at least 5 questions or not answering over 50% correctly will lead to a strike
 
 		bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 5;
-		bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer  / playerContestant.QuestionsAsked < .5f;
+		bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked < .5f;
 
 		int playerPercentage = (int)((float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked * 100);
 		int contestant1Percentage = (int)((float)c1.CorrectAnswer / c1.QuestionsAsked * 100);
@@ -476,7 +480,7 @@ void UpdateNameColors()
 													  Turn.C1 ? c1 : c2;
 
 		if (currentTurn != Turn.C2)
-		{ 
+		{
 			UpdateTurn(false);
 			turnChanged = true;
 		}
@@ -522,14 +526,14 @@ void UpdateNameColors()
 		{
 			yield return new WaitForSeconds(TIME_READ);
 
-			Contestant c =  currentTurn == Turn.C1 ? c1 : c2;
+			Contestant c = currentTurn == Turn.C1 ? c1 : c2;
 
 			float percentage = currentTrivia.Category == c.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
 
 			bool correctAnswer = Rnd.Range(0f, 1f) < percentage;
 
-			string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() : 
-				                           currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
+			string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() :
+										   currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
 			foreach (char ch in input)
 			{
 				if (currentTime <= 0)
@@ -580,7 +584,7 @@ void UpdateNameColors()
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
 		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
-		
+
 		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont, true);
 
 		if (updatePlayer)
@@ -592,5 +596,10 @@ void UpdateNameColors()
 	void Logging(string s)
 	{
 		LogFormat($"[The WeakestLink #{ModuleId}] {s}");
+	}
+
+	string LongestName()
+	{
+		return jsonData.ContestantNames.OrderByDescending(x => x.Length).First();
 	}
 }
