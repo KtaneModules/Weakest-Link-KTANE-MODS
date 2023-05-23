@@ -9,7 +9,8 @@ using Rnd = UnityEngine.Random;
 using static UnityEngine.Debug;
 using UnityEngine.UI;
 
-public class WeakestLink : MonoBehaviour {
+public class WeakestLink : MonoBehaviour 
+{
 
 	static int ModuleIdCounter = 1;
 	int ModuleId;
@@ -25,36 +26,30 @@ public class WeakestLink : MonoBehaviour {
 		KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
 	};
 
-	enum Turn
+	enum QuestionPhaseTurn
 	{
 		Player,
 		C1,
 		C2
 	};
 
+	enum MoneyPhaseTurn
+	{ 
+		Player,
+		Conestant
+	}
+
 
 	//variables that will be used in all stages
 	#region Global Variables
-	JsonReader jsonData;
-	Contestant c1;
-	Contestant c2;
 
-	Turn currentTurn = Turn.Player;
-
+	QuestionPhaseTurn questionPhaseCurrentTurn = QuestionPhaseTurn.Player;
 
 	[SerializeField]
 	Material nameDisplayMaterial;
 
 	[SerializeField]
 	Font nameDisplayFont;
-
-
-	Contestant playerContestant;
-
-	string day; // the day of the week
-
-
-	bool focused; //if the module is selected
 
 	//fonts for the questions and the answers
 	[SerializeField]
@@ -68,9 +63,29 @@ public class WeakestLink : MonoBehaviour {
 
 	[SerializeField]
 	List<Font> questionFonts;
+
+	JsonReader jsonData;
+
+	Contestant c1;
+	Contestant c2;
+	Contestant playerContestant;
+
+	string day; // the day of the week
+
+
+	bool focused; //if the module is selected
+
+	const int TIME_READ = 5; //the amount of time it would take the contestants to read the question 
+	float currentTime;
+
+
+	Color inactiveColor = new Color(.55f, .55f, .55f); //the color the player's names will be when it's not their turn
+	Color correctColor = new Color(.38f, .97f, .43f); //the color the qustion will be if the answer is correct
+	Color incorrectColor = new Color(1, 0, 0); //the color the qustion will be if the answer is wrong
+	Trivia currentTrivia;
+
 	#endregion
 
-	//objects for the first stage
 	#region Stage 1 Objects 
 	GameObject stage1Objects;
 
@@ -83,27 +98,21 @@ public class WeakestLink : MonoBehaviour {
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	const int timerMax = 120; // the amount of time the user has to answers qustions in the first stage 
+	
+	const int questionPhaseTimerMax = 1; // the amount of time the user has to answers qustions in the first stage 
+
+	//const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
 
-	float currentTime;
 	bool inQuestionPhase;
-	const int TIME_READ = 5; //the amount of time it would take the contestants to read the question 
+	TextMesh questionPhaseTimerTextMesh;
+	Text questionPhaseQuestionText;
+	Text questionPhaseAnswerText;
 
-	Color inactiveColor = new Color(.55f, .55f, .55f); //the color the player's names will be when it's not their turn
-	Color correctColor = new Color(.38f, .97f, .43f); //the color the qustion will be if the answer is correct
-	Color incorrectColor = new Color(1, 0, 0); //the color the qustion will be if the answer is wrong
+	Text questionPhasePlayerText;
+	Text questionPhaseContestant1Text;
+	Text questionPhaseContestant2Text;
 
-
-	TextMesh timerTextMesh;
-	Text questionText;
-	Text answerText;
-
-	Text playerText;
-	Text contestant1Text;
-	Text contestant2Text;
-
-	Trivia currentTrivia;
 
 
 	Dictionary<char, char> numberToLettter = new Dictionary<char, char>()
@@ -125,7 +134,7 @@ public class WeakestLink : MonoBehaviour {
 
 	GameObject stage3Objects;
 
-	string personToEliminate;
+	Contestant personToEliminate;
 	bool inEliminationPhase;
 
 	Text eliminationText;
@@ -134,11 +143,30 @@ public class WeakestLink : MonoBehaviour {
 
 	#region Stage 4
 	GameObject stage4Objects;
-    #endregion
+	GameObject moneyCanvas;
+	List<GameObject> moneyGameObjects;
+	Text playerDisplay;
+	Text contestantDisplay;
+	GameObject bankGameObject;
+	Button bankButton;
+	bool inMoneyPhase;
+
+	MoneyPhaseTurn moneyPhaseCurrentTurn;
+
+	Text moneyPhaseQuestionText;
+	Text moneyPhaseAnswerText;
+
+	const int moneyPhaseTimerMax = 180; //the starting time for the money phase
+
+	List<Category> categoryList;
+	int categoryCurrentIndex;
+
+	Contestant aliveConestant;
+	#endregion
 
 
 
-    void SetUpModule()
+	void SetUpModule()
 	{
 
 
@@ -166,7 +194,7 @@ public class WeakestLink : MonoBehaviour {
 		contestant1GameObject = stage1Objects.transform.Find("Contestant 1").gameObject;
 		contestant2GameObject = stage1Objects.transform.Find("Contestant 2").gameObject;
 		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").gameObject.GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true); UpdateQuestion(true); return false; };
+		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true, 2); UpdateQuestion(true, 2); return false; };
 		#endregion
 
 		GetNewContestants(false);
@@ -175,19 +203,19 @@ public class WeakestLink : MonoBehaviour {
 		stage2Objects = transform.Find("Question Phase").gameObject;
 		inQuestionPhase = false;
 		GameObject timerGameObject = stage2Objects.transform.Find("Timer").gameObject;
-		timerTextMesh = timerGameObject.GetComponent<TextMesh>();
+		questionPhaseTimerTextMesh = timerGameObject.GetComponent<TextMesh>();
 
 		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
-		questionText = canvas.transform.Find("Question").gameObject.GetComponent<Text>();
-		answerText = canvas.transform.Find("Answer").gameObject.GetComponent<Text>();
+		questionPhaseQuestionText = canvas.transform.Find("Question").gameObject.GetComponent<Text>();
+		questionPhaseAnswerText = canvas.transform.Find("Answer").gameObject.GetComponent<Text>();
 
-		playerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
-		contestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
-		contestant2Text = canvas.transform.Find("Contestant 2").transform.Find("Contestant 2 Name").GetComponent<Text>();
+		questionPhasePlayerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
+		questionPhaseContestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
+		questionPhaseContestant2Text = canvas.transform.Find("Contestant 2").transform.Find("Contestant 2 Name").GetComponent<Text>();
 
-		playerText.text = "PLAYER";
-		contestant1Text.text = c1.Name.ToUpper();
-		contestant2Text.text = c2.Name.ToUpper();
+		questionPhasePlayerText.text = "PLAYER";
+		questionPhaseContestant1Text.text = c1.Name.ToUpper();
+		questionPhaseContestant2Text.text = c2.Name.ToUpper();
 		#endregion
 
 		#region stage3
@@ -197,11 +225,45 @@ public class WeakestLink : MonoBehaviour {
 		#endregion
 
 		#region stage4
-		stage4Objects = transform.Find("Money Phase").gameObject;
-        #endregion
+		inMoneyPhase = false;
 
-        //create player
-        playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
+		stage4Objects = transform.Find("Money Phase").gameObject;
+
+		moneyCanvas = stage4Objects.transform.Find("Money Canvas").gameObject;
+
+		GameObject money = moneyCanvas.transform.Find("Money").gameObject;
+
+		bankGameObject = money.transform.Find("Button").gameObject;
+
+		bankButton = bankGameObject.GetComponent<Button>();
+
+		moneyGameObjects = new List<GameObject>()
+		{
+			money.transform.Find("20 Image").gameObject,
+			money.transform.Find("50 Image").gameObject,
+			money.transform.Find("100 Image").gameObject,
+			money.transform.Find("200 Image").gameObject,
+			money.transform.Find("300 Image").gameObject,
+			money.transform.Find("450 Image").gameObject,
+			money.transform.Find("600 Image").gameObject,
+			money.transform.Find("800 Image").gameObject,
+			money.transform.Find("1000 Image").gameObject,
+
+		};
+
+		GameObject c = stage4Objects.transform.Find("Canvas").gameObject;
+
+		moneyPhaseQuestionText = c.transform.Find("Question").GetComponent<Text>();
+		moneyPhaseAnswerText = c.transform.Find("Answer").GetComponent<Text>();
+
+		playerDisplay = c.transform.Find("Player").Find("Player Name").gameObject.GetComponent<Text>();
+		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").gameObject.GetComponent<Text>();
+
+
+		#endregion
+
+		//create player
+		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
 		//make sure the right game objects are visible
 		GoToNextStage(0);
 
@@ -220,7 +282,7 @@ public class WeakestLink : MonoBehaviour {
 		if (inQuestionPhase)
 		{
 			currentTime -= Time.deltaTime;
-			timerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+			questionPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
 			if (currentTime <= 0f)
 			{
@@ -241,15 +303,22 @@ public class WeakestLink : MonoBehaviour {
 				}
 			}
 
-			if (focused && currentTurn == Turn.Player) //keyboard input
+			if (focused && questionPhaseCurrentTurn == QuestionPhaseTurn.Player) //keyboard input
 			{
 				GetKeyboardInput(2);
 			}
 		}
 
-		else if (focused && inEliminationPhase)
+		else if (focused)
 		{
-			GetKeyboardInput(3);
+			if (inEliminationPhase)
+			{ 
+				GetKeyboardInput(3);
+			}
+			else if (inMoneyPhase)
+			{
+				GetKeyboardInput(4);
+			}
 		}
 	}
 
@@ -310,57 +379,116 @@ public class WeakestLink : MonoBehaviour {
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
-
+				UpdateQuestion(true, 4);
+				UpdateTurn(true, 4);
 
 				Logging("Starting money phase");
-
-
 				break;
 		}
 	}
 
-	void UpdateQuestion(bool init)
+	void UpdateQuestion(bool init, int stage)
 	{
-		if (init)
+		if (stage == 2)
 		{
-			currentTime = timerMax;
-			inQuestionPhase = true;
+			if (init)
+			{
+				currentTime = questionPhaseTimerMax;
+				inQuestionPhase = true;
+			}
+
+			currentTrivia = GetQuestion();
+
+			questionPhaseQuestionText.color = Color.white;
+
+			questionPhaseQuestionText.text = currentTrivia.Question;
+
+			questionPhaseAnswerText.text = "";
 		}
 
-		currentTrivia = GetQuestion();
+		else if (stage == 4)
+		{
+			if (init)
+			{
+				currentTime = moneyPhaseTimerMax;
+				inMoneyPhase = true;
 
-		questionText.color = Color.white;
+				categoryCurrentIndex = 0;
+				categoryList = GetCategoryList();
+			}
 
+			else
+			{
+				categoryCurrentIndex = (categoryCurrentIndex + 1) % categoryList.Count;
+			}
 
-		questionText.text = currentTrivia.Question;
+			currentTrivia = GetQuestion(categoryList[categoryCurrentIndex]);
 
-		answerText.text = "";
+			moneyPhaseQuestionText.color = Color.white;
+
+			moneyPhaseQuestionText.text = currentTrivia.Question;
+
+			moneyPhaseAnswerText.text = "";
+
+		}
 
 		Debug.Log("Answers: " + string.Join(", ", currentTrivia.AcceptedAnswers.ToArray()));
 	}
 
-	void UpdateTurn(bool init)
+	void UpdateTurn(bool init, int stage)
 	{
-		if (init)
+		if (stage == 2)
 		{
-			currentTurn = Turn.Player;
+			if (init)
+			{
+				questionPhaseCurrentTurn = QuestionPhaseTurn.Player;
+			}
+
+			else
+			{
+				questionPhaseCurrentTurn = (QuestionPhaseTurn)(((int)questionPhaseCurrentTurn + 1) % 3);
+			}
+
 		}
 
-		else
+		else if (stage == 4)
 		{
-			currentTurn = (Turn)(((int)currentTurn + 1) % 3);
+			if (init)
+			{
+				moneyPhaseCurrentTurn = MoneyPhaseTurn.Player;
+				aliveConestant = c1.Eliminated ? c2 : c1;
+
+				contestantDisplay.text = aliveConestant.Name.ToUpper();
+			}
+
+			else
+			{
+				moneyPhaseCurrentTurn = (MoneyPhaseTurn)(((int)questionPhaseCurrentTurn + 1) % 2);
+			}
 		}
 
-		UpdateNameColors();
+		UpdateNameColors(stage);
 	}
 
-	void UpdateNameColors()
+	void UpdateNameColors(int stage)
 	{
-		playerText.color = contestant1Text.color = contestant2Text.color = inactiveColor;
+		if (stage == 2)
+		{
+			questionPhasePlayerText.color = questionPhaseContestant1Text.color = questionPhaseContestant2Text.color = inactiveColor;
 
-		Text[] names = new Text[] { playerText, contestant1Text, contestant2Text };
+			Text[] names = new Text[] { questionPhasePlayerText, questionPhaseContestant1Text, questionPhaseContestant2Text };
 
-		names[(int)currentTurn].color = Color.white;
+			names[(int)questionPhaseCurrentTurn].color = Color.white;
+		}
+
+		else if (stage == 4)
+		{
+			playerDisplay.color = contestantDisplay.color = inactiveColor;
+
+			Text[] names = new Text[] { playerDisplay, contestantDisplay};
+
+			names[(int)moneyPhaseCurrentTurn].color = Color.white;
+		}
 	}
 
 	//returns true if the player got enough questions right
@@ -368,8 +496,12 @@ public class WeakestLink : MonoBehaviour {
 	{
 		//Not answering at least 5 questions or not answering over 50% correctly will lead to a strike
 
-		bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 5;
-		bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked < .5f;
+		//debug code to move on to the next stage
+		bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 0;
+		bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked < 0f;
+
+		//bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 5;
+		//bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked < .5f;
 
 		int playerPercentage = (int)((float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked * 100);
 		int contestant1Percentage = (int)((float)c1.CorrectAnswer / c1.QuestionsAsked * 100);
@@ -392,11 +524,9 @@ public class WeakestLink : MonoBehaviour {
 			//If only one contestant has the same skill as you, type in their name to eliminate them.
 			if (c1.Category != c2.Category && (c1.Category == playerContestant.Category || c2.Category == playerContestant.Category))
 			{
-				Contestant c = c1.Category == playerContestant.Category ? c1 : c2;
+				personToEliminate = c1.Category == playerContestant.Category ? c1 : c2;
 
-				Logging($"{c.Name} shares the same category as you. Eliminate them");
-
-				personToEliminate = c.Name;
+				Logging($"{personToEliminate.Name} shares the same category as you. Eliminate them");
 			}
 
 			else
@@ -411,26 +541,27 @@ public class WeakestLink : MonoBehaviour {
 
 					Array.Sort(a, (x, y) => String.Compare(x.Name, y.Name));
 
-					personToEliminate = a[0].Name;
+					personToEliminate = a[0];
 
-					Logging($"Elimation values are the same. {personToEliminate} comes first alphabetically. Eliminate them");
+					Logging($"Elimation values are the same. {personToEliminate.Name} comes first alphabetically. Eliminate them");
 				}
 
 				else
 				{
 					if (contestant1Percentage > contestant2Percentage)
 					{
-						personToEliminate = c2.Name;
+						personToEliminate = c2;
 					}
 
 					else
 					{
-						personToEliminate = c1.Name;
+						personToEliminate = c1;
 					}
 
-					Logging($"{personToEliminate} has the lower elimination value. Eliminate them");
+					Logging($"{personToEliminate.Name} has the lower elimination value. Eliminate them");
 				}
 			}
+
 			inEliminationPhase = true;
 			return true;
 		}
@@ -471,16 +602,16 @@ public class WeakestLink : MonoBehaviour {
 		{
 			bool turnChanged = false;
 
-			string response = answerText.text;
+			string response = questionPhaseAnswerText.text;
 
 			string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
 
-			Contestant currentContestant = currentTurn == Turn.Player ? playerContestant : currentTurn ==
-														  Turn.C1 ? c1 : c2;
+			Contestant currentContestant = questionPhaseCurrentTurn == QuestionPhaseTurn.Player ? playerContestant : questionPhaseCurrentTurn ==
+														  QuestionPhaseTurn.C1 ? c1 : c2;
 
-			if (currentTurn != Turn.C2)
+			if (questionPhaseCurrentTurn != QuestionPhaseTurn.C2)
 			{
-				UpdateTurn(false);
+				UpdateTurn(false, 2);
 				turnChanged = true;
 			}
 
@@ -490,14 +621,14 @@ public class WeakestLink : MonoBehaviour {
 
 			if (answers.Contains(response))
 			{
-				questionText.color = correctColor;
+				questionPhaseQuestionText.color = correctColor;
 				currentContestant.CorrectAnswer++;
 				log += "which is correct";
 			}
 
 			else
 			{
-				questionText.color = incorrectColor;
+				questionPhaseQuestionText.color = incorrectColor;
 				log += "which is incorrect";
 			}
 
@@ -506,26 +637,24 @@ public class WeakestLink : MonoBehaviour {
 
 			Logging(log);
 
-			answerText.text = "";
+			questionPhaseAnswerText.text = "";
 			yield return new WaitForSeconds(2f);
 
 			if (currentTime <= 0)
 				yield break;
 
-			UpdateQuestion(false);
+			UpdateQuestion(false, 2);
 
-			if (!turnChanged && currentTurn == Turn.C2)
+			if (!turnChanged && questionPhaseCurrentTurn == QuestionPhaseTurn.C2)
 			{
-				UpdateTurn(false);
+				UpdateTurn(false, 2);
 			}
 
-
-
-			if (currentTurn != Turn.Player)
+			if (questionPhaseCurrentTurn != QuestionPhaseTurn.Player)
 			{
 				yield return new WaitForSeconds(TIME_READ);
 
-				Contestant c = currentTurn == Turn.C1 ? c1 : c2;
+				Contestant c = questionPhaseCurrentTurn == QuestionPhaseTurn.C1 ? c1 : c2;
 
 				float percentage = currentTrivia.Category == c.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
 
@@ -538,7 +667,7 @@ public class WeakestLink : MonoBehaviour {
 					if (currentTime <= 0)
 						yield break;
 
-					answerText.text += "" + ch;
+					questionPhaseAnswerText.text += "" + ch;
 					yield return new WaitForSeconds(0.1f);
 				}
 
@@ -554,8 +683,9 @@ public class WeakestLink : MonoBehaviour {
 		else if (stage == 3)
 		{
 			string log;
-			if (eliminationText.text == personToEliminate.ToUpper())
+			if (eliminationText.text == personToEliminate.Name.ToUpper())
 			{
+				personToEliminate.Eliminated = true;
 				log = $"You entered \"{eliminationText.text}\". Which is correct.";
 				GoToNextStage(3);
 			}
@@ -581,7 +711,28 @@ public class WeakestLink : MonoBehaviour {
 	{
 		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
 
-		return a[Rnd.Range(0, jsonData.TriviaList.Count)];
+		return a[Rnd.Range(0, a.Count)];
+	}
+
+	List<Category> GetCategoryList()
+	{
+		switch (day)
+		{
+			case "SUNDAY":
+				return new List<Category>() { Category.Maths, Category.KTANE, Category.Wildlife, Category.Biology, Category.History, Category.Geography, Category.Language };
+			case "MONDAY":
+				return new List<Category>() { Category.Geography, Category.Wildlife, Category.KTANE, Category.History, Category.Language, Category.Biology, Category.Maths };
+			case "TUESDAY":
+				return new List<Category>() { Category.Biology, Category.History, Category.Maths, Category.KTANE, Category.Geography, Category.Language, Category.Wildlife };
+			case "WEDNESDAY":
+				return new List<Category>() { Category.Wildlife, Category.Maths, Category.History, Category.Geography, Category.Language, Category.KTANE, Category.Biology };
+			case "THURSDAY":
+				return new List<Category>() { Category.Maths, Category.KTANE, Category.Wildlife, Category.Biology, Category.Language, Category.History, Category.Geography };
+			case "FRIDAY":
+				return new List<Category>() { Category.KTANE, Category.Wildlife, Category.Maths, Category.Geography, Category.Language, Category.Biology, Category.History };
+			default:
+				return new List<Category>() { Category.Maths, Category.Wildlife, Category.Biology, Category.History, Category.Language, Category.KTANE, Category.Geography };
+		}
 	}
 
 	//debug function used to make sure font was big enough for answer
@@ -621,7 +772,7 @@ public class WeakestLink : MonoBehaviour {
 
 	void GetKeyboardInput(int stage)
 	{
-		string currentText = stage == 2 ? answerText.text : eliminationText.text;
+		string currentText = stage == 2 ? questionPhaseAnswerText.text : stage == 3 ? eliminationText.text : moneyPhaseAnswerText.text;
 
 		foreach (KeyCode keyCode in TypableKeys)
 		{
@@ -629,14 +780,21 @@ public class WeakestLink : MonoBehaviour {
 			{
 				if (currentText != "")
 				{
+					string newText = currentText.Substring(0, currentText.Length - 1);
+
 					if (stage == 2)
 					{
-						answerText.text = currentText.Substring(0, currentText.Length - 1);
+						questionPhaseAnswerText.text = newText;
+					}
+
+					else if (stage == 3)
+					{
+						eliminationText.text = newText;
 					}
 
 					else
 					{
-						eliminationText.text = currentText.Substring(0, currentText.Length - 1);
+						moneyPhaseAnswerText.text = newText;
 					}
 				}
 			}
@@ -649,13 +807,20 @@ public class WeakestLink : MonoBehaviour {
 
 			else if ((int)keyCode >= 48 && (int)keyCode <= 57 && Input.GetKeyDown(keyCode))
 			{
+				string newText = keyCode.ToString().Substring(5, 1);
+
 				if (stage == 2)
 				{
-					answerText.text += keyCode.ToString().Substring(5, 1);
+					questionPhaseAnswerText.text += newText;
 				}
-				else
+				else if (stage == 3)
 				{
-					eliminationText.text = keyCode.ToString().Substring(5, 1);
+					eliminationText.text = newText;
+				}
+
+				else
+				{ 
+					moneyPhaseAnswerText.text = newText;
 				}
 			}
 
@@ -663,11 +828,16 @@ public class WeakestLink : MonoBehaviour {
 			{
 				if (stage == 2)
 				{
-					answerText.text += " ";
+					questionPhaseAnswerText.text += " ";
 				}
-				else
+				else if (stage == 3)
 				{
 					eliminationText.text += " ";
+				}
+
+				else
+				{ 
+					moneyPhaseAnswerText.text += " ";
 				}
 			}
 
@@ -675,23 +845,35 @@ public class WeakestLink : MonoBehaviour {
 			{
 				if (stage == 2)
 				{
-					answerText.text += "-";
+					questionPhaseAnswerText.text += "-";
 				}
-				else
+				else if (stage == 3)
 				{
 					eliminationText.text += "-";
+				}
+
+				else
+				{ 
+					moneyPhaseAnswerText.text += "-";
 				}
 			}
 
 			else if (Input.GetKeyDown(keyCode))
 			{
+				string newString = keyCode.ToString().ToUpper();
+
 				if (stage == 2)
 				{
-					answerText.text += keyCode.ToString().ToUpper();
+					questionPhaseAnswerText.text += newString;
 				}
-				else
+				else if (stage == 3)
 				{
-					eliminationText.text += keyCode.ToString().ToUpper();
+					eliminationText.text += newString;
+				}
+
+				else
+				{ 
+					moneyPhaseAnswerText.text += newString;
 				}
 			}
 		}

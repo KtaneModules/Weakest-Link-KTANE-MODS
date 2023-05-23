@@ -27,6 +27,8 @@ public class Contestant {
     public const float REGULAR_RIGHT_CHOICE = .50f; //the percentage the Contestant will answer correctly if they are not skilled in that category
     public const float GOOD_RIGHT_CHOICE = .80f; //the percentage the Contestant will answer correctly if they are skilled in that category
 
+    public bool Eliminated { get; set; }
+
     public Contestant(string name, Category category, GameObject gameObject, Material handWritingMaterial, Font handWritingFont, Material nameDisplayMaterial, Font nameDisplayFont, bool setFonts)
     {
         Name = name;
@@ -36,6 +38,8 @@ public class Contestant {
         WrongNum = 0;
         CorrectAnswer = 0;
         QuestionsAsked = 0;
+
+        Eliminated = false;
 
         HandWritingMaterial = handWritingMaterial;
         HandWritingFont = handWritingFont;
