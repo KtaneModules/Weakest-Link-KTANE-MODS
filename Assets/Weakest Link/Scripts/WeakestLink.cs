@@ -128,6 +128,8 @@ public class WeakestLink : MonoBehaviour {
 	string personToEliminate;
 	bool inEliminationPhase;
 
+	Text eliminationText;
+
 	#endregion
 
 
@@ -147,7 +149,6 @@ public class WeakestLink : MonoBehaviour {
 			gameObject.GetComponent<JsonReader>().LoadData();
 		}
 
-		Debug.Log($"Longest Name {LongestName()}");
 
 		//create constestants
 
@@ -187,6 +188,7 @@ public class WeakestLink : MonoBehaviour {
 		#region stage3
 		inEliminationPhase = false;
 		stage3Objects = transform.Find("Elimination Phase").gameObject;
+		eliminationText = stage3Objects.transform.Find("Canvas").transform.Find("Elimination Name").GetComponent<Text>();
 		#endregion
 
 
@@ -233,45 +235,13 @@ public class WeakestLink : MonoBehaviour {
 
 			if (focused && currentTurn == Turn.Player) //keyboard input
 			{
-				string currentText = answerText.text;
-
-				foreach (KeyCode keyCode in TypableKeys)
-				{
-					if (keyCode == KeyCode.Backspace && Input.GetKeyDown(keyCode))
-					{
-						if (answerText.text != "")
-						{
-							answerText.text = currentText.Substring(0, currentText.Length - 1);
-						}
-					}
-
-					else if (keyCode == KeyCode.Return && Input.GetKeyDown(keyCode))
-					{
-						StartCoroutine(Submit());
-					}
-
-					else if ((int)keyCode >= 48 && (int)keyCode <= 57 && Input.GetKeyDown(keyCode))
-					{
-						answerText.text += keyCode.ToString().Substring(5, 1);
-					}
-
-					else if (keyCode == KeyCode.Space && Input.GetKeyDown(keyCode))
-					{
-						answerText.text += " ";
-					}
-
-					else if (keyCode == KeyCode.Minus && Input.GetKeyDown(keyCode))
-					{
-						answerText.text += "-";
-					}
-
-					else if (Input.GetKeyDown(keyCode))
-					{
-						answerText.text += keyCode.ToString().ToUpper();
-					}
-				}
+				GetKeyboardInput(2);
 			}
+		}
 
+		else if (focused && inEliminationPhase)
+		{
+			GetKeyboardInput(3);
 		}
 	}
 
@@ -318,7 +288,7 @@ public class WeakestLink : MonoBehaviour {
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(true);
-
+				eliminationText.text = "";
 				Logging("Starting elimination phase");
 				break;
 		}
@@ -468,88 +438,92 @@ public class WeakestLink : MonoBehaviour {
 		return baseContestantValue;
 	}
 
-	IEnumerator Submit()
+	IEnumerator Submit(int stage)
 	{
-		bool turnChanged = false;
-
-		string response = answerText.text;
-
-		string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
-
-		Contestant currentContestant = currentTurn == Turn.Player ? playerContestant : currentTurn ==
-													  Turn.C1 ? c1 : c2;
-
-		if (currentTurn != Turn.C2)
+		if (stage == 2)
 		{
-			UpdateTurn(false);
-			turnChanged = true;
-		}
+			bool turnChanged = false;
 
-		string log = $"Question: \"{currentTrivia.Question}\". {(currentContestant.Name == "" ? "You" : currentContestant.Name)} answered \"{response}\", ";
+			string response = answerText.text;
 
-		currentContestant.QuestionsAsked++;
+			string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
 
-		if (answers.Contains(response))
-		{
-			questionText.color = correctColor;
-			currentContestant.CorrectAnswer++;
-			log += "which is correct";
-		}
+			Contestant currentContestant = currentTurn == Turn.Player ? playerContestant : currentTurn ==
+														  Turn.C1 ? c1 : c2;
 
-		else
-		{
-			questionText.color = incorrectColor;
-			log += "which is incorrect";
-		}
-
-
-		log += $". Ratio is now ({currentContestant.CorrectAnswer}/{currentContestant.QuestionsAsked})";
-
-		Logging(log);
-
-		answerText.text = "";
-		yield return new WaitForSeconds(2f);
-
-		if (currentTime <= 0)
-			yield break;
-
-		UpdateQuestion(false);
-
-		if (!turnChanged && currentTurn == Turn.C2)
-		{
-			UpdateTurn(false);
-		}
-
-
-
-		if (currentTurn != Turn.Player)
-		{
-			yield return new WaitForSeconds(TIME_READ);
-
-			Contestant c = currentTurn == Turn.C1 ? c1 : c2;
-
-			float percentage = currentTrivia.Category == c.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
-
-			bool correctAnswer = Rnd.Range(0f, 1f) < percentage;
-
-			string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() :
-										   currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
-			foreach (char ch in input)
+			if (currentTurn != Turn.C2)
 			{
-				if (currentTime <= 0)
-					yield break;
-
-				answerText.text += "" + ch;
-				yield return new WaitForSeconds(0.1f);
+				UpdateTurn(false);
+				turnChanged = true;
 			}
 
-			yield return new WaitForSeconds(1f);
+			string log = $"Question: \"{currentTrivia.Question}\". {(currentContestant.Name == "" ? "You" : currentContestant.Name)} answered \"{response}\", ";
+
+			currentContestant.QuestionsAsked++;
+
+			if (answers.Contains(response))
+			{
+				questionText.color = correctColor;
+				currentContestant.CorrectAnswer++;
+				log += "which is correct";
+			}
+
+			else
+			{
+				questionText.color = incorrectColor;
+				log += "which is incorrect";
+			}
+
+
+			log += $". Ratio is now ({currentContestant.CorrectAnswer}/{currentContestant.QuestionsAsked})";
+
+			Logging(log);
+
+			answerText.text = "";
+			yield return new WaitForSeconds(2f);
 
 			if (currentTime <= 0)
 				yield break;
 
-			StartCoroutine(Submit());
+			UpdateQuestion(false);
+
+			if (!turnChanged && currentTurn == Turn.C2)
+			{
+				UpdateTurn(false);
+			}
+
+
+
+			if (currentTurn != Turn.Player)
+			{
+				yield return new WaitForSeconds(TIME_READ);
+
+				Contestant c = currentTurn == Turn.C1 ? c1 : c2;
+
+				float percentage = currentTrivia.Category == c.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
+
+				bool correctAnswer = Rnd.Range(0f, 1f) < percentage;
+
+				string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() :
+											   currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
+				foreach (char ch in input)
+				{
+					if (currentTime <= 0)
+						yield break;
+
+					answerText.text += "" + ch;
+					yield return new WaitForSeconds(0.1f);
+				}
+
+				yield return new WaitForSeconds(1f);
+
+				if (currentTime <= 0)
+					yield break;
+
+				StartCoroutine(Submit(2));
+			}
 		}
+		
 	}
 	Trivia GetQuestion()
 	{
@@ -598,8 +572,79 @@ public class WeakestLink : MonoBehaviour {
 		LogFormat($"[The WeakestLink #{ModuleId}] {s}");
 	}
 
-	string LongestName()
+	void GetKeyboardInput(int stage)
 	{
-		return jsonData.ContestantNames.OrderByDescending(x => x.Length).First();
+		string currentText = stage == 2 ? answerText.text : eliminationText.text;
+
+		foreach (KeyCode keyCode in TypableKeys)
+		{
+			if (keyCode == KeyCode.Backspace && Input.GetKeyDown(keyCode) && currentText != "")
+			{
+				if (stage == 2)
+				{
+					answerText.text = currentText.Substring(0, currentText.Length - 1);
+
+				}
+
+				else
+				{
+					eliminationText.text = currentText.Substring(0, currentText.Length - 1);
+				}
+			}
+
+			else if (keyCode == KeyCode.Return && Input.GetKeyDown(keyCode))
+			{
+					
+				StartCoroutine(Submit(stage));
+			}
+
+			else if ((int)keyCode >= 48 && (int)keyCode <= 57 && Input.GetKeyDown(keyCode))
+			{
+				if (stage == 2)
+				{
+					answerText.text += keyCode.ToString().Substring(5, 1);
+				}
+				else
+				{
+					eliminationText.text = keyCode.ToString().Substring(5, 1);
+				}
+			}
+
+			else if (keyCode == KeyCode.Space && Input.GetKeyDown(keyCode))
+			{
+				if (stage == 2)
+				{
+					answerText.text += " ";
+				}
+				else
+				{
+					eliminationText.text += " ";
+				}
+			}
+
+			else if (keyCode == KeyCode.Minus && Input.GetKeyDown(keyCode))
+			{
+				if (stage == 2)
+				{
+					answerText.text += "-";
+				}
+				else
+				{
+					eliminationText.text += "-";
+				}
+			}
+
+			else if (Input.GetKeyDown(keyCode))
+			{
+				if (stage == 2)
+				{
+					answerText.text += keyCode.ToString().ToUpper();
+				}
+				else
+				{
+					eliminationText.text += keyCode.ToString().ToUpper();
+				}
+			}
+		}
 	}
 }
