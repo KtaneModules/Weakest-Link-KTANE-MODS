@@ -132,8 +132,13 @@ public class WeakestLink : MonoBehaviour {
 
 	#endregion
 
+	#region Stage 4
+	GameObject stage4Objects;
+    #endregion
 
-	void SetUpModule()
+
+
+    void SetUpModule()
 	{
 
 
@@ -191,9 +196,12 @@ public class WeakestLink : MonoBehaviour {
 		eliminationText = stage3Objects.transform.Find("Canvas").transform.Find("Elimination Name").GetComponent<Text>();
 		#endregion
 
+		#region stage4
+		stage4Objects = transform.Find("Money Phase").gameObject;
+        #endregion
 
-		//create player
-		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
+        //create player
+        playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
 		//make sure the right game objects are visible
 		GoToNextStage(0);
 
@@ -274,12 +282,14 @@ public class WeakestLink : MonoBehaviour {
 				stage1Objects.SetActive(true);
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
+				stage4Objects.SetActive(false);
 
 				break;
 			case 1:
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(true);
 				stage3Objects.SetActive(false);
+				stage4Objects.SetActive(false);
 
 				Logging("Starting question phase");
 				break;
@@ -288,8 +298,20 @@ public class WeakestLink : MonoBehaviour {
 				stage1Objects.SetActive(false);
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(true);
+				stage4Objects.SetActive(false);
+
 				eliminationText.text = "";
+
 				Logging("Starting elimination phase");
+				break;
+
+			case 3:
+				stage1Objects.SetActive(false);
+				stage2Objects.SetActive(false);
+				stage3Objects.SetActive(false);
+				stage4Objects.SetActive(true);
+
+				Logging("Starting money phase");
 				break;
 		}
 	}
@@ -370,6 +392,8 @@ public class WeakestLink : MonoBehaviour {
 				Contestant c = c1.Category == playerContestant.Category ? c1 : c2;
 
 				Logging($"{c.Name} shares the same category as you. Eliminate them");
+
+				personToEliminate = c.Name;
 			}
 
 			else
@@ -475,7 +499,7 @@ public class WeakestLink : MonoBehaviour {
 			}
 
 
-			log += $". Ratio is now ({currentContestant.CorrectAnswer}/{currentContestant.QuestionsAsked})";
+			log += $". Ratio is now {currentContestant.CorrectAnswer}/{currentContestant.QuestionsAsked}";
 
 			Logging(log);
 
@@ -523,8 +547,28 @@ public class WeakestLink : MonoBehaviour {
 				StartCoroutine(Submit(2));
 			}
 		}
-		
+
+		else if (stage == 3)
+		{
+			string log;
+			if (eliminationText.text == personToEliminate.ToUpper())
+			{
+				log = $"You entered \"{eliminationText.text}\". Which is correct.";
+				GoToNextStage(3);
+			}
+
+			else
+			{
+				log = $"Strike! You entered \"{eliminationText.text}\".";
+				GetComponent<KMBombModule>().HandleStrike();
+				GoToNextStage(0);
+				GetNewContestants(true);
+			}
+
+			Logging(log);
+		}
 	}
+
 	Trivia GetQuestion()
 	{
 		return jsonData.TriviaList[Rnd.Range(0, jsonData.TriviaList.Count)];
@@ -569,7 +613,7 @@ public class WeakestLink : MonoBehaviour {
 
 	void Logging(string s)
 	{
-		LogFormat($"[The WeakestLink #{ModuleId}] {s}");
+		LogFormat($"[The Weakest Link #{ModuleId}] {s}");
 	}
 
 	void GetKeyboardInput(int stage)
@@ -578,17 +622,19 @@ public class WeakestLink : MonoBehaviour {
 
 		foreach (KeyCode keyCode in TypableKeys)
 		{
-			if (keyCode == KeyCode.Backspace && Input.GetKeyDown(keyCode) && currentText != "")
+			if (keyCode == KeyCode.Backspace && Input.GetKeyDown(keyCode))
 			{
-				if (stage == 2)
+				if (currentText != "")
 				{
-					answerText.text = currentText.Substring(0, currentText.Length - 1);
+					if (stage == 2)
+					{
+						answerText.text = currentText.Substring(0, currentText.Length - 1);
+					}
 
-				}
-
-				else
-				{
-					eliminationText.text = currentText.Substring(0, currentText.Length - 1);
+					else
+					{
+						eliminationText.text = currentText.Substring(0, currentText.Length - 1);
+					}
 				}
 			}
 
