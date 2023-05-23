@@ -311,7 +311,10 @@ public class WeakestLink : MonoBehaviour {
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
 
+
 				Logging("Starting money phase");
+
+
 				break;
 		}
 	}
