@@ -148,8 +148,8 @@ public class WeakestLink : MonoBehaviour
 	int currentMoneyIndex;
 	Text playerDisplay;
 	Text contestantDisplay;
-	GameObject bankGameObject;
-	Button bankButton;
+	KMSelectable bankGameObject;
+	TextMesh bankText;
 	bool inMoneyPhase;
 
 	MoneyPhaseTurn moneyPhaseCurrentTurn;
@@ -164,10 +164,8 @@ public class WeakestLink : MonoBehaviour
 
 	Contestant aliveConestant;
 
-	TextMesh moneyPhaseTextMesh;
+	TextMesh moneyPhaseTimerTextMesh;
 	#endregion
-
-
 
 	void SetUpModule()
 	{
@@ -234,9 +232,7 @@ public class WeakestLink : MonoBehaviour
 
 		GameObject money = moneyCanvas.transform.Find("Money").gameObject;
 
-		bankGameObject = money.transform.Find("Button").gameObject;
-
-		bankButton = bankGameObject.GetComponent<Button>();
+		bankGameObject = money.transform.Find("Bank Button").gameObject.GetComponent<KMSelectable>();
 
 		moneyGameObjects = new List<KeyValuePair<int, GameObject>>()
 		{
@@ -260,7 +256,10 @@ public class WeakestLink : MonoBehaviour
 		playerDisplay = c.transform.Find("Player").Find("Player Name").gameObject.GetComponent<Text>();
 		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").gameObject.GetComponent<Text>();
 
-		moneyPhaseTextMesh = stage4Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
+		moneyPhaseTimerTextMesh = stage4Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
+
+		bankText = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
+
 		#endregion
 
 		//create player
@@ -313,7 +312,7 @@ public class WeakestLink : MonoBehaviour
 		else if (inMoneyPhase)
 		{
 			currentTime -= Time.deltaTime;
-			moneyPhaseTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+			moneyPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
 			if (focused)
 			{ 
@@ -384,6 +383,7 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
+				bankText.text = "£0";
 				Logging("Starting money phase");
 				UpdateQuestion(true, 4);
 				UpdateTurn(true, 4);
@@ -758,17 +758,31 @@ public class WeakestLink : MonoBehaviour
 			if (!turnChanged)
 			{
 				UpdateTurn(false, 4);
-				Debug.Log("Now changing turns");
 			}
-
 
 			if (moneyPhaseCurrentTurn != MoneyPhaseTurn.Player)
 			{
 				yield return new WaitForSeconds(TIME_READ);
 
 				float percentage = currentTrivia.Category == aliveConestant.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
+				
+				bool correctAnswer;
+				
+				if (aliveConestant.WrongNum < Contestant.MAX_WRONG)
+				{
+					correctAnswer = Rnd.Range(0f, 1f) < percentage;
+				}
 
-				bool correctAnswer = Rnd.Range(0f, 1f) < percentage;
+				else
+				{
+					correctAnswer = true;
+				}
+
+				if (correct)
+				{
+					aliveConestant.WrongNum++;
+				}
+				
 
 				string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() :
 											   currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
@@ -797,14 +811,18 @@ public class WeakestLink : MonoBehaviour
 		if (correctAnswer)
 		{
 			currentMoneyIndex++;
-			log += $". Streak is now at {moneyGameObjects[currentMoneyIndex].Key}";
 
-			if (currentMoneyIndex == 7)
+			int money = moneyGameObjects[currentMoneyIndex].Key;
+
+			bankText.text = "£" + money;
+
+			log += $". Streak is now at {money}";
+
+			if (money == 1000)
 			{
 				inMoneyPhase = false; //todo add transition to next stage
-				log += $". Streak is now at {moneyGameObjects[currentMoneyIndex].Key}";
+				log += $". Streak is now at {money}";
 				reachedMax = true;
-
 			}
 		}
 
@@ -812,6 +830,8 @@ public class WeakestLink : MonoBehaviour
 		{
 			currentMoneyIndex = -1;
 			log += $". Resetting streak to 0";
+
+			bankText.text = "£0";
 		}
 
 		Logging(log);
@@ -935,12 +955,12 @@ public class WeakestLink : MonoBehaviour
 				}
 				else if (stage == 3)
 				{
-					eliminationText.text = newText;
+					eliminationText.text += newText;
 				}
 
 				else
 				{ 
-					moneyPhaseAnswerText.text = newText;
+					moneyPhaseAnswerText.text += newText;
 				}
 			}
 
