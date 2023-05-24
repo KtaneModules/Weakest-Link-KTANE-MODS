@@ -184,13 +184,6 @@ public class WeakestLink : MonoBehaviour
 			gameObject.GetComponent<JsonReader>().LoadData();
 		}
 
-		Debug.Log("Other Question categorized as " + jsonData.TriviaList.First(x => x.Question == "Cantaloupe, Galia and Honeydew are types of which fruit?").Category);
-
-		//foreach (Trivia t in jsonData.TriviaList)
-		//{
-		//	Debug.Log($"Category: {t.Category} | Question: {t.Question}");
-		//}
-
 		//create constestants
 
 		//initalize all varables
@@ -477,7 +470,7 @@ public class WeakestLink : MonoBehaviour
 
 			else
 			{
-				moneyPhaseCurrentTurn = (MoneyPhaseTurn)(((int)questionPhaseCurrentTurn + 1) % 2);
+				moneyPhaseCurrentTurn = moneyPhaseCurrentTurn == MoneyPhaseTurn.Player ? MoneyPhaseTurn.Conestant : MoneyPhaseTurn.Player; 
 			}
 		}
 
@@ -725,10 +718,16 @@ public class WeakestLink : MonoBehaviour
 
 			Contestant currentContestant = moneyPhaseCurrentTurn == MoneyPhaseTurn.Player ? playerContestant : aliveConestant;
 
-			if (moneyPhaseCurrentTurn != MoneyPhaseTurn.Conestant)
+			if (moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
 			{
 				UpdateTurn(false, 4);
 				turnChanged = true;
+				Debug.Log("Changing turns");
+			}
+
+			else
+			{
+				Debug.Log("Not changing turns");
 			}
 
 			string log = $"Question: \"{currentTrivia.Question}\". {(currentContestant.Name == "" ? "You" : currentContestant.Name)} answered \"{response}\", ";
@@ -759,6 +758,7 @@ public class WeakestLink : MonoBehaviour
 			if (!turnChanged)
 			{
 				UpdateTurn(false, 4);
+				Debug.Log("Now changing turns");
 			}
 
 
@@ -793,10 +793,19 @@ public class WeakestLink : MonoBehaviour
 
 	void UpdateMoney(bool correctAnswer, string log)
 	{
+		bool reachedMax = false;
 		if (correctAnswer)
 		{
 			currentMoneyIndex++;
 			log += $". Streak is now at {moneyGameObjects[currentMoneyIndex].Key}";
+
+			if (currentMoneyIndex == 7)
+			{
+				inMoneyPhase = false; //todo add transition to next stage
+				log += $". Streak is now at {moneyGameObjects[currentMoneyIndex].Key}";
+				reachedMax = true;
+
+			}
 		}
 
 		else
@@ -807,7 +816,12 @@ public class WeakestLink : MonoBehaviour
 
 		Logging(log);
 
+		if (reachedMax)
+		{
+			Logging("You reached 1000! Moving on to face off"); //todo add pound sign. Add a better log
+		}
 	}
+
 
 	Trivia GetQuestion()
 	{
@@ -817,8 +831,6 @@ public class WeakestLink : MonoBehaviour
 	Trivia GetQuestion(Category category)
 	{
 		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
-
-		Debug.Log($"There are {a.Count} questions in the {category} Category");
 
 		return a[Rnd.Range(0, a.Count)];
 	}
