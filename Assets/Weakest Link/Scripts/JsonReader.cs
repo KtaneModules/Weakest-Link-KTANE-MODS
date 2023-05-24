@@ -92,8 +92,16 @@ public class JsonReader : MonoBehaviour {
                 category = Category.Biology;
                 break;
 
-            default:
+            case "HISTORY":
+                category = Category.History;
+                break;
+
+            case "MATHS":
                 category = Category.Maths;
+                break;
+
+            default:
+                category = Category.Other;
                 break;
         }
 

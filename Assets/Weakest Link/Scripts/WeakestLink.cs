@@ -144,7 +144,8 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 4
 	GameObject stage4Objects;
 	GameObject moneyCanvas;
-	List<GameObject> moneyGameObjects;
+	List<KeyValuePair<int, GameObject>> moneyGameObjects;
+	int currentMoneyIndex;
 	Text playerDisplay;
 	Text contestantDisplay;
 	GameObject bankGameObject;
@@ -162,13 +163,14 @@ public class WeakestLink : MonoBehaviour
 	int categoryCurrentIndex;
 
 	Contestant aliveConestant;
+
+	TextMesh moneyPhaseTextMesh;
 	#endregion
 
 
 
 	void SetUpModule()
 	{
-
 
 		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
 		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
@@ -182,6 +184,12 @@ public class WeakestLink : MonoBehaviour
 			gameObject.GetComponent<JsonReader>().LoadData();
 		}
 
+		Debug.Log("Other Question categorized as " + jsonData.TriviaList.First(x => x.Question == "Cantaloupe, Galia and Honeydew are types of which fruit?").Category);
+
+		//foreach (Trivia t in jsonData.TriviaList)
+		//{
+		//	Debug.Log($"Category: {t.Category} | Question: {t.Question}");
+		//}
 
 		//create constestants
 
@@ -237,19 +245,19 @@ public class WeakestLink : MonoBehaviour
 
 		bankButton = bankGameObject.GetComponent<Button>();
 
-		moneyGameObjects = new List<GameObject>()
+		moneyGameObjects = new List<KeyValuePair<int, GameObject>>()
 		{
-			money.transform.Find("20 Image").gameObject,
-			money.transform.Find("50 Image").gameObject,
-			money.transform.Find("100 Image").gameObject,
-			money.transform.Find("200 Image").gameObject,
-			money.transform.Find("300 Image").gameObject,
-			money.transform.Find("450 Image").gameObject,
-			money.transform.Find("600 Image").gameObject,
-			money.transform.Find("800 Image").gameObject,
-			money.transform.Find("1000 Image").gameObject,
-
+			new KeyValuePair<int, GameObject>(20,  money.transform.Find("20 Image").gameObject),
+			new KeyValuePair<int, GameObject>(50,  money.transform.Find("50 Image").gameObject),
+			new KeyValuePair<int, GameObject>(100, money.transform.Find("100 Image").gameObject),
+			new KeyValuePair<int, GameObject>(300, money.transform.Find("300 Image").gameObject),
+			new KeyValuePair<int, GameObject>(450, money.transform.Find("450 Image").gameObject),
+			new KeyValuePair<int, GameObject>(600, money.transform.Find("600 Image").gameObject),
+			new KeyValuePair<int, GameObject>(800, money.transform.Find("800 Image").gameObject),
+			new KeyValuePair<int, GameObject>(1000,money.transform.Find("1000 Image").gameObject),
 		};
+
+		currentMoneyIndex = -1;
 
 		GameObject c = stage4Objects.transform.Find("Canvas").gameObject;
 
@@ -259,7 +267,7 @@ public class WeakestLink : MonoBehaviour
 		playerDisplay = c.transform.Find("Player").Find("Player Name").gameObject.GetComponent<Text>();
 		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").gameObject.GetComponent<Text>();
 
-
+		moneyPhaseTextMesh = stage4Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
 		#endregion
 
 		//create player
@@ -309,16 +317,20 @@ public class WeakestLink : MonoBehaviour
 			}
 		}
 
-		else if (focused)
+		else if (inMoneyPhase)
 		{
-			if (inEliminationPhase)
+			currentTime -= Time.deltaTime;
+			moneyPhaseTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+
+			if (focused)
 			{ 
-				GetKeyboardInput(3);
-			}
-			else if (inMoneyPhase)
-			{
 				GetKeyboardInput(4);
 			}
+		}
+
+		else if (focused && inEliminationPhase)
+		{
+				GetKeyboardInput(3);
 		}
 	}
 
@@ -379,10 +391,9 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
+				Logging("Starting money phase");
 				UpdateQuestion(true, 4);
 				UpdateTurn(true, 4);
-
-				Logging("Starting money phase");
 				break;
 		}
 	}
@@ -412,15 +423,18 @@ public class WeakestLink : MonoBehaviour
 			{
 				currentTime = moneyPhaseTimerMax;
 				inMoneyPhase = true;
-
 				categoryCurrentIndex = 0;
 				categoryList = GetCategoryList();
+				Debug.Log("Category list: " + string.Join(", ", categoryList.Select(x => x.ToString()).ToArray()));
 			}
 
 			else
 			{
 				categoryCurrentIndex = (categoryCurrentIndex + 1) % categoryList.Count;
 			}
+
+			Debug.Log("Category index is now " + categoryCurrentIndex);
+
 
 			currentTrivia = GetQuestion(categoryList[categoryCurrentIndex]);
 
@@ -700,6 +714,99 @@ public class WeakestLink : MonoBehaviour
 
 			Logging(log);
 		}
+
+		else if (stage == 4)
+		{
+			bool turnChanged = false;
+
+			string response = moneyPhaseAnswerText.text;
+
+			string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
+
+			Contestant currentContestant = moneyPhaseCurrentTurn == MoneyPhaseTurn.Player ? playerContestant : aliveConestant;
+
+			if (moneyPhaseCurrentTurn != MoneyPhaseTurn.Conestant)
+			{
+				UpdateTurn(false, 4);
+				turnChanged = true;
+			}
+
+			string log = $"Question: \"{currentTrivia.Question}\". {(currentContestant.Name == "" ? "You" : currentContestant.Name)} answered \"{response}\", ";
+
+			bool correct = answers.Contains(response);
+			if (correct)
+			{
+				moneyPhaseQuestionText.color = correctColor;
+				log += "which is correct";
+			}
+
+			else
+			{
+				moneyPhaseQuestionText.color = incorrectColor;
+				log += "which is incorrect";
+			}
+
+			UpdateMoney(correct, log);
+
+			moneyPhaseAnswerText.text = "";
+			yield return new WaitForSeconds(2f);
+
+			if (currentTime <= 0)
+				yield break;
+
+			UpdateQuestion(false, 4);
+
+			if (!turnChanged)
+			{
+				UpdateTurn(false, 4);
+			}
+
+
+			if (moneyPhaseCurrentTurn != MoneyPhaseTurn.Player)
+			{
+				yield return new WaitForSeconds(TIME_READ);
+
+				float percentage = currentTrivia.Category == aliveConestant.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
+
+				bool correctAnswer = Rnd.Range(0f, 1f) < percentage;
+
+				string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() :
+											   currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
+				foreach (char ch in input)
+				{
+					if (currentTime <= 0)
+						yield break;
+
+					moneyPhaseAnswerText.text += "" + ch;
+					yield return new WaitForSeconds(0.1f);
+				}
+
+				yield return new WaitForSeconds(1f);
+
+				if (currentTime <= 0)
+					yield break;
+
+				StartCoroutine(Submit(4));
+			}
+		}
+	}
+
+	void UpdateMoney(bool correctAnswer, string log)
+	{
+		if (correctAnswer)
+		{
+			currentMoneyIndex++;
+			log += $". Streak is now at {moneyGameObjects[currentMoneyIndex].Key}";
+		}
+
+		else
+		{
+			currentMoneyIndex = -1;
+			log += $". Resetting streak to 0";
+		}
+
+		Logging(log);
+
 	}
 
 	Trivia GetQuestion()
@@ -710,6 +817,8 @@ public class WeakestLink : MonoBehaviour
 	Trivia GetQuestion(Category category)
 	{
 		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
+
+		Debug.Log($"There are {a.Count} questions in the {category} Category");
 
 		return a[Rnd.Range(0, a.Count)];
 	}
@@ -801,7 +910,6 @@ public class WeakestLink : MonoBehaviour
 
 			else if (keyCode == KeyCode.Return && Input.GetKeyDown(keyCode))
 			{
-					
 				StartCoroutine(Submit(stage));
 			}
 
