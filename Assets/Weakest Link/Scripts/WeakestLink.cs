@@ -1046,14 +1046,34 @@ public class WeakestLink : MonoBehaviour
 
 	Trivia GetQuestion()
 	{
-		return jsonData.TriviaList[Rnd.Range(0, jsonData.TriviaList.Count)];
+		List<Trivia> a = jsonData.TriviaList.Where(x => !x.Asked).ToList();
+
+
+		if (a.Count == 0)
+		{
+			ResetQuestions();
+			a = new List<Trivia>();
+			jsonData.TriviaList.ForEach(x => a.Add(x));
+		}
+
+		Trivia t = a[Rnd.Range(0, a.Count)];
+		t.Asked = true;
+		return t;
 	}
 
 	Trivia GetQuestion(Category category)
 	{
-		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
+		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category && !s.Asked).ToList();
 
-		return a[Rnd.Range(0, a.Count)];
+		if (a.Count == 0)
+		{
+			ResetQuestions(category);
+			a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
+		}
+
+		Trivia t = a[Rnd.Range(0, a.Count)];
+		t.Asked = true;
+		return t;
 	}
 
 	List<Category> GetCategoryList()
@@ -1096,9 +1116,8 @@ public class WeakestLink : MonoBehaviour
 
 	float CalculateReadingTime()
 	{
-		//the longest question should take 5 seconds to read. Make other questions reading time relative to this
+		//the longest question should take 7 seconds to read. Make other questions reading time relative to this
 
-		//one is an offset
 		return (TIME_READ * currentTrivia.Question.Length / longestQuestionLength) + 2;
 	}
 
@@ -1118,6 +1137,16 @@ public class WeakestLink : MonoBehaviour
 		{
 			playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
 		}
+	}
+
+	public void ResetQuestions()
+	{
+		jsonData.TriviaList.ForEach(x => x.Asked = false);
+	}
+
+	public void ResetQuestions(Category c)
+	{
+		jsonData.TriviaList.Where(x => x.Category == c).ToList().ForEach(x => x.Asked = false);
 	}
 
 	void Logging(string s)
