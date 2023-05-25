@@ -76,7 +76,9 @@ public class WeakestLink : MonoBehaviour
 
 	bool focused; //if the module is selected
 
-	const int TIME_READ = 5; //the amount of time it would take the contestants to read the question 
+	int longestQuestionLength;
+
+	const int TIME_READ = 5; //the amount of time it would take the contestants to read the longest question 
 	float currentTime;
 
 
@@ -283,6 +285,8 @@ public class WeakestLink : MonoBehaviour
 		//get json data
 		jsonData = gameObject.GetComponent<JsonReader>();
 
+
+
 		//load json data if not loaded alreay
 		if (jsonData.json == null)
 		{
@@ -291,6 +295,8 @@ public class WeakestLink : MonoBehaviour
 
 		//initalize all varables
 		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
+
+		longestQuestionLength = GetLongestQuestionLength();
 
 		#region stage1
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
@@ -804,7 +810,7 @@ public class WeakestLink : MonoBehaviour
 
 			if (questionPhaseCurrentTurn != QuestionPhaseTurn.Player)
 			{
-				yield return new WaitForSeconds(TIME_READ);
+				yield return new WaitForSeconds(CalculateReadingTime());
 
 				Contestant c = questionPhaseCurrentTurn == QuestionPhaseTurn.C1 ? c1 : c2;
 
@@ -909,7 +915,7 @@ public class WeakestLink : MonoBehaviour
 
 			if (moneyPhaseCurrentTurn != MoneyPhaseTurn.Player)
 			{
-				yield return new WaitForSeconds(TIME_READ);
+				yield return new WaitForSeconds(CalculateReadingTime());
 
 				float percentage = currentTrivia.Category == aliveConestant.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
 
@@ -1081,6 +1087,19 @@ public class WeakestLink : MonoBehaviour
 		a.ForEach(x => b.AddRange(x.Split(',')));
 
 		return b.OrderByDescending(x => x.Length).First();
+	}
+
+	int GetLongestQuestionLength()
+	{
+		return jsonData.TriviaList.OrderByDescending(x => x.Question.Length).First().Question.Length;
+	}
+
+	float CalculateReadingTime()
+	{
+		//the longest question should take 5 seconds to read. Make other questions reading time relative to this
+
+		//one is an offset
+		return (TIME_READ * currentTrivia.Question.Length / longestQuestionLength) + 2;
 	}
 
 	void GetNewContestants(bool updatePlayer)
