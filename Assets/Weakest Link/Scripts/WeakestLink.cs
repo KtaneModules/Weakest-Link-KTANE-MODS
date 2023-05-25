@@ -306,7 +306,10 @@ public class WeakestLink : MonoBehaviour
 		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true, 2); UpdateQuestion(true, 2); return false; };
 		#endregion
 
-		GetNewContestants(false);
+		do
+		{
+			GetNewContestants(false);
+		} while (c1.Name == c2.Name);
 
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
