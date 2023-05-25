@@ -21,9 +21,7 @@ public class WeakestLink : MonoBehaviour
 
 	KeyCode[] TypableKeys =
 	{
-		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M,
-		KeyCode.Period, KeyCode.Return, KeyCode.Minus,
-		KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
+		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Period, KeyCode.Return, KeyCode.Minus, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
 	};
 
 	enum QuestionPhaseTurn
@@ -165,6 +163,8 @@ public class WeakestLink : MonoBehaviour
 	Contestant aliveConestant;
 
 	TextMesh moneyPhaseTimerTextMesh;
+
+	int moneyStored;
 	
 	[SerializeField]
 	Sprite redBackground;
@@ -180,16 +180,13 @@ public class WeakestLink : MonoBehaviour
 		//get json data
 		jsonData = gameObject.GetComponent<JsonReader>();
 
-		//load json data if loaded alreay
+		//load json data if not loaded alreay
 		if (jsonData.json == null)
 		{
 			gameObject.GetComponent<JsonReader>().LoadData();
 		}
 
-		//create constestants
-
 		//initalize all varables
-
 		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
 
 		#region stage1
@@ -262,13 +259,14 @@ public class WeakestLink : MonoBehaviour
 		moneyPhaseTimerTextMesh = stage4Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
 
 		bankText = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
+		bankGameObject.OnInteract += delegate () { BankButtonPressed(); return false; };
+
 		#endregion
 
 		//create player
 		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
+		
 		//make sure the right game objects are visible
-
-
 		GoToNextStage(0);
 
 		Logging($"First contestant is {c1.Name} who specializese in {c1.Category}");
@@ -301,13 +299,13 @@ public class WeakestLink : MonoBehaviour
 
 				else
 				{
-					GetComponent<KMBombModule>().HandleStrike();
+					Strike();
 					GetNewContestants(true);
 					GoToNextStage(0);
 				}
 			}
 
-			if (focused && questionPhaseCurrentTurn == QuestionPhaseTurn.Player) //keyboard input
+			if (focused && questionPhaseCurrentTurn == QuestionPhaseTurn.Player)
 			{
 				GetKeyboardInput(2);
 			}
@@ -318,6 +316,11 @@ public class WeakestLink : MonoBehaviour
 			currentTime -= Time.deltaTime;
 			moneyPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
+			if (currentTime <= 0f)
+			{
+				EndMoneyPhase(false, $"Strike! Time ran out and you only banked {bankText.text}");
+			}
+
 			if (focused && moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
 			{ 
 				GetKeyboardInput(4);
@@ -326,7 +329,7 @@ public class WeakestLink : MonoBehaviour
 
 		else if (focused && inEliminationPhase)
 		{
-				GetKeyboardInput(3);
+			GetKeyboardInput(3);
 		}
 	}
 
@@ -368,7 +371,7 @@ public class WeakestLink : MonoBehaviour
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
 
-				Logging("Starting question phase");
+				Logging("===========Question Phase===========");
 				break;
 
 			case 2:
@@ -379,7 +382,7 @@ public class WeakestLink : MonoBehaviour
 
 				eliminationText.text = "";
 
-				Logging("Starting elimination phase");
+				Logging("===========Elimination Phase===========");
 				break;
 
 			case 3:
@@ -387,11 +390,22 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
-				
-				bankText.text = "£0";
-				Logging("Starting money phase");
+
+				moneyStored = 0;
+				BreakMoneyChain();
+				Logging("===========Money Phase===========");
 				UpdateQuestion(true, 4);
 				UpdateTurn(true, 4);
+				break;
+
+			case 4:
+				stage1Objects.SetActive(false);
+				stage2Objects.SetActive(false);
+				stage3Objects.SetActive(false);
+				stage4Objects.SetActive(false);
+
+				Logging("===========Face Off Phase===========");
+
 				break;
 		}
 	}
@@ -702,7 +716,7 @@ public class WeakestLink : MonoBehaviour
 			else
 			{
 				log = $"Strike! You entered \"{eliminationText.text}\".";
-				GetComponent<KMBombModule>().HandleStrike();
+				Strike();
 				GoToNextStage(0);
 				GetNewContestants(true);
 			}
@@ -753,7 +767,7 @@ public class WeakestLink : MonoBehaviour
 			moneyPhaseAnswerText.text = "";
 			yield return new WaitForSeconds(2f);
 
-			if (inMoneyPhase && currentTime <= 0)
+			if (!inMoneyPhase || currentTime <= 0)
 				yield break;
 
 			UpdateQuestion(false, 4);
@@ -791,7 +805,7 @@ public class WeakestLink : MonoBehaviour
 											   currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
 				foreach (char ch in input)
 				{
-					if (currentTime <= 0)
+					if (!inMoneyPhase || currentTime <= 0)
 						yield break;
 
 					moneyPhaseAnswerText.text += "" + ch;
@@ -800,7 +814,7 @@ public class WeakestLink : MonoBehaviour
 
 				yield return new WaitForSeconds(1f);
 
-				if (currentTime <= 0)
+				if (!inMoneyPhase || currentTime <= 0)
 					yield break;
 
 				StartCoroutine(Submit(4));
@@ -822,25 +836,18 @@ public class WeakestLink : MonoBehaviour
 
 			int money = moneyObject.MoneyAmount;
 
-			log = $"Streak is now at {money}";
+			log = $"Streak is now at {money}"; 
 
 			if (money == 1000)
 			{
-				inMoneyPhase = false; //todo add transition to next stage
+				EndMoneyPhase(true, "");
 			}
 		}
 
 		else
 		{
-			currentMoneyIndex = -1;
 			log = $"Resetting streak to £0";
-
-			bankText.text = "£0";
-
-			foreach (Money m in moneyObjects)
-			{
-				m.ToggleColor(false);
-			}
+			BreakMoneyChain();
 		}
 
 
@@ -914,6 +921,57 @@ public class WeakestLink : MonoBehaviour
 	void Logging(string s)
 	{
 		LogFormat($"[The Weakest Link #{ModuleId}] {s}");
+	}
+
+	void Strike()
+	{
+		GetComponent<KMBombModule>().HandleStrike();
+	}
+
+	void BankButtonPressed()
+	{
+		moneyStored += moneyObjects[currentMoneyIndex].MoneyAmount;
+		bankText.text = $"£{moneyStored}";
+
+		BreakMoneyChain();
+
+		if (moneyStored >= 1000)
+		{
+			EndMoneyPhase(true, $"You banked {bankText.text}");
+		}
+	}
+
+	void EndMoneyPhase(bool passedPhase, string log)
+	{
+		inMoneyPhase = false;
+
+		if (log != "")
+		{ 
+			Logging(log);
+		}
+
+		if (passedPhase)
+		{
+			GoToNextStage(4);
+		}
+
+		else
+		{
+			Strike();
+			GoToNextStage(3);
+		}
+	}
+
+	void BreakMoneyChain()
+	{
+		currentMoneyIndex = -1;
+
+		bankText.text = "£0";
+
+		foreach (Money m in moneyObjects)
+		{
+			m.ToggleColor(false);
+		}
 	}
 
 	void GetKeyboardInput(int stage)
