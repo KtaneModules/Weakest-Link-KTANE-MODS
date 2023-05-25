@@ -47,8 +47,10 @@ public class CorrectIndicator {
 
     public void SetUsed(bool correct)
     {
-        rectTransform.anchorMin = new Vector2(.4f, .6f);
-        rectTransform.anchorMax = new Vector2(.2f, .8f);
+        rectTransform.anchorMin = new Vector2(.4f, .2f);
+        rectTransform.anchorMax = new Vector2(.6f, .8f);
+
+        backgroundImage.sprite = RedBackground;
 
         if (correct)
         {
@@ -68,6 +70,9 @@ public class CorrectIndicator {
     {
         rectTransform.anchorMin = new Vector2(0f, 0f);
         rectTransform.anchorMax = new Vector2(1f, 1f);
+
+        backgroundImage.sprite = BlueBackground;
+
 
         checkImage.sprite = null;
 

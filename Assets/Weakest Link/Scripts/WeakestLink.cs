@@ -194,11 +194,89 @@ public class WeakestLink : MonoBehaviour
 	GameObject stage6Objects;
 
 	List<CorrectIndicator> moduleIndicators;
+
+	Text stage6QuestionText;
+
+	Text stage6AnswerText;
+
+	int correctAnswers;
+	int quesetionsAsked;
 	#endregion
+
+
+
+
+	void Start() {
+		ModuleId = ModuleIdCounter++;
+		SetUpModule();
+	}
+
+	void Update() {
+		if (!ModuleSolved)
+		{
+			if (inQuestionPhase)
+			{
+				currentTime -= Time.deltaTime;
+				questionPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+
+				if (currentTime <= 0f)
+				{
+					inQuestionPhase = false;
+					GoToNextStage(2);
+
+
+					if (CalculatePersonToEliminate())
+					{
+						inEliminationPhase = true;
+					}
+
+					else
+					{
+						Strike();
+						GetNewContestants(true);
+						GoToNextStage(0);
+					}
+				}
+
+				if (focused && questionPhaseCurrentTurn == QuestionPhaseTurn.Player)
+				{
+					GetKeyboardInput(2);
+				}
+			}
+
+			else if (inMoneyPhase)
+			{
+				currentTime -= Time.deltaTime;
+				moneyPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+
+				if (currentTime <= 0f)
+				{
+					EndMoneyPhase(false, $"Strike! Time ran out and you only banked {bankMoneyAmountTextMesh.text}");
+				}
+
+				if (focused && moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
+				{
+					GetKeyboardInput(5);
+				}
+			}
+
+			else if (focused)
+			{
+				if (inEliminationPhase)
+				{
+					GetKeyboardInput(3);
+				}
+
+				else if (inFaceOffPhase)
+				{
+					GetKeyboardInput(6);
+				}
+			}
+		}
+	}
 
 	void SetUpModule()
 	{
-
 		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
 		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
 
@@ -303,9 +381,15 @@ public class WeakestLink : MonoBehaviour
 
 		#region Stage 6
 		inFaceOffPhase = false;
+		correctAnswers = 0;
+		quesetionsAsked = 0;
 
 		stage6Objects = transform.Find("Face Off Phase").gameObject;
+
 		GameObject stage6Canvas = stage6Objects.transform.Find("Canvas").gameObject;
+
+		stage6QuestionText = stage6Canvas.transform.Find("Question").GetComponent<Text>();
+		stage6AnswerText = stage6Canvas.transform.Find("Answer").GetComponent<Text>();
 
 		moduleIndicators = new List<CorrectIndicator>()
 		{
@@ -316,16 +400,14 @@ public class WeakestLink : MonoBehaviour
 			new CorrectIndicator(5, stage6Canvas.transform.Find("Fifth Image").gameObject, redBackground, checkmarkSprite, xSprite),
 		};
 
-		foreach (CorrectIndicator i in moduleIndicators)
-		{
-			i.SetUnused();
-		}
+		
+
 
 		#endregion
 
 		//create player
 		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
-		
+
 		//make sure the right game objects are visible
 		GoToNextStage(0);
 
@@ -333,67 +415,8 @@ public class WeakestLink : MonoBehaviour
 		Logging($"Second contestant is {c2.Name} who specializese in {c2.Category}");
 		Logging($"You specialize in {playerContestant.Category}");
 
-		
-
-	}
 
 
-	void Start() {
-		ModuleId = ModuleIdCounter++;
-		SetUpModule();
-	}
-
-	void Update() {
-		if (inQuestionPhase)
-		{
-			currentTime -= Time.deltaTime;
-			questionPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
-
-			if (currentTime <= 0f)
-			{
-				inQuestionPhase = false;
-				GoToNextStage(2);
-
-
-				if (CalculatePersonToEliminate())
-				{
-					inEliminationPhase = true;
-				}
-
-				else
-				{
-					Strike();
-					GetNewContestants(true);
-					GoToNextStage(0);
-				}
-			}
-
-			if (focused && questionPhaseCurrentTurn == QuestionPhaseTurn.Player)
-			{
-				GetKeyboardInput(2);
-			}
-		}
-
-		else if (inMoneyPhase)
-		{
-			currentTime -= Time.deltaTime;
-			moneyPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
-
-			if (currentTime <= 0f)
-			{
-				EndMoneyPhase(false, $"Strike! Time ran out and you only banked {bankMoneyAmountTextMesh.text}");
-			}
-
-			if (focused && moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
-			{ 
-				GetKeyboardInput(5);
-			}
-		}
-
-		else if (focused && inEliminationPhase)
-		{
-			GetKeyboardInput(3);
-		}
 	}
 
 	Category GetPlayerSkill()
@@ -487,6 +510,19 @@ public class WeakestLink : MonoBehaviour
 				stage5Objects.SetActive(false);
 				stage6Objects.SetActive(true);
 
+				inFaceOffPhase = true;
+
+				foreach (CorrectIndicator i in moduleIndicators)
+				{
+					i.SetUnused();
+				}
+
+				correctAnswers = 0;
+				quesetionsAsked = 0;
+
+
+				UpdateQuestion(true, 6);
+
 				Logging("===========Face Off Phase===========");
 				break;
 		}
@@ -526,7 +562,7 @@ public class WeakestLink : MonoBehaviour
 			{
 				categoryCurrentIndex = (categoryCurrentIndex + 1) % categoryList.Count;
 			}
-			
+
 			currentTrivia = GetQuestion(categoryList[categoryCurrentIndex]);
 
 			moneyPhaseQuestionText.color = Color.white;
@@ -535,6 +571,17 @@ public class WeakestLink : MonoBehaviour
 
 			moneyPhaseAnswerText.text = "";
 
+		}
+
+		else
+		{
+			currentTrivia = GetQuestion();
+
+			stage6QuestionText.color = Color.white;
+
+			stage6QuestionText.text = currentTrivia.Question;
+
+			stage6AnswerText.text = "";
 		}
 
 		Debug.Log("Answers: " + string.Join(", ", currentTrivia.AcceptedAnswers.ToArray()));
@@ -568,7 +615,7 @@ public class WeakestLink : MonoBehaviour
 
 			else
 			{
-				moneyPhaseCurrentTurn = moneyPhaseCurrentTurn == MoneyPhaseTurn.Player ? MoneyPhaseTurn.Conestant : MoneyPhaseTurn.Player; 
+				moneyPhaseCurrentTurn = moneyPhaseCurrentTurn == MoneyPhaseTurn.Player ? MoneyPhaseTurn.Conestant : MoneyPhaseTurn.Player;
 			}
 		}
 
@@ -590,7 +637,7 @@ public class WeakestLink : MonoBehaviour
 		{
 			playerDisplay.color = contestantDisplay.color = inactiveColor;
 
-			Text[] names = new Text[] { playerDisplay, contestantDisplay};
+			Text[] names = new Text[] { playerDisplay, contestantDisplay };
 
 			names[(int)moneyPhaseCurrentTurn].color = Color.white;
 		}
@@ -790,6 +837,7 @@ public class WeakestLink : MonoBehaviour
 			string log;
 			if (eliminationText.text == personToEliminate.Name.ToUpper())
 			{
+				inEliminationPhase = false;
 				personToEliminate.Eliminated = true;
 				log = $"You entered \"{eliminationText.text}\". Which is correct.";
 				GoToNextStage(3);
@@ -864,9 +912,9 @@ public class WeakestLink : MonoBehaviour
 				yield return new WaitForSeconds(TIME_READ);
 
 				float percentage = currentTrivia.Category == aliveConestant.Category ? Contestant.GOOD_RIGHT_CHOICE : Contestant.REGULAR_RIGHT_CHOICE;
-				
+
 				bool correctAnswer;
-				
+
 				if (aliveConestant.WrongNum < Contestant.MAX_WRONG)
 				{
 					correctAnswer = Rnd.Range(0f, 1f) < percentage;
@@ -881,7 +929,7 @@ public class WeakestLink : MonoBehaviour
 				{
 					aliveConestant.WrongNum++;
 				}
-				
+
 
 				string input = correctAnswer ? currentTrivia.AcceptedAnswers[Rnd.Range(0, currentTrivia.AcceptedAnswers.Count)].ToUpper() :
 											   currentTrivia.WrongAnswers[Rnd.Range(0, currentTrivia.WrongAnswers.Count)].ToUpper();
@@ -900,6 +948,59 @@ public class WeakestLink : MonoBehaviour
 					yield break;
 
 				StartCoroutine(Submit(5));
+			}
+		}
+
+		else if (stage == 6)
+		{
+			string response = stage6AnswerText.text;
+
+			string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
+
+			string log = $"Question: \"{currentTrivia.Question}\". You answered \"{response}\", ";
+
+			quesetionsAsked++;
+
+			CorrectIndicator indicator = moduleIndicators[quesetionsAsked - 1];
+
+
+			bool correct = answers.Contains(response);
+
+			if (correct)
+			{
+				correctAnswers++;
+				log += "which is correct";
+
+			}
+
+			else
+			{
+				log += "which is incorrect";
+			}
+
+			indicator.SetUsed(correct);
+
+			log += $". Answered {correctAnswers}/{quesetionsAsked}";
+
+			Logging(log);
+
+			if (correctAnswers == 3)
+			{
+				Logging("You have answered 3 question. Solving module...");
+				Solve();
+			}
+
+			else if ((correctAnswers == 0 && quesetionsAsked == 3) || (correctAnswers == 1 && quesetionsAsked == 4) || quesetionsAsked == 5)
+			{
+				Logging($"Strike! You have correctly answered {correctAnswers} out of {correctAnswers} questions. Unable to get 3/5.");
+				Strike();
+				GoToNextStage(5);
+
+			}
+
+			else
+			{ 
+				UpdateQuestion(false, 6);
 			}
 		}
 	}
@@ -1010,6 +1111,11 @@ public class WeakestLink : MonoBehaviour
 		GetComponent<KMBombModule>().HandleStrike();
 	}
 
+	void Solve()
+	{
+		GetComponent<KMBombModule>().HandlePass();
+		ModuleSolved = true;
+	}
 	void BankButtonPressed()
 	{
 		if (moneyPhaseCurrentTurn == MoneyPhaseTurn.Player && currentMoneyIndex != -1)
@@ -1052,7 +1158,7 @@ public class WeakestLink : MonoBehaviour
 		else
 		{
 			Strike();
-			GoToNextStage(3);
+			GoToNextStage(6);
 		}
 	}
 
@@ -1070,7 +1176,7 @@ public class WeakestLink : MonoBehaviour
 
 	void GetKeyboardInput(int stage)
 	{
-		string currentText = stage == 2 ? questionPhaseAnswerText.text : stage == 3 ? eliminationText.text : moneyPhaseAnswerText.text;
+		string currentText = stage == 2 ? questionPhaseAnswerText.text : stage == 3 ? eliminationText.text : stage == 5 ? moneyPhaseAnswerText.text : stage6AnswerText.text;
 
 		foreach (KeyCode keyCode in TypableKeys)
 		{
@@ -1090,9 +1196,14 @@ public class WeakestLink : MonoBehaviour
 						eliminationText.text = newText;
 					}
 
-					else
+					else if (stage == 5)
 					{
 						moneyPhaseAnswerText.text = newText;
+					}
+
+					else
+					{
+						stage6AnswerText.text = newText;
 					}
 				}
 			}
@@ -1115,9 +1226,14 @@ public class WeakestLink : MonoBehaviour
 					eliminationText.text += newText;
 				}
 
-				else
+				else if (stage == 5)
 				{ 
 					moneyPhaseAnswerText.text += newText;
+				}
+
+				else
+                {
+					stage6AnswerText.text += newText;
 				}
 			}
 
@@ -1132,9 +1248,14 @@ public class WeakestLink : MonoBehaviour
 					eliminationText.text += " ";
 				}
 
+				else if (stage == 5)
+				{
+					moneyPhaseAnswerText.text += " ";
+				}
+
 				else
 				{ 
-					moneyPhaseAnswerText.text += " ";
+					stage6AnswerText.text += " ";
 				}
 			}
 
@@ -1149,9 +1270,14 @@ public class WeakestLink : MonoBehaviour
 					eliminationText.text += "-";
 				}
 
-				else
-				{ 
+				else if (stage == 5)
+				{
 					moneyPhaseAnswerText.text += "-";
+				}
+
+				else
+				{
+					stage6AnswerText.text += "-";
 				}
 			}
 
@@ -1168,9 +1294,14 @@ public class WeakestLink : MonoBehaviour
 					eliminationText.text += newString;
 				}
 
-				else
+				else if (stage == 5)
 				{ 
 					moneyPhaseAnswerText.text += newString;
+				}
+
+				else
+				{
+					stage6AnswerText.text += newString;
 				}
 			}
 		}
