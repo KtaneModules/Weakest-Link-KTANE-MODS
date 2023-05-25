@@ -173,10 +173,15 @@ public class WeakestLink : MonoBehaviour
 	TextMesh moneyPhaseTimerTextMesh;
 
 	int moneyStored;
-	
+
+
+
+	#endregion
+
+
+	#region stage 5
 	[SerializeField]
 	Sprite redBackground;
-
 	#endregion
 
 	void SetUpModule()
