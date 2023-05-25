@@ -144,7 +144,7 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 4
 	GameObject stage4Objects;
 	GameObject moneyCanvas;
-	List<KeyValuePair<int, GameObject>> moneyGameObjects;
+	List<Money> moneyObjects;
 	int currentMoneyIndex;
 	Text playerDisplay;
 	Text contestantDisplay;
@@ -165,6 +165,10 @@ public class WeakestLink : MonoBehaviour
 	Contestant aliveConestant;
 
 	TextMesh moneyPhaseTimerTextMesh;
+	
+	[SerializeField]
+	Sprite redBackground;
+
 	#endregion
 
 	void SetUpModule()
@@ -228,22 +232,21 @@ public class WeakestLink : MonoBehaviour
 
 		stage4Objects = transform.Find("Money Phase").gameObject;
 
-		moneyCanvas = stage4Objects.transform.Find("Money Canvas").gameObject;
+		moneyCanvas = stage4Objects.transform.Find("Canvas").gameObject;
 
-		GameObject money = moneyCanvas.transform.Find("Money").gameObject;
+		bankGameObject = moneyCanvas.transform.Find("Bank Button").gameObject.GetComponent<KMSelectable>();
 
-		bankGameObject = money.transform.Find("Bank Button").gameObject.GetComponent<KMSelectable>();
-
-		moneyGameObjects = new List<KeyValuePair<int, GameObject>>()
+		moneyObjects = new List<Money>()
 		{
-			new KeyValuePair<int, GameObject>(20,  money.transform.Find("20 Image").gameObject),
-			new KeyValuePair<int, GameObject>(50,  money.transform.Find("50 Image").gameObject),
-			new KeyValuePair<int, GameObject>(100, money.transform.Find("100 Image").gameObject),
-			new KeyValuePair<int, GameObject>(300, money.transform.Find("300 Image").gameObject),
-			new KeyValuePair<int, GameObject>(450, money.transform.Find("450 Image").gameObject),
-			new KeyValuePair<int, GameObject>(600, money.transform.Find("600 Image").gameObject),
-			new KeyValuePair<int, GameObject>(800, money.transform.Find("800 Image").gameObject),
-			new KeyValuePair<int, GameObject>(1000,money.transform.Find("1000 Image").gameObject),
+			new Money(20,   moneyCanvas.transform.Find("20 Image").gameObject,   redBackground),
+			new Money(50,   moneyCanvas.transform.Find("50 Image").gameObject,   redBackground),
+			new Money(100,  moneyCanvas.transform.Find("100 Image").gameObject,  redBackground),
+			new Money(200,  moneyCanvas.transform.Find("200 Image").gameObject,  redBackground),
+			new Money(300,  moneyCanvas.transform.Find("300 Image").gameObject,  redBackground),
+			new Money(450,  moneyCanvas.transform.Find("450 Image").gameObject,  redBackground),
+			new Money(600,  moneyCanvas.transform.Find("600 Image").gameObject,  redBackground),
+			new Money(800,  moneyCanvas.transform.Find("800 Image").gameObject,  redBackground),
+			new Money(1000, moneyCanvas.transform.Find("1000 Image").gameObject, redBackground),
 		};
 
 		currentMoneyIndex = -1;
@@ -259,12 +262,13 @@ public class WeakestLink : MonoBehaviour
 		moneyPhaseTimerTextMesh = stage4Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
 
 		bankText = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
-
 		#endregion
 
 		//create player
 		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
 		//make sure the right game objects are visible
+
+
 		GoToNextStage(0);
 
 		Logging($"First contestant is {c1.Name} who specializese in {c1.Category}");
@@ -314,7 +318,7 @@ public class WeakestLink : MonoBehaviour
 			currentTime -= Time.deltaTime;
 			moneyPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
-			if (focused)
+			if (focused && moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
 			{ 
 				GetKeyboardInput(4);
 			}
@@ -383,6 +387,7 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
+				
 				bankText.text = "£0";
 				Logging("Starting money phase");
 				UpdateQuestion(true, 4);
@@ -418,17 +423,14 @@ public class WeakestLink : MonoBehaviour
 				inMoneyPhase = true;
 				categoryCurrentIndex = 0;
 				categoryList = GetCategoryList();
-				Debug.Log("Category list: " + string.Join(", ", categoryList.Select(x => x.ToString()).ToArray()));
+				Logging("Category list: " + string.Join(", ", categoryList.Select(x => x.ToString()).ToArray()));
 			}
 
 			else
 			{
 				categoryCurrentIndex = (categoryCurrentIndex + 1) % categoryList.Count;
 			}
-
-			Debug.Log("Category index is now " + categoryCurrentIndex);
-
-
+			
 			currentTrivia = GetQuestion(categoryList[categoryCurrentIndex]);
 
 			moneyPhaseQuestionText.color = Color.white;
@@ -708,7 +710,7 @@ public class WeakestLink : MonoBehaviour
 			Logging(log);
 		}
 
-		else if (stage == 4)
+		else if (stage == 4 && inMoneyPhase)
 		{
 			bool turnChanged = false;
 
@@ -722,12 +724,6 @@ public class WeakestLink : MonoBehaviour
 			{
 				UpdateTurn(false, 4);
 				turnChanged = true;
-				Debug.Log("Changing turns");
-			}
-
-			else
-			{
-				Debug.Log("Not changing turns");
 			}
 
 			string log = $"Question: \"{currentTrivia.Question}\". {(currentContestant.Name == "" ? "You" : currentContestant.Name)} answered \"{response}\", ";
@@ -745,12 +741,19 @@ public class WeakestLink : MonoBehaviour
 				log += "which is incorrect";
 			}
 
-			UpdateMoney(correct, log);
+			if (!turnChanged)
+			{
+				log += $". This is there {(aliveConestant.WrongNum == 1 ? "1st" : aliveConestant.WrongNum == 2 ? "2nd" : "3rd")} wrong question";
+			}
+
+			Logging(log);
+
+			UpdateMoney(correct);
 
 			moneyPhaseAnswerText.text = "";
 			yield return new WaitForSeconds(2f);
 
-			if (currentTime <= 0)
+			if (inMoneyPhase && currentTime <= 0)
 				yield break;
 
 			UpdateQuestion(false, 4);
@@ -805,41 +808,43 @@ public class WeakestLink : MonoBehaviour
 		}
 	}
 
-	void UpdateMoney(bool correctAnswer, string log)
+	void UpdateMoney(bool correctAnswer)
 	{
-		bool reachedMax = false;
+		string log;
+
 		if (correctAnswer)
 		{
 			currentMoneyIndex++;
 
-			int money = moneyGameObjects[currentMoneyIndex].Key;
+			Money moneyObject = moneyObjects[currentMoneyIndex];
 
-			bankText.text = "£" + money;
+			moneyObject.ToggleColor(true);
 
-			log += $". Streak is now at {money}";
+			int money = moneyObject.MoneyAmount;
+
+			log = $"Streak is now at {money}";
 
 			if (money == 1000)
 			{
 				inMoneyPhase = false; //todo add transition to next stage
-				log += $". Streak is now at {money}";
-				reachedMax = true;
 			}
 		}
 
 		else
 		{
 			currentMoneyIndex = -1;
-			log += $". Resetting streak to 0";
+			log = $"Resetting streak to £0";
 
 			bankText.text = "£0";
+
+			foreach (Money m in moneyObjects)
+			{
+				m.ToggleColor(false);
+			}
 		}
+
 
 		Logging(log);
-
-		if (reachedMax)
-		{
-			Logging("You reached 1000! Moving on to face off"); //todo add pound sign. Add a better log
-		}
 	}
 
 

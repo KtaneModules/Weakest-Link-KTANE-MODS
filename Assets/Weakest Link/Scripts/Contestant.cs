@@ -15,6 +15,7 @@ public class Contestant {
     public const int MAX_WRONG = 3; // the max amount of questions the contestant can get wrong in the money stage
 
 
+
     //used to hold the handwriting of this contestant
     public Material HandWritingMaterial { get; set; }
     public Font HandWritingFont { get; set; }
