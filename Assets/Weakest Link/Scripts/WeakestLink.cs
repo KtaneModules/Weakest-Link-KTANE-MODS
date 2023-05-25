@@ -62,6 +62,9 @@ public class WeakestLink : MonoBehaviour
 	[SerializeField]
 	List<Font> questionFonts;
 
+	[SerializeField]
+	Sprite redBackground;
+
 	JsonReader jsonData;
 
 	Contestant c1;
@@ -179,9 +182,18 @@ public class WeakestLink : MonoBehaviour
 	#endregion
 
 
-	#region stage 5
+	#region Stage 6
 	[SerializeField]
-	Sprite redBackground;
+	Sprite checkmarkSprite;
+
+	[SerializeField]
+	Sprite xSprite;
+
+	bool inFaceOffPhase;
+
+	GameObject stage6Objects;
+
+	List<CorrectIndicator> moduleIndicators;
 	#endregion
 
 	void SetUpModule()
@@ -206,7 +218,7 @@ public class WeakestLink : MonoBehaviour
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
 		contestant1GameObject = stage1Objects.transform.Find("Contestant 1").gameObject;
 		contestant2GameObject = stage1Objects.transform.Find("Contestant 2").gameObject;
-		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").gameObject.GetComponent<KMSelectable>();
+		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
 		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true, 2); UpdateQuestion(true, 2); return false; };
 		#endregion
 
@@ -219,8 +231,8 @@ public class WeakestLink : MonoBehaviour
 		questionPhaseTimerTextMesh = timerGameObject.GetComponent<TextMesh>();
 
 		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
-		questionPhaseQuestionText = canvas.transform.Find("Question").gameObject.GetComponent<Text>();
-		questionPhaseAnswerText = canvas.transform.Find("Answer").gameObject.GetComponent<Text>();
+		questionPhaseQuestionText = canvas.transform.Find("Question").GetComponent<Text>();
+		questionPhaseAnswerText = canvas.transform.Find("Answer").GetComponent<Text>();
 
 		questionPhasePlayerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
 		questionPhaseContestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
@@ -279,13 +291,35 @@ public class WeakestLink : MonoBehaviour
 		moneyPhaseQuestionText = c.transform.Find("Question").GetComponent<Text>();
 		moneyPhaseAnswerText = c.transform.Find("Answer").GetComponent<Text>();
 
-		playerDisplay = c.transform.Find("Player").Find("Player Name").gameObject.GetComponent<Text>();
-		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").gameObject.GetComponent<Text>();
+		playerDisplay = c.transform.Find("Player").Find("Player Name").GetComponent<Text>();
+		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").GetComponent<Text>();
 
-		moneyPhaseTimerTextMesh = stage5Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
+		moneyPhaseTimerTextMesh = stage5Objects.transform.Find("Timer").GetComponent<TextMesh>();
 
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 		bankButton.OnInteract += delegate () { BankButtonPressed(); return false; };
+
+		#endregion
+
+		#region Stage 6
+		inFaceOffPhase = false;
+
+		stage6Objects = transform.Find("Face Off Phase").gameObject;
+		GameObject stage6Canvas = stage6Objects.transform.Find("Canvas").gameObject;
+
+		moduleIndicators = new List<CorrectIndicator>()
+		{
+			new CorrectIndicator(1, stage6Canvas.transform.Find("First Image").gameObject, redBackground, checkmarkSprite, xSprite),
+			new CorrectIndicator(2, stage6Canvas.transform.Find("Second Image").gameObject, redBackground, checkmarkSprite, xSprite),
+			new CorrectIndicator(3, stage6Canvas.transform.Find("Third Image").gameObject, redBackground, checkmarkSprite, xSprite),
+			new CorrectIndicator(4, stage6Canvas.transform.Find("Fourth Image").gameObject, redBackground, checkmarkSprite, xSprite),
+			new CorrectIndicator(5, stage6Canvas.transform.Find("Fifth Image").gameObject, redBackground, checkmarkSprite, xSprite),
+		};
+
+		foreach (CorrectIndicator i in moduleIndicators)
+		{
+			i.SetUnused();
+		}
 
 		#endregion
 
@@ -298,6 +332,9 @@ public class WeakestLink : MonoBehaviour
 		Logging($"First contestant is {c1.Name} who specializese in {c1.Category}");
 		Logging($"Second contestant is {c2.Name} who specializese in {c2.Category}");
 		Logging($"You specialize in {playerContestant.Category}");
+
+		
+
 	}
 
 
@@ -390,6 +427,7 @@ public class WeakestLink : MonoBehaviour
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
 				stage5Objects.SetActive(false);
+				stage6Objects.SetActive(false);
 
 				break;
 			case 1:
@@ -398,6 +436,7 @@ public class WeakestLink : MonoBehaviour
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
 				stage5Objects.SetActive(false);
+				stage6Objects.SetActive(false);
 
 				Logging("===========Question Phase===========");
 				break;
@@ -408,6 +447,7 @@ public class WeakestLink : MonoBehaviour
 				stage3Objects.SetActive(true);
 				stage4Objects.SetActive(false);
 				stage5Objects.SetActive(false);
+				stage6Objects.SetActive(false);
 
 				eliminationText.text = "";
 
@@ -420,6 +460,8 @@ public class WeakestLink : MonoBehaviour
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
 				stage5Objects.SetActive(false);
+				stage6Objects.SetActive(false);
+
 				break;
 
 			case 4:
@@ -428,6 +470,7 @@ public class WeakestLink : MonoBehaviour
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
 				stage5Objects.SetActive(true);
+				stage6Objects.SetActive(false);
 
 				moneyStored = 0;
 				BreakMoneyChain();
@@ -442,6 +485,7 @@ public class WeakestLink : MonoBehaviour
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
 				stage5Objects.SetActive(false);
+				stage6Objects.SetActive(true);
 
 				Logging("===========Face Off Phase===========");
 				break;
@@ -808,11 +852,11 @@ public class WeakestLink : MonoBehaviour
 			if (!inMoneyPhase || currentTime <= 0)
 				yield break;
 
-			UpdateQuestion(false, 4);
+			UpdateQuestion(false, 5);
 
 			if (!turnChanged)
 			{
-				UpdateTurn(false, 4);
+				UpdateTurn(false, 5);
 			}
 
 			if (moneyPhaseCurrentTurn != MoneyPhaseTurn.Player)
@@ -855,7 +899,7 @@ public class WeakestLink : MonoBehaviour
 				if (!inMoneyPhase || currentTime <= 0)
 					yield break;
 
-				StartCoroutine(Submit(4));
+				StartCoroutine(Submit(5));
 			}
 		}
 	}
@@ -978,7 +1022,13 @@ public class WeakestLink : MonoBehaviour
 
 			BreakMoneyChain();
 
-			if (moneyStored >= 1000)
+			//if (moneyStored >= 1000)
+			//{
+			//	EndMoneyPhase(true, $"");
+			//}
+
+			//todo get rid of this and uncomment lines above
+			if (moneyStored >= 1)
 			{
 				EndMoneyPhase(true, $"");
 			}
