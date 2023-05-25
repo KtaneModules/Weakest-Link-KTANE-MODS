@@ -108,7 +108,7 @@ public class WeakestLink : MonoBehaviour
 
 
 	bool inQuestionPhase;
-	TextMesh questionPhaseTimerTextMesh;
+	Text questionPhaseTimerText;
 	Text questionPhaseQuestionText;
 	Text questionPhaseAnswerText;
 
@@ -175,7 +175,7 @@ public class WeakestLink : MonoBehaviour
 
 	Contestant aliveConestant;
 
-	TextMesh moneyPhaseTimerTextMesh;
+	Text moneyPhaseTimerText;
 
 	int moneyStored;
 
@@ -217,7 +217,7 @@ public class WeakestLink : MonoBehaviour
 			if (inQuestionPhase)
 			{
 				currentTime -= Time.deltaTime;
-				questionPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+				questionPhaseTimerText.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
 				if (currentTime <= 0f)
 				{
@@ -247,7 +247,7 @@ public class WeakestLink : MonoBehaviour
 			else if (inMoneyPhase)
 			{
 				currentTime -= Time.deltaTime;
-				moneyPhaseTimerTextMesh.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+				moneyPhaseTimerText.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
 				if (currentTime <= 0f)
 				{
@@ -309,12 +309,12 @@ public class WeakestLink : MonoBehaviour
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
 		inQuestionPhase = false;
-		GameObject timerGameObject = stage2Objects.transform.Find("Timer").gameObject;
-		questionPhaseTimerTextMesh = timerGameObject.GetComponent<TextMesh>();
 
 		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
 		questionPhaseQuestionText = canvas.transform.Find("Question").GetComponent<Text>();
 		questionPhaseAnswerText = canvas.transform.Find("Answer").GetComponent<Text>();
+
+		questionPhaseTimerText = canvas.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
 
 		questionPhasePlayerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
 		questionPhaseContestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
@@ -376,7 +376,7 @@ public class WeakestLink : MonoBehaviour
 		playerDisplay = c.transform.Find("Player").Find("Player Name").GetComponent<Text>();
 		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").GetComponent<Text>();
 
-		moneyPhaseTimerTextMesh = stage5Objects.transform.Find("Timer").GetComponent<TextMesh>();
+		moneyPhaseTimerText = c.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
 
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 		bankButton.OnInteract += delegate () { BankButtonPressed(); return false; };
@@ -403,10 +403,6 @@ public class WeakestLink : MonoBehaviour
 			new CorrectIndicator(4, stage6Canvas.transform.Find("Fourth Image").gameObject, redBackground, checkmarkSprite, xSprite),
 			new CorrectIndicator(5, stage6Canvas.transform.Find("Fifth Image").gameObject, redBackground, checkmarkSprite, xSprite),
 		};
-
-		
-
-
 		#endregion
 
 		//create player
@@ -418,9 +414,6 @@ public class WeakestLink : MonoBehaviour
 		Logging($"First contestant is {c1.Name} who specializese in {c1.Category}");
 		Logging($"Second contestant is {c2.Name} who specializese in {c2.Category}");
 		Logging($"You specialize in {playerContestant.Category}");
-
-
-
 	}
 
 	Category GetPlayerSkill()
