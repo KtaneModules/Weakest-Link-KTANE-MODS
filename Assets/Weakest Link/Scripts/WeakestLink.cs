@@ -101,11 +101,13 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	
-	const int questionPhaseTimerMax = 1; // the amount of time the user has to answers qustions in the first stage 
-
 	//const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
+	//todo delete this and uncomment line above
+	const int questionPhaseTimerMax = 1; // the amount of time the user has to answers qustions in the first stage 
+
+
+	Contestant[] stage2Contestants;
 
 	bool inQuestionPhase;
 	Text questionPhaseTimerText;
@@ -323,6 +325,8 @@ public class WeakestLink : MonoBehaviour
 		questionPhasePlayerText.text = "PLAYER";
 		questionPhaseContestant1Text.text = c1.Name.ToUpper();
 		questionPhaseContestant2Text.text = c2.Name.ToUpper();
+
+		stage2Contestants = new Contestant[] { playerContestant, c1, c2 };
 		#endregion
 
 		#region stage3
@@ -406,7 +410,8 @@ public class WeakestLink : MonoBehaviour
 		#endregion
 
 		//create player
-		playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
+		int playerFont = Rnd.Range(0, handWritingFonts.Count);
+		playerContestant = new Contestant("", GetPlayerSkill(), null, handWritingMaterials[playerFont], handWritingFonts[playerFont], null, null, false);
 
 		//make sure the right game objects are visible
 		GoToNextStage(0);
@@ -448,7 +453,6 @@ public class WeakestLink : MonoBehaviour
 				stage4Objects.SetActive(false);
 				stage5Objects.SetActive(false);
 				stage6Objects.SetActive(false);
-
 				break;
 			case 1:
 				stage1Objects.SetActive(false);
@@ -468,7 +472,8 @@ public class WeakestLink : MonoBehaviour
 				stage4Objects.SetActive(false);
 				stage5Objects.SetActive(false);
 				stage6Objects.SetActive(false);
-
+				
+				eliminationText.font = playerContestant.HandWritingFont;
 				eliminationText.text = "";
 
 				Logging("===========Elimination Phase===========");
@@ -636,18 +641,41 @@ public class WeakestLink : MonoBehaviour
 		{
 			questionPhasePlayerText.color = questionPhaseContestant1Text.color = questionPhaseContestant2Text.color = inactiveColor;
 
-			Text[] names = new Text[] { questionPhasePlayerText, questionPhaseContestant1Text, questionPhaseContestant2Text };
+			switch (questionPhaseCurrentTurn)
+			{
+				case QuestionPhaseTurn.Player:
+					questionPhasePlayerText.color = Color.white;
+					questionPhaseAnswerText.font = playerContestant.HandWritingFont;
+					break;
+				case QuestionPhaseTurn.C1:
+					questionPhaseContestant1Text.color = Color.white;
+					questionPhaseAnswerText.font = c1.HandWritingFont;
 
-			names[(int)questionPhaseCurrentTurn].color = Color.white;
+					break;
+				case QuestionPhaseTurn.C2:
+					questionPhaseContestant2Text.color = Color.white;
+					questionPhaseAnswerText.font = c2.HandWritingFont;
+					break;
+			}
 		}
 
 		else if (stage == 5)
 		{
 			playerDisplay.color = contestantDisplay.color = inactiveColor;
 
-			Text[] names = new Text[] { playerDisplay, contestantDisplay };
+			bool playerTurn = moneyPhaseCurrentTurn == MoneyPhaseTurn.Player;
 
-			names[(int)moneyPhaseCurrentTurn].color = Color.white;
+			if (playerTurn)
+			{
+				playerDisplay.color = Color.white;
+				moneyPhaseAnswerText.font = playerContestant.HandWritingFont;
+			}
+
+			else
+			{
+				contestantDisplay.color = Color.white;
+				moneyPhaseAnswerText.font = aliveConestant.HandWritingFont;
+			}
 		}
 	}
 
@@ -1130,6 +1158,8 @@ public class WeakestLink : MonoBehaviour
 
 		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
+		int randomFont3 = Rnd.Range(0, handWritingMaterials.Count);
+
 
 		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
 
@@ -1137,7 +1167,7 @@ public class WeakestLink : MonoBehaviour
 
 		if (updatePlayer)
 		{
-			playerContestant = new Contestant("", GetPlayerSkill(), null, null, null, null, null, false);
+			playerContestant = new Contestant("", GetPlayerSkill(), null, handWritingMaterials[randomFont3], handWritingFonts[randomFont3], null, null, false);
 		}
 	}
 

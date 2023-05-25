@@ -17,8 +17,8 @@ public class Contestant {
 
 
     //used to hold the handwriting of this contestant
-    public Material HandWritingMaterial { get; set; }
-    public Font HandWritingFont { get; set; }
+    public Material HandWritingMaterial { get; private set; }
+    public Font HandWritingFont { get; private set; }
 
     public GameObject GameObject;
 
@@ -44,6 +44,7 @@ public class Contestant {
 
         HandWritingMaterial = handWritingMaterial;
         HandWritingFont = handWritingFont;
+        
         NameDisplayMaterial = nameDisplayMaterial;
         NameDisplayFont = nameDisplayFont;
 
@@ -63,8 +64,8 @@ public class Contestant {
 
         TextMesh skillTextMesh = GameObject.transform.GetChild(1).GetComponent<TextMesh>();
         skillTextMesh.text = Category.ToString().ToUpper();
-        skillTextMesh.font = NameDisplayFont;
+        skillTextMesh.font = HandWritingFont;
         skillTextMesh.fontSize = 120;
-        GameObject.transform.GetChild(1).GetComponent<MeshRenderer>().materials = new Material[] { NameDisplayMaterial };
+        GameObject.transform.GetChild(1).GetComponent<MeshRenderer>().materials = new Material[] { HandWritingMaterial };
     }
 }
