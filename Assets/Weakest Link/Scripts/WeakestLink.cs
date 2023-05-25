@@ -141,13 +141,21 @@ public class WeakestLink : MonoBehaviour
 
 	#region Stage 4
 	GameObject stage4Objects;
+
+	KMSelectable stage4NextStageButton;
+
+	#endregion
+
+	#region Stage 5
+	GameObject stage5Objects;
 	GameObject moneyCanvas;
 	List<Money> moneyObjects;
 	int currentMoneyIndex;
 	Text playerDisplay;
 	Text contestantDisplay;
-	KMSelectable bankGameObject;
-	TextMesh bankText;
+	GameObject bankGameObject;
+	KMSelectable bankButton;
+	TextMesh bankMoneyAmountTextMesh;
 	bool inMoneyPhase;
 
 	MoneyPhaseTurn moneyPhaseCurrentTurn;
@@ -224,14 +232,27 @@ public class WeakestLink : MonoBehaviour
 		eliminationText = stage3Objects.transform.Find("Canvas").transform.Find("Elimination Name").GetComponent<Text>();
 		#endregion
 
-		#region stage4
+		#region stage 4
+
+		stage4Objects = transform.Find("Intermission Phase").gameObject;
+
+		stage4NextStageButton = stage4Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
+
+		stage4NextStageButton.OnInteract += delegate () { GoToNextStage(4); return false; };
+		#endregion
+
+		#region stage5
 		inMoneyPhase = false;
 
-		stage4Objects = transform.Find("Money Phase").gameObject;
+		stage5Objects = transform.Find("Money Phase").gameObject;
 
-		moneyCanvas = stage4Objects.transform.Find("Canvas").gameObject;
+		moneyCanvas = stage5Objects.transform.Find("Canvas").gameObject;
 
-		bankGameObject = moneyCanvas.transform.Find("Bank Button").gameObject.GetComponent<KMSelectable>();
+		bankGameObject = moneyCanvas.transform.Find("Bank Button").gameObject;
+
+		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
+
+		bankButton = bankGameObject.transform.GetComponent<KMSelectable>();
 
 		moneyObjects = new List<Money>()
 		{
@@ -248,7 +269,7 @@ public class WeakestLink : MonoBehaviour
 
 		currentMoneyIndex = -1;
 
-		GameObject c = stage4Objects.transform.Find("Canvas").gameObject;
+		GameObject c = stage5Objects.transform.Find("Canvas").gameObject;
 
 		moneyPhaseQuestionText = c.transform.Find("Question").GetComponent<Text>();
 		moneyPhaseAnswerText = c.transform.Find("Answer").GetComponent<Text>();
@@ -256,10 +277,10 @@ public class WeakestLink : MonoBehaviour
 		playerDisplay = c.transform.Find("Player").Find("Player Name").gameObject.GetComponent<Text>();
 		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").gameObject.GetComponent<Text>();
 
-		moneyPhaseTimerTextMesh = stage4Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
+		moneyPhaseTimerTextMesh = stage5Objects.transform.Find("Timer").gameObject.GetComponent<TextMesh>();
 
-		bankText = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
-		bankGameObject.OnInteract += delegate () { BankButtonPressed(); return false; };
+		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
+		bankButton.OnInteract += delegate () { BankButtonPressed(); return false; };
 
 		#endregion
 
@@ -318,12 +339,12 @@ public class WeakestLink : MonoBehaviour
 
 			if (currentTime <= 0f)
 			{
-				EndMoneyPhase(false, $"Strike! Time ran out and you only banked {bankText.text}");
+				EndMoneyPhase(false, $"Strike! Time ran out and you only banked {bankMoneyAmountTextMesh.text}");
 			}
 
 			if (focused && moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
 			{ 
-				GetKeyboardInput(4);
+				GetKeyboardInput(5);
 			}
 		}
 
@@ -363,6 +384,7 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
+				stage5Objects.SetActive(false);
 
 				break;
 			case 1:
@@ -370,6 +392,7 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(true);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
+				stage5Objects.SetActive(false);
 
 				Logging("===========Question Phase===========");
 				break;
@@ -379,6 +402,7 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(true);
 				stage4Objects.SetActive(false);
+				stage5Objects.SetActive(false);
 
 				eliminationText.text = "";
 
@@ -390,12 +414,7 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(true);
-
-				moneyStored = 0;
-				BreakMoneyChain();
-				Logging("===========Money Phase===========");
-				UpdateQuestion(true, 4);
-				UpdateTurn(true, 4);
+				stage5Objects.SetActive(false);
 				break;
 
 			case 4:
@@ -403,9 +422,23 @@ public class WeakestLink : MonoBehaviour
 				stage2Objects.SetActive(false);
 				stage3Objects.SetActive(false);
 				stage4Objects.SetActive(false);
+				stage5Objects.SetActive(true);
+
+				moneyStored = 0;
+				BreakMoneyChain();
+				Logging("===========Money Phase===========");
+				UpdateQuestion(true, 5);
+				UpdateTurn(true, 5);
+				break;
+
+			case 5:
+				stage1Objects.SetActive(false);
+				stage2Objects.SetActive(false);
+				stage3Objects.SetActive(false);
+				stage4Objects.SetActive(false);
+				stage5Objects.SetActive(false);
 
 				Logging("===========Face Off Phase===========");
-
 				break;
 		}
 	}
@@ -429,7 +462,7 @@ public class WeakestLink : MonoBehaviour
 			questionPhaseAnswerText.text = "";
 		}
 
-		else if (stage == 4)
+		else if (stage == 5)
 		{
 			if (init)
 			{
@@ -474,7 +507,7 @@ public class WeakestLink : MonoBehaviour
 
 		}
 
-		else if (stage == 4)
+		else if (stage == 5)
 		{
 			if (init)
 			{
@@ -504,7 +537,7 @@ public class WeakestLink : MonoBehaviour
 			names[(int)questionPhaseCurrentTurn].color = Color.white;
 		}
 
-		else if (stage == 4)
+		else if (stage == 5)
 		{
 			playerDisplay.color = contestantDisplay.color = inactiveColor;
 
@@ -724,7 +757,7 @@ public class WeakestLink : MonoBehaviour
 			Logging(log);
 		}
 
-		else if (stage == 4 && inMoneyPhase)
+		else if (stage == 5 && inMoneyPhase)
 		{
 			bool turnChanged = false;
 
@@ -736,7 +769,7 @@ public class WeakestLink : MonoBehaviour
 
 			if (moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
 			{
-				UpdateTurn(false, 4);
+				UpdateTurn(false, 5);
 				turnChanged = true;
 			}
 
@@ -930,14 +963,20 @@ public class WeakestLink : MonoBehaviour
 
 	void BankButtonPressed()
 	{
-		moneyStored += moneyObjects[currentMoneyIndex].MoneyAmount;
-		bankText.text = $"£{moneyStored}";
-
-		BreakMoneyChain();
-
-		if (moneyStored >= 1000)
+		if (moneyPhaseCurrentTurn == MoneyPhaseTurn.Player && currentMoneyIndex != -1)
 		{
-			EndMoneyPhase(true, $"You banked {bankText.text}");
+			int moneyAdd = moneyObjects[currentMoneyIndex].MoneyAmount;
+			moneyStored += moneyAdd;
+			bankMoneyAmountTextMesh.text = $"£{moneyStored}";
+
+			Logging($"You banked £{moneyAdd} leaving you with a total of {bankMoneyAmountTextMesh.text}");
+
+			BreakMoneyChain();
+
+			if (moneyStored >= 1000)
+			{
+				EndMoneyPhase(true, $"");
+			}
 		}
 	}
 
@@ -952,7 +991,7 @@ public class WeakestLink : MonoBehaviour
 
 		if (passedPhase)
 		{
-			GoToNextStage(4);
+			GoToNextStage(5);
 		}
 
 		else
@@ -966,7 +1005,7 @@ public class WeakestLink : MonoBehaviour
 	{
 		currentMoneyIndex = -1;
 
-		bankText.text = "£0";
+		bankMoneyAmountTextMesh.text = "£0";
 
 		foreach (Money m in moneyObjects)
 		{
