@@ -179,8 +179,6 @@ public class WeakestLink : MonoBehaviour
 
 	int moneyStored;
 
-
-
 	#endregion
 
 
@@ -546,6 +544,8 @@ public class WeakestLink : MonoBehaviour
 
 			currentTrivia = GetQuestion();
 
+			questionPhaseQuestionText.font = GetQuestionFont();
+
 			questionPhaseQuestionText.color = Color.white;
 
 			questionPhaseQuestionText.text = currentTrivia.Question;
@@ -575,6 +575,8 @@ public class WeakestLink : MonoBehaviour
 
 			moneyPhaseQuestionText.text = currentTrivia.Question;
 
+			moneyPhaseQuestionText.font = GetQuestionFont();
+
 			moneyPhaseAnswerText.text = "";
 
 		}
@@ -586,6 +588,8 @@ public class WeakestLink : MonoBehaviour
 			stage6QuestionText.color = Color.white;
 
 			stage6QuestionText.text = currentTrivia.Question;
+
+			stage6QuestionText.font = GetQuestionFont();
 
 			stage6AnswerText.text = "";
 		}
@@ -626,6 +630,11 @@ public class WeakestLink : MonoBehaviour
 		}
 
 		UpdateNameColors(stage);
+	}
+
+	Font GetQuestionFont()
+	{ 
+		return Rnd.Range(0, 100) > 0 ? questionFonts[1] : questionFonts[0];
 	}
 
 	void UpdateNameColors(int stage)
