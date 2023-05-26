@@ -106,9 +106,6 @@ public class WeakestLink : MonoBehaviour
 	//todo delete this and uncomment line above
 	const int questionPhaseTimerMax = 1; // the amount of time the user has to answers qustions in the first stage 
 
-
-	Contestant[] stage2Contestants;
-
 	bool inQuestionPhase;
 	Text questionPhaseTimerText;
 	Text questionPhaseQuestionText;
@@ -138,6 +135,14 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 3
 
 	GameObject stage3Objects;
+
+	Text contestant1Display;
+
+	Text contestant1EliminationText;
+
+	Text contestant2Display;
+
+	Text contestant2EliminationText;
 
 	Contestant personToEliminate;
 	bool inEliminationPhase;
@@ -300,8 +305,9 @@ public class WeakestLink : MonoBehaviour
 
 		#region stage1
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
-		contestant1GameObject = stage1Objects.transform.Find("Contestant 1").gameObject;
-		contestant2GameObject = stage1Objects.transform.Find("Contestant 2").gameObject;
+		GameObject stage1Canvas = stage1Objects.transform.Find("Canvas").gameObject;
+		contestant1GameObject = stage1Canvas.transform.Find("Contestant 1").gameObject;
+		contestant2GameObject = stage1Canvas.transform.Find("Contestant 2").gameObject;
 		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
 		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true, 2); UpdateQuestion(true, 2); return false; };
 		#endregion
@@ -328,14 +334,23 @@ public class WeakestLink : MonoBehaviour
 		questionPhasePlayerText.text = "PLAYER";
 		questionPhaseContestant1Text.text = c1.Name.ToUpper();
 		questionPhaseContestant2Text.text = c2.Name.ToUpper();
-
-		stage2Contestants = new Contestant[] { playerContestant, c1, c2 };
 		#endregion
 
 		#region stage3
 		inEliminationPhase = false;
+
 		stage3Objects = transform.Find("Elimination Phase").gameObject;
-		eliminationText = stage3Objects.transform.Find("Canvas").transform.Find("Elimination Name").GetComponent<Text>();
+
+		GameObject stage3Canvas = stage3Objects.transform.Find("Canvas").gameObject;
+
+		eliminationText = stage3Canvas.transform.Find("Image").transform.Find("Elimination Name").GetComponent<Text>();
+
+		contestant1Display = stage3Canvas.transform.Find("Contestant 1 Name").transform.Find("Name").GetComponent<Text>();
+		contestant1EliminationText = stage3Canvas.transform.Find("Contestant 1 Elimination").transform.Find("Elimination Text").GetComponent<Text>();
+
+
+		contestant2Display = stage3Canvas.transform.Find("Contestant 2 Name").transform.Find("Name").GetComponent<Text>();
+		contestant2EliminationText = stage3Canvas.transform.Find("Contestant 2 Elimination").transform.Find("Elimination Text").GetComponent<Text>();
 		#endregion
 
 		#region stage 4
@@ -478,6 +493,15 @@ public class WeakestLink : MonoBehaviour
 				
 				eliminationText.font = playerContestant.HandWritingFont;
 				eliminationText.text = "";
+
+				contestant1Display.text = c1.Name.ToUpper();
+				contestant2Display.text = c2.Name.ToUpper();
+
+				contestant1EliminationText.font = c1.HandWritingFont;
+				contestant1EliminationText.text = "";
+
+				contestant2EliminationText.font = c2.HandWritingFont;
+				contestant2EliminationText.text = "";
 
 				Logging("===========Elimination Phase===========");
 				break;
@@ -874,8 +898,52 @@ public class WeakestLink : MonoBehaviour
 		else if (stage == 3)
 		{
 			string log;
+
 			if (eliminationText.text == personToEliminate.Name.ToUpper())
 			{
+
+				if (personToEliminate == c1) //first person picks player
+				{
+					string input = Rnd.Range(0, 2) == 0 ? "PLAYER" : c2.Name.ToUpper();
+
+					foreach (char ch in input)
+					{
+						contestant1EliminationText.text += "" + ch;
+						yield return new WaitForSeconds(0.1f);
+					}
+
+					yield return new WaitForSeconds(1f);
+
+					foreach (char ch in c1.Name.ToUpper())
+					{
+						contestant2EliminationText.text += "" + ch;
+						yield return new WaitForSeconds(0.1f);
+					}
+
+					yield return new WaitForSeconds(1f);
+				}
+
+				else
+				{
+					string input = Rnd.Range(0, 2) == 0 ? "PLAYER" : c1.Name.ToUpper();
+
+					foreach (char ch in c2.Name.ToUpper())
+					{
+						contestant1EliminationText.text += "" + ch;
+						yield return new WaitForSeconds(0.1f);
+					}
+
+					yield return new WaitForSeconds(1f);
+
+					foreach (char ch in input)
+					{
+						contestant2EliminationText.text += "" + ch;
+						yield return new WaitForSeconds(0.1f);
+					}
+
+					yield return new WaitForSeconds(1f);
+				}
+
 				inEliminationPhase = false;
 				personToEliminate.Eliminated = true;
 				log = $"You entered \"{eliminationText.text}\". Which is correct.";
@@ -884,6 +952,22 @@ public class WeakestLink : MonoBehaviour
 
 			else
 			{
+				foreach (char ch in "PLAYER")
+				{
+					contestant1EliminationText.text += "" + ch;
+					yield return new WaitForSeconds(0.1f);
+				}
+
+				yield return new WaitForSeconds(1f);
+
+				foreach (char ch in "PLAYER")
+				{
+					contestant2EliminationText.text += "" + ch;
+					yield return new WaitForSeconds(0.1f);
+				}
+
+				yield return new WaitForSeconds(1f);
+
 				log = $"Strike! You entered \"{eliminationText.text}\".";
 				Strike();
 				GoToNextStage(0);

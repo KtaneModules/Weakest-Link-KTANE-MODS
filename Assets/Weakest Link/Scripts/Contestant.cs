@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Contestant {
 
@@ -30,6 +31,8 @@ public class Contestant {
 
     public bool Eliminated { get; set; }
 
+
+
     public Contestant(string name, Category category, GameObject gameObject, Material handWritingMaterial, Font handWritingFont, Material nameDisplayMaterial, Font nameDisplayFont, bool setFonts)
     {
         Name = name;
@@ -56,16 +59,15 @@ public class Contestant {
 
     public void InitalizeContestant()
     {
-        TextMesh nameTextMesh = GameObject.transform.GetChild(0).GetComponent<TextMesh>();
-        nameTextMesh.text = Name.ToUpper();
-        nameTextMesh.font = NameDisplayFont;
-        nameTextMesh.fontSize = 120;
-        GameObject.transform.GetChild(0).GetComponent<MeshRenderer>().materials = new Material[] { NameDisplayMaterial };
+        Text name = GameObject.transform.Find("Name").GetComponent<Text>();
+        name.text = Name.ToUpper();
+        name.font = NameDisplayFont;
+        name.fontSize = 45;
 
-        TextMesh skillTextMesh = GameObject.transform.GetChild(1).GetComponent<TextMesh>();
-        skillTextMesh.text = Category.ToString().ToUpper();
-        skillTextMesh.font = HandWritingFont;
-        skillTextMesh.fontSize = 120;
-        GameObject.transform.GetChild(1).GetComponent<MeshRenderer>().materials = new Material[] { HandWritingMaterial };
+        Text skill = GameObject.transform.Find("Skill").GetComponent<Text>();
+
+        skill.text = Category.ToString().ToUpper();
+        skill.font = HandWritingFont;
+        skill.fontSize = 45;
     }
 }

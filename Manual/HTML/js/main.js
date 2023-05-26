@@ -115,4 +115,6 @@ const initialzeTable = (tableElement, dataArr, startIndex=0, length=0) =>
     tableElement.innerHTML = html;
 }
 
-init();
+window.onload = () => {
+    init();
+};
