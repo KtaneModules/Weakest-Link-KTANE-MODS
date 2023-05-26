@@ -19,6 +19,8 @@ public class WeakestLink : MonoBehaviour
 	public KMBombInfo Bomb;
 	public KMAudio Audio;
 
+	bool audioPlaying;
+
 	KeyCode[] TypableKeys =
 	{
 		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Period, KeyCode.Return, KeyCode.Minus, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
@@ -40,6 +42,15 @@ public class WeakestLink : MonoBehaviour
 
 	//variables that will be used in all stages
 	#region Global Variables
+
+	[SerializeField]
+	List<AudioClip> playAudioList;
+	
+	[SerializeField]
+	List<AudioClip> goodbyeAudioList;
+	
+	[SerializeField]
+	List<AudioClip> startClockAudioList;
 
 	QuestionPhaseTurn questionPhaseCurrentTurn = QuestionPhaseTurn.Player;
 
@@ -101,10 +112,8 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	//const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
+	const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
-	//todo delete this and uncomment line above
-	const int questionPhaseTimerMax = 1; // the amount of time the user has to answers qustions in the first stage 
 
 	bool inQuestionPhase;
 	Text questionPhaseTimerText;
@@ -219,7 +228,7 @@ public class WeakestLink : MonoBehaviour
 	}
 
 	void Update() {
-		if (!ModuleSolved)
+		if (!ModuleSolved && !audioPlaying)
 		{
 			if (inQuestionPhase)
 			{
@@ -239,9 +248,7 @@ public class WeakestLink : MonoBehaviour
 
 					else
 					{
-						Strike();
-						GetNewContestants(true);
-						GoToNextStage(0);
+						StartCoroutine(Strike(2));
 					}
 				}
 
@@ -282,8 +289,32 @@ public class WeakestLink : MonoBehaviour
 		}
 	}
 
+	IEnumerator Stage1Button()
+	{
+		//let's play the weakest link
+		AudioClip playClip = playAudioList[Rnd.Range(0, playAudioList.Count)];
+
+		audioPlaying = true;
+		Audio.PlaySoundAtTransform(playClip.name, transform);
+		yield return new WaitForSeconds(playClip.length + 1);
+
+
+		//start the clock
+		AudioClip clockClip = playAudioList[Rnd.Range(0, playAudioList.Count)];
+
+		Audio.PlaySoundAtTransform(clockClip.name, transform);
+		yield return new WaitForSeconds(clockClip.length + 1);
+
+		audioPlaying = false;
+
+		GoToNextStage(1); 
+		UpdateTurn(true, 2);
+		UpdateQuestion(true, 2); 
+	}
+
 	void SetUpModule()
 	{
+		audioPlaying = false;
 		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
 		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
 
@@ -309,7 +340,7 @@ public class WeakestLink : MonoBehaviour
 		contestant1GameObject = stage1Canvas.transform.Find("Contestant 1").gameObject;
 		contestant2GameObject = stage1Canvas.transform.Find("Contestant 2").gameObject;
 		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { GoToNextStage(1); UpdateTurn(true, 2); UpdateQuestion(true, 2); return false; };
+		stage1NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(Stage1Button());  } return false; };
 		#endregion
 
 		do
@@ -359,7 +390,7 @@ public class WeakestLink : MonoBehaviour
 
 		stage4NextStageButton = stage4Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
 
-		stage4NextStageButton.OnInteract += delegate () { GoToNextStage(4); return false; };
+		stage4NextStageButton.OnInteract += delegate () { if (!audioPlaying) { GoToNextStage(4); } return false; };
 		#endregion
 
 		#region stage5
@@ -969,9 +1000,8 @@ public class WeakestLink : MonoBehaviour
 				yield return new WaitForSeconds(1f);
 
 				log = $"Strike! You entered \"{eliminationText.text}\".";
-				Strike();
-				GoToNextStage(0);
-				GetNewContestants(true);
+				StartCoroutine(Strike(3));
+				
 			}
 
 			Logging(log);
@@ -1116,9 +1146,7 @@ public class WeakestLink : MonoBehaviour
 			else if ((correctAnswers == 0 && quesetionsAsked == 3) || (correctAnswers == 1 && quesetionsAsked == 4) || quesetionsAsked == 5)
 			{
 				Logging($"Strike! You have correctly answered {correctAnswers} out of {correctAnswers} questions. Unable to get 3/5.");
-				Strike();
-				GoToNextStage(5);
-
+				StartCoroutine(Strike(6));
 			}
 
 			else
@@ -1273,9 +1301,33 @@ public class WeakestLink : MonoBehaviour
 		LogFormat($"[The Weakest Link #{ModuleId}] {s}");
 	}
 
-	void Strike()
+	IEnumerator Strike(int stage)
 	{
+		//you are the weakest link, goodbye
+		AudioClip goodbye = goodbyeAudioList[Rnd.Range(0, goodbyeAudioList.Count)];
+
+		audioPlaying = true;
+		Audio.PlaySoundAtTransform(goodbye.name, transform);
+		yield return new WaitForSeconds(goodbye.length + 1);
+		audioPlaying = false;
+
+
 		GetComponent<KMBombModule>().HandleStrike();
+
+
+		switch (stage)
+		{
+			case 2: //question phase
+			case 3: //elimination phase
+				GetNewContestants(true);
+				GoToNextStage(0);
+				break;
+
+			case 6: //face off phase
+				GoToNextStage(5);
+				break;
+		}
+
 	}
 
 	void Solve()
@@ -1295,13 +1347,7 @@ public class WeakestLink : MonoBehaviour
 
 			BreakMoneyChain();
 
-			//if (moneyStored >= 1000)
-			//{
-			//	EndMoneyPhase(true, $"");
-			//}
-
-			//todo get rid of this and uncomment lines above
-			if (moneyStored >= 1)
+			if (moneyStored >= 1000)
 			{
 				EndMoneyPhase(true, $"");
 			}
@@ -1324,8 +1370,7 @@ public class WeakestLink : MonoBehaviour
 
 		else
 		{
-			Strike();
-			GoToNextStage(6);
+			Strike(5);
 		}
 	}
 

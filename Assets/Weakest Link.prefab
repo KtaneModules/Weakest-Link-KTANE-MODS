@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 33500362460861300}
   - component: {fileID: 23389041124545438}
   - component: {fileID: 114261823979282638}
+  - component: {fileID: 114835114779389714}
   m_Layer: 0
   m_Name: Next Stage Button
   m_TagString: Untagged
@@ -610,6 +611,7 @@ GameObject:
   - component: {fileID: 33979267785055404}
   - component: {fileID: 23051140638347516}
   - component: {fileID: 114866727639531412}
+  - component: {fileID: 114374580690715478}
   m_Layer: 0
   m_Name: Next Stage Button
   m_TagString: Untagged
@@ -713,6 +715,7 @@ GameObject:
   - component: {fileID: 33044111180057488}
   - component: {fileID: 23950426250350774}
   - component: {fileID: 114040791726099988}
+  - component: {fileID: 114341015787029338}
   m_Layer: 0
   m_Name: HL
   m_TagString: Untagged
@@ -847,6 +850,7 @@ GameObject:
   - component: {fileID: 33618205162273074}
   - component: {fileID: 23502646617296882}
   - component: {fileID: 114233121147633778}
+  - component: {fileID: 114793321002473236}
   m_Layer: 0
   m_Name: Bank Button
   m_TagString: Untagged
@@ -995,6 +999,7 @@ GameObject:
   - component: {fileID: 33206489928958688}
   - component: {fileID: 114353963443072350}
   - component: {fileID: 23110269844233676}
+  - component: {fileID: 114156569075131512}
   m_Layer: 0
   m_Name: HL
   m_TagString: Untagged
@@ -1113,6 +1118,7 @@ GameObject:
   - component: {fileID: 33406967398152234}
   - component: {fileID: 114295346839928538}
   - component: {fileID: 23319728002104372}
+  - component: {fileID: 114825370677566188}
   m_Layer: 0
   m_Name: HL
   m_TagString: Untagged
@@ -1236,7 +1242,7 @@ GameObject:
   - component: {fileID: 114846405590615918}
   - component: {fileID: 114359874360587404}
   m_Layer: 0
-  m_Name: Template
+  m_Name: Weakest Link
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2735,7 +2741,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: Bert
 --- !u!114 &114139553842080666
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2761,6 +2767,19 @@ MonoBehaviour:
   AllowSelectionWrapY: 0
   ForceSelectionHighlight: 0
   ForceInteractionHighlight: 0
+--- !u!114 &114156569075131512
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1527924729526520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - KT/Outline
 --- !u!114 &114157353264537494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3361,6 +3380,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114341015787029338
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1345131355932472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - KT/Outline
 --- !u!114 &114342876933343368
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3467,6 +3499,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textJSON: {fileID: 4900000, guid: e20b04717435a754c9b405d67f90cf99, type: 3}
+--- !u!114 &114374580690715478
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1323512772376232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Standard
 --- !u!114 &114374789257185052
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3532,7 +3577,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: Geography
 --- !u!114 &114427693673888936
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3565,7 +3610,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: KTANE
 --- !u!114 &114453791220418026
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4211,7 +4256,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: Bob
 --- !u!114 &114701604450991008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4467,6 +4512,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114793321002473236
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1429830001869132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Standard
 --- !u!114 &114795866197054780
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4543,6 +4601,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114825370677566188
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1586774431871414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - KT/Outline
 --- !u!114 &114835097253833782
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4556,6 +4627,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/Diffuse
+--- !u!114 &114835114779389714
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1026265822518466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Standard
 --- !u!114 &114846405590615918
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4569,6 +4653,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bomb: {fileID: 114454383462897410}
   Audio: {fileID: 114915473299363512}
+  playAudioList:
+  - {fileID: 8300000, guid: 478dc0bb876eb3e4993f533adfed3681, type: 3}
+  - {fileID: 8300000, guid: 1aeec03bb2a64944594933d8b161f169, type: 3}
+  - {fileID: 8300000, guid: ec66d9ec392e48343be2c3fb5a200d91, type: 3}
+  - {fileID: 8300000, guid: 70261774e7cad3c49910edc97f438c78, type: 3}
+  - {fileID: 8300000, guid: 37bbbecf5fad134428a1343ff66d0750, type: 3}
+  - {fileID: 8300000, guid: f6d2ff822e2779547923cbf99e63ee07, type: 3}
+  - {fileID: 8300000, guid: ce350bc57c4a8ba41993d3c64d6e0699, type: 3}
+  - {fileID: 8300000, guid: 737b5fe74984c934e96ca6de686eaddc, type: 3}
+  - {fileID: 8300000, guid: c21eb8e1907a3da488c6919fc12a9dcd, type: 3}
+  goodbyeAudioList:
+  - {fileID: 8300000, guid: 5b217ec8d5077524a92975295852a9cf, type: 3}
+  - {fileID: 8300000, guid: a75cb18a87091a7439530aeac43fa755, type: 3}
+  - {fileID: 8300000, guid: d493db204ce14f14d98599794bb3d73a, type: 3}
+  - {fileID: 8300000, guid: 0a049ffb0c3afb1469fcd6dd1f02b3bd, type: 3}
+  - {fileID: 8300000, guid: d9789738ee9d1ad44a2a1eb5924730cc, type: 3}
+  - {fileID: 8300000, guid: b49dcfdecd1186b47a0a604314cad2f0, type: 3}
+  - {fileID: 8300000, guid: a505ba9c44dbcda41a2a9d95888ebb0c, type: 3}
+  startClockAudioList:
+  - {fileID: 8300000, guid: 88841ff1558f4064ab457de7157802b3, type: 3}
+  - {fileID: 8300000, guid: 4e02833488e743948916dc4ab6db4146, type: 3}
+  - {fileID: 8300000, guid: 627922628dab093449945cdd8db23de9, type: 3}
+  - {fileID: 8300000, guid: a5904145857e8ab45a9f225b461b9aef, type: 3}
+  - {fileID: 8300000, guid: abe7e35660012ee4098601555d1043b1, type: 3}
   nameDisplayMaterial: {fileID: 2100000, guid: c4780ac88b1e8694da49e8c7813f580c, type: 2}
   nameDisplayFont: {fileID: 12800000, guid: 705441aeaf02fca44beb5f4d2d57d692, type: 3}
   handWritingMaterials:
@@ -5601,8 +5709,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -22.499996}
-  m_SizeDelta: {x: 0, y: 45}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224103409897138666
 RectTransform:
