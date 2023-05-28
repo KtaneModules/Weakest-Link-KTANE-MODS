@@ -1058,7 +1058,7 @@ public class WeakestLink : MonoBehaviour
 
 			if (!turnChanged)
 			{
-				log += $". This is there {(aliveConestant.WrongNum == 1 ? "1st" : aliveConestant.WrongNum == 2 ? "2nd" : "3rd")} wrong question";
+				log += $". This is their {(aliveConestant.WrongNum == 1 ? "1st" : aliveConestant.WrongNum == 2 ? "2nd" : "3rd")} wrong question";
 			}
 
 			Logging(log);
