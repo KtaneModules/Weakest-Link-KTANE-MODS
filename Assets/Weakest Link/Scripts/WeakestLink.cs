@@ -408,7 +408,7 @@ public class WeakestLink : MonoBehaviour
 
 		stage4NextStageButton = stage4Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
 
-		stage4NextStageButton.OnInteract += delegate () { if (!audioPlaying) { GoToNextStage(4); } return false; };
+		stage4NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(4)); } return false; };
 		#endregion
 
 		#region stage5
@@ -662,6 +662,8 @@ public class WeakestLink : MonoBehaviour
 			stage6QuestionText.text = currentTrivia.Question;
 
 			stage6QuestionText.font = GetQuestionFont();
+
+			stage6AnswerText.font = playerContestant.HandWritingFont;
 
 			stage6AnswerText.text = "";
 		}
