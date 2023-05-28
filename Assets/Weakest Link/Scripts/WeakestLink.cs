@@ -12,6 +12,7 @@ using UnityEngine.UI;
 public class WeakestLink : MonoBehaviour 
 {
 
+	const string url = "https://ktane-mods.github.io/Weakest-Link-Data/data.json";
 	static int ModuleIdCounter = 1;
 	int ModuleId;
 	private bool ModuleSolved;
@@ -321,13 +322,7 @@ public class WeakestLink : MonoBehaviour
 		//get json data
 		jsonData = gameObject.GetComponent<JsonReader>();
 
-
-
-		//load json data if not loaded alreay
-		if (jsonData.json == null)
-		{
-			gameObject.GetComponent<JsonReader>().LoadData();
-		}
+		jsonData.GetDataFromURL(url);
 
 		//initalize all varables
 		day = DateTime.Now.DayOfWeek.ToString().ToUpper();

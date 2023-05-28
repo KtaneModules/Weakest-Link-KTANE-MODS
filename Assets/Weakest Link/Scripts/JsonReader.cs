@@ -2,22 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Newtonsoft.Json;
 
 public class JsonReader : MonoBehaviour {
 
     public List<Trivia> TriviaList { get; private set; }
     public List<string> ContestantNames { get; private set; }
 
-    private void Start()
-    {
-        LoadData();
-    }
+    bool success = false;
 
 	//object used in order to read data from json
-
-	public TextAsset textJSON;
-
-    public JsonData json { get; private set; }
 
     //holds the data read from the json
     [System.Serializable]
@@ -44,26 +38,45 @@ public class JsonReader : MonoBehaviour {
         }
     }
 
-    //Loads the data from the json
-    public void LoadData()
+    public void GetDataFromURL(string url)
     {
-        if (json != null)
-            return;
-        //Debug.Log("Loading data...\n" + textJSON.text);
-        json = JsonUtility.FromJson<JsonData>(textJSON.text);
+        StartCoroutine(LoadData(url));
+    }
 
-        //debug line used to make sure data is getting extracted correctly
+    //Loads the data from the json
+    public IEnumerator LoadData(string url)
+    {
 
-        //JsonTrivia firstData = json.QuizBank[0];
+        //Stores the raw text of the grabbed json.
+        string dataString;
+        WWW request = new WWW(url);
+        //Waits until the WWW request returns the JSON file.
+        yield return request;
+        //If an error occurs, we need to default to the hardcoded file.
+        if (request.error != null)
+        {
+            success = false;
+            Debug.Log("Failed to get data!");
 
-        //Debug.Log($"First Question detail: question: {firstData.Question}, Accepted Answer: {ListToString(firstData.Answers)}, " +
-        //    $"Wrong Answers: {ListToString(firstData.WrongAnswers)}, Category: {firstData.Category}");
+        }
 
 
-        //convert data into Trivia Class
-        TriviaList = json.QuizBank.Select(q => ConvertJsonToTrivia(q)).ToList();
+        else
+        {
+            Debug.Log("Gotten info!");
+            dataString = request.text;
+            success = true;
 
-        ContestantNames = json.CharacterNames;
+            JsonData deserial = JsonConvert.DeserializeObject<JsonData>(dataString);
+
+            Debug.Log($"Names: {string.Join(", ", deserial.CharacterNames.ToArray())}");
+
+            TriviaList = deserial.QuizBank.Select(t => ConvertJsonToTrivia(t)).ToList();
+
+            ContestantNames = deserial.CharacterNames;
+
+            deserial.QuizBank.ForEach(t => TriviaList.Add(ConvertJsonToTrivia(t)));
+        }
     }
 
     private Trivia ConvertJsonToTrivia(JsonTrivia j)
