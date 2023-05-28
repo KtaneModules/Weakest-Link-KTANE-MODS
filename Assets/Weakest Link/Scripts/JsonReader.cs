@@ -9,7 +9,7 @@ public class JsonReader : MonoBehaviour {
     public List<Trivia> TriviaList { get; private set; }
     public List<string> ContestantNames { get; private set; }
 
-    bool success = false;
+    public bool Success = false;
 
 	//object used in order to read data from json
 
@@ -49,13 +49,15 @@ public class JsonReader : MonoBehaviour {
 
         //Stores the raw text of the grabbed json.
         string dataString;
+
         WWW request = new WWW(url);
         //Waits until the WWW request returns the JSON file.
         yield return request;
+
         //If an error occurs, we need to default to the hardcoded file.
         if (request.error != null)
         {
-            success = false;
+            Success = false;
             Debug.Log("Failed to get data!");
 
         }
@@ -65,7 +67,7 @@ public class JsonReader : MonoBehaviour {
         {
             Debug.Log("Gotten info!");
             dataString = request.text;
-            success = true;
+            Success = true;
 
             JsonData deserial = JsonConvert.DeserializeObject<JsonData>(dataString);
 

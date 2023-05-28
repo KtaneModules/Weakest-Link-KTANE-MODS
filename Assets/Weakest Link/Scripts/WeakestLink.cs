@@ -12,7 +12,11 @@ using UnityEngine.UI;
 public class WeakestLink : MonoBehaviour 
 {
 
+	//todo get rid of uncessary code
+	//todo get rid of uncessary files
+
 	const string url = "https://ktane-mods.github.io/Weakest-Link-Data/data.json";
+
 	static int ModuleIdCounter = 1;
 	int ModuleId;
 	private bool ModuleSolved;
@@ -223,8 +227,14 @@ public class WeakestLink : MonoBehaviour
 
 
 
-	void Start() {
+	IEnumerator Start() {
 		ModuleId = ModuleIdCounter++;
+
+		//get json data
+		jsonData = gameObject.GetComponent<JsonReader>();
+
+		yield return jsonData.LoadData(url);
+
 		SetUpModule();
 	}
 
@@ -290,7 +300,7 @@ public class WeakestLink : MonoBehaviour
 		}
 	}
 
-	IEnumerator Stage1Button()
+	IEnumerator StageButton(int stage)
 	{
 		//let's play the weakest link
 		AudioClip playClip = playAudioList[Rnd.Range(0, playAudioList.Count)];
@@ -301,28 +311,41 @@ public class WeakestLink : MonoBehaviour
 
 
 		//start the clock
-		AudioClip clockClip = playAudioList[Rnd.Range(0, playAudioList.Count)];
+		AudioClip clockClip = startClockAudioList[Rnd.Range(0, startClockAudioList.Count)];
 
 		Audio.PlaySoundAtTransform(clockClip.name, transform);
 		yield return new WaitForSeconds(clockClip.length + 1);
 
 		audioPlaying = false;
 
-		GoToNextStage(1); 
-		UpdateTurn(true, 2);
-		UpdateQuestion(true, 2); 
+		if (stage == 1)
+		{
+			GoToNextStage(1);
+			UpdateTurn(true, 2);
+			UpdateQuestion(true, 2);
+		}
+
+
+		else
+		{
+			moneyStored = 0;
+			BreakMoneyChain();
+			GoToNextStage(4);
+		}
 	}
 
 	void SetUpModule()
 	{
+		if (!jsonData.Success)
+		{
+			Logging("Unable to load data, solving module...");
+			Solve();
+			return;
+		}
+
 		audioPlaying = false;
 		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
 		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
-
-		//get json data
-		jsonData = gameObject.GetComponent<JsonReader>();
-
-		jsonData.GetDataFromURL(url);
 
 		//initalize all varables
 		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
@@ -335,7 +358,7 @@ public class WeakestLink : MonoBehaviour
 		contestant1GameObject = stage1Canvas.transform.Find("Contestant 1").gameObject;
 		contestant2GameObject = stage1Canvas.transform.Find("Contestant 2").gameObject;
 		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(Stage1Button());  } return false; };
+		stage1NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(1));  } return false; };
 		#endregion
 
 		do
@@ -550,8 +573,6 @@ public class WeakestLink : MonoBehaviour
 				stage5Objects.SetActive(true);
 				stage6Objects.SetActive(false);
 
-				moneyStored = 0;
-				BreakMoneyChain();
 				Logging("===========Money Phase===========");
 				UpdateQuestion(true, 5);
 				UpdateTurn(true, 5);
