@@ -314,7 +314,7 @@ public class WeakestLink : MonoBehaviour
 		AudioClip clockClip = startClockAudioList[Rnd.Range(0, startClockAudioList.Count)];
 
 		Audio.PlaySoundAtTransform(clockClip.name, transform);
-		yield return new WaitForSeconds(clockClip.length + 1);
+		yield return new WaitForSeconds(clockClip.length + 0.5f);
 
 		audioPlaying = false;
 
@@ -483,8 +483,8 @@ public class WeakestLink : MonoBehaviour
 		//make sure the right game objects are visible
 		GoToNextStage(0);
 
-		Logging($"First contestant is {c1.Name} who specializese in {c1.Category}");
-		Logging($"Second contestant is {c2.Name} who specializese in {c2.Category}");
+		Logging($"First contestant is {c1.Name} who specializes in {c1.Category}");
+		Logging($"Second contestant is {c2.Name} who specializes in {c2.Category}");
 		Logging($"You specialize in {playerContestant.Category}");
 	}
 
@@ -529,7 +529,7 @@ public class WeakestLink : MonoBehaviour
 				stage5Objects.SetActive(false);
 				stage6Objects.SetActive(false);
 
-				Logging("===========Question Phase===========");
+				Logging("====================Question Phase====================");
 				break;
 
 			case 2:
@@ -552,7 +552,7 @@ public class WeakestLink : MonoBehaviour
 				contestant2EliminationText.font = c2.HandWritingFont;
 				contestant2EliminationText.text = "";
 
-				Logging("===========Elimination Phase===========");
+				Logging("====================Elimination Phase====================");
 				break;
 
 			case 3:
@@ -573,7 +573,7 @@ public class WeakestLink : MonoBehaviour
 				stage5Objects.SetActive(true);
 				stage6Objects.SetActive(false);
 
-				Logging("===========Money Phase===========");
+				Logging("====================Money Phase====================");
 				UpdateQuestion(true, 5);
 				UpdateTurn(true, 5);
 				break;
@@ -599,7 +599,7 @@ public class WeakestLink : MonoBehaviour
 
 				UpdateQuestion(true, 6);
 
-				Logging("===========Face Off Phase===========");
+				Logging("====================Face Off Phase====================");
 				break;
 		}
 	}
