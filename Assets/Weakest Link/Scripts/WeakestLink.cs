@@ -314,7 +314,7 @@ public class WeakestLink : MonoBehaviour
 		AudioClip clockClip = startClockAudioList[Rnd.Range(0, startClockAudioList.Count)];
 
 		Audio.PlaySoundAtTransform(clockClip.name, transform);
-		yield return new WaitForSeconds(clockClip.length + 0.5f);
+		yield return new WaitForSeconds(clockClip.length + 0.1f);
 
 		audioPlaying = false;
 
@@ -1184,7 +1184,12 @@ public class WeakestLink : MonoBehaviour
 
 			Money moneyObject = moneyObjects[currentMoneyIndex];
 
-			moneyObject.ToggleColor(true);
+			moneyObject.ToggleCorrect(true);
+
+				for (int i = 0; i < currentMoneyIndex; i++)
+				{
+					moneyObjects[i].ToggleColor(false);
+				}
 
 			int money = moneyObject.MoneyAmount;
 

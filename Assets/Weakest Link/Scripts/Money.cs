@@ -68,20 +68,25 @@ public class Money {
         }
     }
 
-    public void ToggleColor(bool collected)
+    public void ToggleCorrect(bool collected)
     {
         if (collected)
-        { 
-            image.sprite = RedBackground;
+        {
             rectTransform.anchorMin = new Vector2(rectTransform.anchorMin.x, redAnchorPoints.x);
             rectTransform.anchorMax = new Vector2(rectTransform.anchorMax.x, redAnchorPoints.y);
         }
 
         else
         {
-            image.sprite = BlueBackground;
             rectTransform.anchorMin = new Vector2(rectTransform.anchorMin.x, blueAnchorPoints.x);
             rectTransform.anchorMax = new Vector2(rectTransform.anchorMax.x, blueAnchorPoints.y);
         }
+
+        ToggleColor(collected);
+    }
+
+    public void ToggleColor(bool red)
+    {
+        image.sprite = red ? RedBackground : BlueBackground;
     }
 }
