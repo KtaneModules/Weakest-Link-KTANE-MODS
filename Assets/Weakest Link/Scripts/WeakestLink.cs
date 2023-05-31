@@ -317,7 +317,7 @@ public class WeakestLink : MonoBehaviour
 
 		audioPlaying = true;
 		Audio.PlaySoundAtTransform(playClip.name, transform);
-		yield return new WaitForSeconds(playClip.length + 1);
+		yield return new WaitForSeconds(playClip.length + .5f);
 
 
 		//start the clock
@@ -561,7 +561,7 @@ public class WeakestLink : MonoBehaviour
 		switch (currentStage)
 		{
 			case 1:
-				Logging("====================Question Phase====================");
+				Logging("Question Phase");
 				break;
 
 			case 2:
@@ -577,11 +577,11 @@ public class WeakestLink : MonoBehaviour
 				contestant2EliminationText.font = c2.HandWritingFont;
 				contestant2EliminationText.text = "";
 
-				Logging("====================Elimination Phase====================");
+				Logging("Elimination Phase");
 				break;
 
 			case 4:
-				Logging("====================Money Phase====================");
+				Logging("Money Phase");
 				UpdateQuestion(true, 5);
 				UpdateTurn(true, 5);
 				break;
@@ -599,7 +599,7 @@ public class WeakestLink : MonoBehaviour
 
 				UpdateQuestion(true, 6);
 
-				Logging("====================Face Off Phase====================");
+				Logging("Face Off Phase");
 				break;
 		}
 
