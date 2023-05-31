@@ -15,6 +15,8 @@ public class WeakestLink : MonoBehaviour
 	//todo get rid of uncessary code
 	//todo get rid of uncessary files
 
+
+
 	const string url = "https://ktane-mods.github.io/Weakest-Link-Data/data.json";
 
 	static int ModuleIdCounter = 1;
@@ -204,6 +206,8 @@ public class WeakestLink : MonoBehaviour
 
 
 	#region Stage 6
+	GameObject stage6Canvas;
+
 	[SerializeField]
 	Sprite checkmarkSprite;
 
@@ -224,11 +228,17 @@ public class WeakestLink : MonoBehaviour
 	int quesetionsAsked;
 	#endregion
 
+	Text failText;
 
-
+	List<GameObject> stageObjectsList;
 
 	IEnumerator Start() {
 		ModuleId = ModuleIdCounter++;
+
+		//hide other stages
+		GetGameCoponents();
+
+		ShowSpecifcStage(1);
 
 		//get json data
 		jsonData = gameObject.GetComponent<JsonReader>();
@@ -334,41 +344,21 @@ public class WeakestLink : MonoBehaviour
 		}
 	}
 
-	void SetUpModule()
+	//gets all object/coponents for the module
+	void GetGameCoponents()
 	{
-		if (!jsonData.Success)
-		{
-			Logging("Unable to load data, solving module...");
-			Solve();
-			return;
-		}
-
-		audioPlaying = false;
-		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
-		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
-
-		//initalize all varables
-		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
-
-		longestQuestionLength = GetLongestQuestionLength();
-
-		#region stage1
+		#region Stage 1
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
 		GameObject stage1Canvas = stage1Objects.transform.Find("Canvas").gameObject;
 		contestant1GameObject = stage1Canvas.transform.Find("Contestant 1").gameObject;
 		contestant2GameObject = stage1Canvas.transform.Find("Contestant 2").gameObject;
 		stage1NextStageButton = stage1Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
-		stage1NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(1));  } return false; };
-		#endregion
 
-		do
-		{
-			GetNewContestants(false);
-		} while (c1.Name == c2.Name);
+		failText = stage1Canvas.transform.Find("Fail Text").GetComponent<Text>();
+		#endregion
 
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
-		inQuestionPhase = false;
 
 		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
 		questionPhaseQuestionText = canvas.transform.Find("Question").GetComponent<Text>();
@@ -379,14 +369,9 @@ public class WeakestLink : MonoBehaviour
 		questionPhasePlayerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
 		questionPhaseContestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
 		questionPhaseContestant2Text = canvas.transform.Find("Contestant 2").transform.Find("Contestant 2 Name").GetComponent<Text>();
-
-		questionPhasePlayerText.text = "PLAYER";
-		questionPhaseContestant1Text.text = c1.Name.ToUpper();
-		questionPhaseContestant2Text.text = c2.Name.ToUpper();
 		#endregion
 
 		#region stage3
-		inEliminationPhase = false;
 
 		stage3Objects = transform.Find("Elimination Phase").gameObject;
 
@@ -397,7 +382,6 @@ public class WeakestLink : MonoBehaviour
 		contestant1Display = stage3Canvas.transform.Find("Contestant 1 Name").transform.Find("Name").GetComponent<Text>();
 		contestant1EliminationText = stage3Canvas.transform.Find("Contestant 1 Elimination").transform.Find("Elimination Text").GetComponent<Text>();
 
-
 		contestant2Display = stage3Canvas.transform.Find("Contestant 2 Name").transform.Find("Name").GetComponent<Text>();
 		contestant2EliminationText = stage3Canvas.transform.Find("Contestant 2 Elimination").transform.Find("Elimination Text").GetComponent<Text>();
 		#endregion
@@ -407,13 +391,9 @@ public class WeakestLink : MonoBehaviour
 		stage4Objects = transform.Find("Intermission Phase").gameObject;
 
 		stage4NextStageButton = stage4Objects.transform.Find("Next Stage Button").GetComponent<KMSelectable>();
-
-		stage4NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(4)); } return false; };
 		#endregion
 
-		#region stage5
-		inMoneyPhase = false;
-
+		#region Stage 5
 		stage5Objects = transform.Find("Money Phase").gameObject;
 
 		moneyCanvas = stage5Objects.transform.Find("Canvas").gameObject;
@@ -423,6 +403,91 @@ public class WeakestLink : MonoBehaviour
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 
 		bankButton = bankGameObject.transform.GetComponent<KMSelectable>();
+
+		GameObject c = stage5Objects.transform.Find("Canvas").gameObject;
+
+		moneyPhaseQuestionText = c.transform.Find("Question").GetComponent<Text>();
+		moneyPhaseAnswerText = c.transform.Find("Answer").GetComponent<Text>();
+
+		playerDisplay = c.transform.Find("Player").Find("Player Name").GetComponent<Text>();
+		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").GetComponent<Text>();
+
+		moneyPhaseTimerText = c.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
+
+		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
+		#endregion
+
+		#region Stage 6
+		stage6Objects = transform.Find("Face Off Phase").gameObject;
+
+		stage6Canvas = stage6Objects.transform.Find("Canvas").gameObject;
+
+		stage6QuestionText = stage6Canvas.transform.Find("Question").GetComponent<Text>();
+		stage6AnswerText = stage6Canvas.transform.Find("Answer").GetComponent<Text>();
+		#endregion
+
+		stageObjectsList = new List<GameObject>() { stage1Objects, stage2Objects, stage3Objects, stage4Objects, stage5Objects, stage6Objects };
+	}
+
+	void ShowSpecifcStage(int stage)
+	{
+		stageObjectsList.ForEach(s => s.SetActive(false));
+		stageObjectsList[stage - 1].SetActive(true);
+	}
+
+    void SetUpModule()
+	{
+		if (!jsonData.Success)
+		{
+			Logging("Unable to load data, press the button to solve the module");
+
+			//todo set button to solve module
+			stage1NextStageButton.OnInteract += delegate () { Solve(); return false; };
+
+			//todo set other text as blank
+			contestant1GameObject.SetActive(false);
+			contestant2GameObject.SetActive(false);
+
+			return;
+		}
+
+		failText.text = "";
+
+		audioPlaying = false;
+		GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
+		GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
+
+		day = DateTime.Now.DayOfWeek.ToString().ToUpper();
+
+		do
+		{
+			GetNewContestants(false);
+		} while (c1.Name == c2.Name);
+
+		longestQuestionLength = GetLongestQuestionLength();
+
+		#region stage1
+		stage1NextStageButton.OnInteract += delegate () { StartCoroutine(StageButton(1)); return false; };
+		#endregion
+
+		#region stage2
+		inQuestionPhase = false;
+
+		questionPhasePlayerText.text = "PLAYER";
+		questionPhaseContestant1Text.text = c1.Name.ToUpper();
+		questionPhaseContestant2Text.text = c2.Name.ToUpper();
+		#endregion
+
+		#region stage3
+		inEliminationPhase = false;
+		#endregion
+
+		#region stage 4
+		stage4NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(4)); } return false; };
+		#endregion
+
+		#region stage5
+		inMoneyPhase = false;
 
 		moneyObjects = new List<Money>()
 		{
@@ -439,17 +504,6 @@ public class WeakestLink : MonoBehaviour
 
 		currentMoneyIndex = -1;
 
-		GameObject c = stage5Objects.transform.Find("Canvas").gameObject;
-
-		moneyPhaseQuestionText = c.transform.Find("Question").GetComponent<Text>();
-		moneyPhaseAnswerText = c.transform.Find("Answer").GetComponent<Text>();
-
-		playerDisplay = c.transform.Find("Player").Find("Player Name").GetComponent<Text>();
-		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").GetComponent<Text>();
-
-		moneyPhaseTimerText = c.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
-
-		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 		bankButton.OnInteract += delegate () { BankButtonPressed(); return false; };
 
 		#endregion
@@ -458,13 +512,6 @@ public class WeakestLink : MonoBehaviour
 		inFaceOffPhase = false;
 		correctAnswers = 0;
 		quesetionsAsked = 0;
-
-		stage6Objects = transform.Find("Face Off Phase").gameObject;
-
-		GameObject stage6Canvas = stage6Objects.transform.Find("Canvas").gameObject;
-
-		stage6QuestionText = stage6Canvas.transform.Find("Question").GetComponent<Text>();
-		stage6AnswerText = stage6Canvas.transform.Find("Answer").GetComponent<Text>();
 
 		moduleIndicators = new List<CorrectIndicator>()
 		{
@@ -513,33 +560,11 @@ public class WeakestLink : MonoBehaviour
 	{
 		switch (currentStage)
 		{
-			case 0:
-				stage1Objects.SetActive(true);
-				stage2Objects.SetActive(false);
-				stage3Objects.SetActive(false);
-				stage4Objects.SetActive(false);
-				stage5Objects.SetActive(false);
-				stage6Objects.SetActive(false);
-				break;
 			case 1:
-				stage1Objects.SetActive(false);
-				stage2Objects.SetActive(true);
-				stage3Objects.SetActive(false);
-				stage4Objects.SetActive(false);
-				stage5Objects.SetActive(false);
-				stage6Objects.SetActive(false);
-
 				Logging("====================Question Phase====================");
 				break;
 
 			case 2:
-				stage1Objects.SetActive(false);
-				stage2Objects.SetActive(false);
-				stage3Objects.SetActive(true);
-				stage4Objects.SetActive(false);
-				stage5Objects.SetActive(false);
-				stage6Objects.SetActive(false);
-				
 				eliminationText.font = playerContestant.HandWritingFont;
 				eliminationText.text = "";
 
@@ -555,37 +580,13 @@ public class WeakestLink : MonoBehaviour
 				Logging("====================Elimination Phase====================");
 				break;
 
-			case 3:
-				stage1Objects.SetActive(false);
-				stage2Objects.SetActive(false);
-				stage3Objects.SetActive(false);
-				stage4Objects.SetActive(true);
-				stage5Objects.SetActive(false);
-				stage6Objects.SetActive(false);
-
-				break;
-
 			case 4:
-				stage1Objects.SetActive(false);
-				stage2Objects.SetActive(false);
-				stage3Objects.SetActive(false);
-				stage4Objects.SetActive(false);
-				stage5Objects.SetActive(true);
-				stage6Objects.SetActive(false);
-
 				Logging("====================Money Phase====================");
 				UpdateQuestion(true, 5);
 				UpdateTurn(true, 5);
 				break;
 
 			case 5:
-				stage1Objects.SetActive(false);
-				stage2Objects.SetActive(false);
-				stage3Objects.SetActive(false);
-				stage4Objects.SetActive(false);
-				stage5Objects.SetActive(false);
-				stage6Objects.SetActive(true);
-
 				inFaceOffPhase = true;
 
 				foreach (CorrectIndicator i in moduleIndicators)
@@ -596,12 +597,13 @@ public class WeakestLink : MonoBehaviour
 				correctAnswers = 0;
 				quesetionsAsked = 0;
 
-
 				UpdateQuestion(true, 6);
 
 				Logging("====================Face Off Phase====================");
 				break;
 		}
+
+		ShowSpecifcStage(currentStage + 1);
 	}
 
 	void UpdateQuestion(bool init, int stage)
@@ -843,13 +845,13 @@ public class WeakestLink : MonoBehaviour
 			if (serialNumber.Contains(c))
 			{
 				boost++;
-				Logging($"Serial Number contains a {c}. Boost is now {boost}");
+				Logging($"Serial Number contains a {c}. Eimination value is now {baseContestantValue + boost}");
 			}
 
 			else if (numberToLettter.ContainsKey(c) && serialNumber.Contains(numberToLettter[c]))
 			{
 				boost++;
-				Logging($"Serial Number contains a {numberToLettter[c]} which counts as a {c}. Boost is now {boost}");
+				Logging($"Serial Number contains a {numberToLettter[c]} which counts as a {c}. Eimination value is now {baseContestantValue + boost}");
 			}
 		}
 
@@ -1265,18 +1267,6 @@ public class WeakestLink : MonoBehaviour
 		}
 	}
 
-	//debug function used to make sure font was big enough for answer
-	string GetLongestAnswer()
-	{
-		List<string> a = jsonData.TriviaList.Select(x => string.Join(",", x.AcceptedAnswers.ToArray())).ToList();
-
-		List<string> b = new List<string>();
-
-		a.ForEach(x => b.AddRange(x.Split(',')));
-
-		return b.OrderByDescending(x => x.Length).First();
-	}
-
 	int GetLongestQuestionLength()
 	{
 		return jsonData.TriviaList.OrderByDescending(x => x.Question.Length).First().Question.Length;
@@ -1291,13 +1281,11 @@ public class WeakestLink : MonoBehaviour
 
 	void GetNewContestants(bool updatePlayer)
 	{
-		int categoryCount = 7;
+		int categoryCount = Enum.GetNames(typeof(Category)).Length;
 		int nameCount = jsonData.ContestantNames.Count;
 
 		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
-		int randomFont3 = Rnd.Range(0, handWritingMaterials.Count);
-
 
 		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
 
@@ -1305,6 +1293,7 @@ public class WeakestLink : MonoBehaviour
 
 		if (updatePlayer)
 		{
+			int randomFont3 = Rnd.Range(0, handWritingMaterials.Count);
 			playerContestant = new Contestant("", GetPlayerSkill(), null, handWritingMaterials[randomFont3], handWritingFonts[randomFont3], null, null, false);
 		}
 	}
@@ -1334,9 +1323,7 @@ public class WeakestLink : MonoBehaviour
 		yield return new WaitForSeconds(goodbye.length + 1);
 		audioPlaying = false;
 
-
 		GetComponent<KMBombModule>().HandleStrike();
-
 
 		switch (stage)
 		{
