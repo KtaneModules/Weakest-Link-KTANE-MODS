@@ -259,6 +259,11 @@ public class WeakestLink : MonoBehaviour
 				if (currentTime <= 0f)
 				{
 					inQuestionPhase = false;
+
+					Logging($"You: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
+					Logging($"{c1.Name}: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
+					Logging($"{c2.Name}: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
+
 					GoToNextStage(2);
 
 
