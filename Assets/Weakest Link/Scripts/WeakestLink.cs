@@ -262,8 +262,8 @@ public class WeakestLink : MonoBehaviour
 					inQuestionPhase = false;
 
 					Logging($"You: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
-					Logging($"{c1.Name}: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
-					Logging($"{c2.Name}: {playerContestant.CorrectAnswer}/{playerContestant.QuestionsAsked}");
+					Logging($"{c1.Name}: {c1.CorrectAnswer}/{c1.QuestionsAsked}");
+					Logging($"{c2.Name}: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
 
 					GoToNextStage(2);
 
