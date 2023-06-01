@@ -4,14 +4,15 @@ using UnityEngine;
 using System.Linq;
 using Newtonsoft.Json;
 
-public class JsonReader : MonoBehaviour {
+public class JsonReader : MonoBehaviour
+{
 
     public List<Trivia> TriviaList { get; private set; }
     public List<string> ContestantNames { get; private set; }
 
     public bool Success = false;
 
-	//object used in order to read data from json
+    //object used in order to read data from json
 
     //holds the data read from the json
     [System.Serializable]
@@ -71,15 +72,31 @@ public class JsonReader : MonoBehaviour {
 
             JsonData deserial = JsonConvert.DeserializeObject<JsonData>(dataString);
 
-            Debug.Log($"Names: {string.Join(", ", deserial.CharacterNames.ToArray())}");
+            List<Trivia> tempList = deserial.QuizBank.Select(t => ConvertJsonToTrivia(t)).ToList();
 
-            TriviaList = deserial.QuizBank.Select(t => ConvertJsonToTrivia(t)).ToList();
+            TriviaList = new List<Trivia>();
+
+            tempList.ForEach(x => { if (FoundQuestion(x.Question)) { TriviaList.Add(x); } } );
 
             ContestantNames = deserial.CharacterNames;
 
             deserial.QuizBank.ForEach(t => TriviaList.Add(ConvertJsonToTrivia(t)));
         }
     }
+
+    private bool FoundQuestion(string question)
+    {
+        foreach(Trivia t in TriviaList)
+        {
+            if (t.Question == question)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     private Trivia ConvertJsonToTrivia(JsonTrivia j)
     {
@@ -89,7 +106,7 @@ public class JsonReader : MonoBehaviour {
         {
             case "KTANE":
                 category = Category.KTANE;
-            break;
+                break;
 
             case "GEOGRAPHY":
                 category = Category.Geography;

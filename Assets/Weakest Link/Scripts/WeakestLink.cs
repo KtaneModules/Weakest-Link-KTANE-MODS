@@ -16,7 +16,6 @@ public class WeakestLink : MonoBehaviour
 	//todo get rid of uncessary files
 
 
-
 	const string url = "https://ktane-mods.github.io/Weakest-Link-Data/data.json";
 
 	static int ModuleIdCounter = 1;
@@ -119,7 +118,11 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
+
+	const int questionPhaseTimerMax = 300; // the amount of time the user has to answers qustions in the first stage 
+
+	//todo delete this debug line
+	//const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
 
 	bool inQuestionPhase;
@@ -1222,7 +1225,6 @@ public class WeakestLink : MonoBehaviour
 	{
 		List<Trivia> a = jsonData.TriviaList.Where(x => !x.Asked).ToList();
 
-
 		if (a.Count == 0)
 		{
 			ResetQuestions();
@@ -1232,12 +1234,14 @@ public class WeakestLink : MonoBehaviour
 
 		Trivia t = a[Rnd.Range(0, a.Count)];
 		t.Asked = true;
+
 		return t;
 	}
 
 	Trivia GetQuestion(Category category)
 	{
 		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category && !s.Asked).ToList();
+
 
 		if (a.Count == 0)
 		{
@@ -1247,6 +1251,7 @@ public class WeakestLink : MonoBehaviour
 
 		Trivia t = a[Rnd.Range(0, a.Count)];
 		t.Asked = true;
+
 		return t;
 	}
 
