@@ -76,6 +76,7 @@ public class JsonReader : MonoBehaviour
 
             TriviaList = new List<Trivia>();
 
+            //idk why but quesetions are duplicated if this isn't here
             tempList.ForEach(x => { if (FoundQuestion(x.Question)) { TriviaList.Add(x); } } );
 
             ContestantNames = deserial.CharacterNames;

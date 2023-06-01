@@ -1399,6 +1399,7 @@ public class WeakestLink : MonoBehaviour
 
 		foreach (Money m in moneyObjects)
 		{
+			m.ToggleCorrect(false);
 			m.ToggleColor(false);
 		}
 	}
