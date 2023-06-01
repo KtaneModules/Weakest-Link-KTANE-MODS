@@ -835,27 +835,26 @@ public class WeakestLink : MonoBehaviour
 
 	int GetEliminationValue(Contestant contestant, int baseContestantValue)
 	{
+		string serialNumber = Bomb.GetSerialNumber().ToUpper();
+
+		string convertedSerial = new string(serialNumber.ToList().Select(c => char.IsDigit(c) ? numberToLettter[c] : c).ToArray());
+
+		if (contestant == c1)
+		{
+			Logging("New Serial Number: " + convertedSerial);
+		}
+		
 		Logging($"{contestant.Name}'s base elimination value: {baseContestantValue}");
 
-		int boost = 0;
 
-		string serialNumber = Bomb.GetSerialNumber().ToUpper();
 		foreach (char c in contestant.Name.ToUpper())
 		{
-			if (serialNumber.Contains(c))
+			if (convertedSerial.Contains(c))
 			{
-				boost++;
-				Logging($"Serial Number contains a {c}. Eimination value is now {baseContestantValue + boost}");
-			}
-
-			else if (numberToLettter.ContainsKey(c) && serialNumber.Contains(numberToLettter[c]))
-			{
-				boost++;
-				Logging($"Serial Number contains a {numberToLettter[c]} which counts as a {c}. Eimination value is now {baseContestantValue + boost}");
+				baseContestantValue++;
+				Logging($"Serial Number contains a {c}. Eimination value is now {baseContestantValue}");
 			}
 		}
-
-		baseContestantValue += boost;
 
 		Logging($"{contestant.Name}'s elimination value: {baseContestantValue}");
 
