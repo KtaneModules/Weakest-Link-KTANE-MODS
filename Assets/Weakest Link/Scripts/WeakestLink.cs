@@ -279,7 +279,7 @@ public class WeakestLink : MonoBehaviour
 					}
 				}
 
-				if (focused && questionPhaseCurrentTurn == QuestionPhaseTurn.Player)
+				else if (focused && questionPhaseCurrentTurn == QuestionPhaseTurn.Player)
 				{
 					GetKeyboardInput(2);
 				}
@@ -768,12 +768,8 @@ public class WeakestLink : MonoBehaviour
 	{
 		//Not answering at least 5 questions or not answering over 50% correctly will lead to a strike
 
-		//debug code to move on to the next stage
-		bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 0;
-		bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked < 0f;
-
-		//bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 5;
-		//bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked < .5f;
+		bool lessThanThresholdAsked = playerContestant.QuestionsAsked < 5;
+		bool lessThanThresholdCorrect = (float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked < .5f;
 
 		int playerPercentage = (int)((float)playerContestant.CorrectAnswer / playerContestant.QuestionsAsked * 100);
 		int contestant1Percentage = (int)((float)c1.CorrectAnswer / c1.QuestionsAsked * 100);
