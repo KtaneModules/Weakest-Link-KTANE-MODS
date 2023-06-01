@@ -295,7 +295,7 @@ public class WeakestLink : MonoBehaviour
 					EndMoneyPhase(false, $"Strike! Time ran out and you only banked {bankMoneyAmountTextMesh.text}");
 				}
 
-				if (focused && moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
+				else if (focused && moneyPhaseCurrentTurn == MoneyPhaseTurn.Player)
 				{
 					GetKeyboardInput(5);
 				}
@@ -1028,7 +1028,7 @@ public class WeakestLink : MonoBehaviour
 			Logging(log);
 		}
 
-		else if (stage == 5 && inMoneyPhase)
+		else if (stage == 5)
 		{
 			bool turnChanged = false;
 
@@ -1047,6 +1047,7 @@ public class WeakestLink : MonoBehaviour
 			string log = $"Question: \"{currentTrivia.Question}\". {(currentContestant.Name == "" ? "You" : currentContestant.Name)} answered \"{response}\", ";
 
 			bool correct = answers.Contains(response);
+
 			if (correct)
 			{
 				moneyPhaseQuestionText.color = correctColor;
@@ -1057,12 +1058,16 @@ public class WeakestLink : MonoBehaviour
 			{
 				moneyPhaseQuestionText.color = incorrectColor;
 				log += "which is incorrect";
+
+				
 			}
 
-			if (!turnChanged)
+			if (!turnChanged && !correct)
 			{
 				log += $". This is their {(aliveConestant.WrongNum == 1 ? "1st" : aliveConestant.WrongNum == 2 ? "2nd" : "3rd")} wrong question";
 			}
+
+
 
 			Logging(log);
 
@@ -1099,7 +1104,7 @@ public class WeakestLink : MonoBehaviour
 					correctAnswer = true;
 				}
 
-				if (correct)
+				if (!correctAnswer)
 				{
 					aliveConestant.WrongNum++;
 				}
@@ -1335,12 +1340,13 @@ public class WeakestLink : MonoBehaviour
 				GetNewContestants(true);
 				GoToNextStage(0);
 				break;
-
+			case 5:
+				GoToNextStage(4);
+				break;
 			case 6: //face off phase
 				GoToNextStage(5);
 				break;
 		}
-
 	}
 
 	void Solve()
@@ -1383,7 +1389,7 @@ public class WeakestLink : MonoBehaviour
 
 		else
 		{
-			Strike(5);
+			StartCoroutine(Strike(5));
 		}
 	}
 
