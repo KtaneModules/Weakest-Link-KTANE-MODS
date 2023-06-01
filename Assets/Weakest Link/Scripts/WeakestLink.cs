@@ -119,10 +119,8 @@ public class WeakestLink : MonoBehaviour
 	GameObject stage2Objects;
 
 
-	const int questionPhaseTimerMax = 300; // the amount of time the user has to answers qustions in the first stage 
 
-	//todo delete this debug line
-	//const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
+	const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
 
 	bool inQuestionPhase;
@@ -449,10 +447,10 @@ public class WeakestLink : MonoBehaviour
 		{
 			Logging("Unable to load data, press the button to solve the module");
 
-			//todo set button to solve module
+			//set button to solve module
 			stage1NextStageButton.OnInteract += delegate () { Solve(); return false; };
 
-			//todo set other text as blank
+			//set other text as blank
 			contestant1GameObject.SetActive(false);
 			contestant2GameObject.SetActive(false);
 
