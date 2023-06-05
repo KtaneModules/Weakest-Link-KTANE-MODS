@@ -50,6 +50,13 @@ public class WeakestLink : MonoBehaviour
 	#region Global Variables
 
 	[SerializeField]
+	AudioClip musicClip1;
+
+	[SerializeField]
+	AudioClip musicClip2;
+
+
+	[SerializeField]
 	List<AudioClip> playAudioList;
 	
 	[SerializeField]
@@ -325,12 +332,17 @@ public class WeakestLink : MonoBehaviour
 		Audio.PlaySoundAtTransform(playClip.name, transform);
 		yield return new WaitForSeconds(playClip.length + .5f);
 
+		Audio.PlaySoundAtTransform(musicClip1.name, transform);
+		yield return new WaitForSeconds(musicClip1.length + .5f);
 
 		//start the clock
 		AudioClip clockClip = startClockAudioList[Rnd.Range(0, startClockAudioList.Count)];
 
 		Audio.PlaySoundAtTransform(clockClip.name, transform);
 		yield return new WaitForSeconds(clockClip.length + 0.1f);
+
+		Audio.PlaySoundAtTransform(musicClip2.name, transform);
+		yield return new WaitForSeconds(musicClip2.length + 0.5f);
 
 		audioPlaying = false;
 
