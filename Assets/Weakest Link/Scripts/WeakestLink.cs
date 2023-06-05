@@ -70,7 +70,6 @@ public class WeakestLink : MonoBehaviour
 	[SerializeField]
 	List<AudioClip> friendStartClockAudioList;
 
-	QuestionPhaseTurn questionPhaseCurrentTurn = QuestionPhaseTurn.Player;
 
 	[SerializeField]
 	Material nameDisplayMaterial;
@@ -94,6 +93,8 @@ public class WeakestLink : MonoBehaviour
 	[SerializeField]
 	Sprite redBackground;
 
+	QuestionPhaseTurn questionPhaseCurrentTurn = QuestionPhaseTurn.Player;
+
 	JsonReader jsonData;
 
 	Contestant c1;
@@ -101,7 +102,6 @@ public class WeakestLink : MonoBehaviour
 	Contestant playerContestant;
 
 	string day; // the day of the week
-
 
 	bool focused; //if the module is selected
 
@@ -115,6 +115,8 @@ public class WeakestLink : MonoBehaviour
 	Color correctColor = new Color(.38f, .97f, .43f); //the color the qustion will be if the answer is correct
 	Color incorrectColor = new Color(1, 0, 0); //the color the qustion will be if the answer is wrong
 	Trivia currentTrivia;
+
+	bool colorBlindOn;
 
 	#endregion
 
@@ -133,29 +135,17 @@ public class WeakestLink : MonoBehaviour
 	const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
 	bool inQuestionPhase;
-	Text questionPhaseTimerText;
-	Text questionPhaseQuestionText;
-	Text questionPhaseAnswerText;
 
-	Text questionPhasePlayerText;
-	Text questionPhaseContestant1Text;
-	Text questionPhaseContestant2Text;
+	Text stage2TimerText;
+	Text stage2QuestionText;
+	Text stage2AnswerText;
 
+	Text stage2PlayerText;
+	Text stage2Contestant1Text;
+	Text stage2Contestant2Text;
+	
+	Text stage2ColorBlindText;
 
-
-	Dictionary<char, char> numberToLettter = new Dictionary<char, char>()
-	{
-		{ '1', 'A' },
-		{ '2', 'B' },
-		{ '3', 'C' },
-		{ '4', 'D' },
-		{ '5', 'E' },
-		{ '6', 'F' },
-		{ '7', 'G' },
-		{ '8', 'H' },
-		{ '9', 'I' },
-		{ '0', 'J' }
-	};
 	#endregion
 
 	#region Stage 3
@@ -174,6 +164,20 @@ public class WeakestLink : MonoBehaviour
 	bool inEliminationPhase;
 
 	Text eliminationText;
+
+	Dictionary<char, char> numberToLettter = new Dictionary<char, char>()
+	{
+		{ '1', 'A' },
+		{ '2', 'B' },
+		{ '3', 'C' },
+		{ '4', 'D' },
+		{ '5', 'E' },
+		{ '6', 'F' },
+		{ '7', 'G' },
+		{ '8', 'H' },
+		{ '9', 'I' },
+		{ '0', 'J' }
+	};
 
 	#endregion
 
@@ -198,7 +202,7 @@ public class WeakestLink : MonoBehaviour
 
 	MoneyPhaseTurn moneyPhaseCurrentTurn;
 
-	Text moneyPhaseQuestionText;
+	Text stage5QuestionText;
 	Text moneyPhaseAnswerText;
 
 	const int moneyPhaseTimerMax = 180; //the starting time for the money phase
@@ -212,6 +216,7 @@ public class WeakestLink : MonoBehaviour
 
 	int moneyStored;
 
+	Text stage5ColorBlindText;
 	#endregion
 
 
@@ -268,7 +273,7 @@ public class WeakestLink : MonoBehaviour
 			if (inQuestionPhase)
 			{
 				currentTime -= Time.deltaTime;
-				questionPhaseTimerText.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+				stage2TimerText.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
 				if (currentTime <= 0f)
 				{
@@ -389,6 +394,8 @@ public class WeakestLink : MonoBehaviour
 	//gets all object/coponents for the module
 	void GetGameCoponents()
 	{
+		colorBlindOn = GetComponent<KMColorblindMode>().ColorblindModeActive;
+
 		#region Stage 1
 		stage1Objects = transform.Find("Skill Check Phase").gameObject;
 		GameObject stage1Canvas = stage1Objects.transform.Find("Canvas").gameObject;
@@ -403,14 +410,14 @@ public class WeakestLink : MonoBehaviour
 		stage2Objects = transform.Find("Question Phase").gameObject;
 
 		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
-		questionPhaseQuestionText = canvas.transform.Find("Question").GetComponent<Text>();
-		questionPhaseAnswerText = canvas.transform.Find("Answer").GetComponent<Text>();
+		stage2QuestionText = canvas.transform.Find("Question").GetComponent<Text>();
+		stage2AnswerText = canvas.transform.Find("Answer").GetComponent<Text>();
+		stage2TimerText = canvas.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
+		stage2PlayerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
+		stage2Contestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
+		stage2Contestant2Text = canvas.transform.Find("Contestant 2").transform.Find("Contestant 2 Name").GetComponent<Text>();
 
-		questionPhaseTimerText = canvas.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
-
-		questionPhasePlayerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
-		questionPhaseContestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
-		questionPhaseContestant2Text = canvas.transform.Find("Contestant 2").transform.Find("Contestant 2 Name").GetComponent<Text>();
+		stage2ColorBlindText = canvas.transform.Find("Color Blind Text").transform.GetComponent<Text>();
 		#endregion
 
 		#region stage3
@@ -448,7 +455,7 @@ public class WeakestLink : MonoBehaviour
 
 		GameObject c = stage5Objects.transform.Find("Canvas").gameObject;
 
-		moneyPhaseQuestionText = c.transform.Find("Question").GetComponent<Text>();
+		stage5QuestionText = c.transform.Find("Question").GetComponent<Text>();
 		moneyPhaseAnswerText = c.transform.Find("Answer").GetComponent<Text>();
 
 		playerDisplay = c.transform.Find("Player").Find("Player Name").GetComponent<Text>();
@@ -457,6 +464,9 @@ public class WeakestLink : MonoBehaviour
 		moneyPhaseTimerText = c.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
 
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
+
+		stage5ColorBlindText = c.transform.Find("Color Blind Text").transform.GetComponent<Text>();
+
 		#endregion
 
 		#region Stage 6
@@ -519,9 +529,9 @@ public class WeakestLink : MonoBehaviour
 		#region stage2
 		inQuestionPhase = false;
 
-		questionPhasePlayerText.text = "PLAYER";
-		questionPhaseContestant1Text.text = c1.Name.ToUpper();
-		questionPhaseContestant2Text.text = c2.Name.ToUpper();
+		stage2PlayerText.text = "PLAYER";
+		stage2Contestant1Text.text = c1.Name.ToUpper();
+		stage2Contestant2Text.text = c2.Name.ToUpper();
 		#endregion
 
 		#region stage3
@@ -607,6 +617,8 @@ public class WeakestLink : MonoBehaviour
 		switch (currentStage)
 		{
 			case 1:
+				stage2ColorBlindText.text = "";
+
 				Logging("Question Phase");
 				break;
 
@@ -664,13 +676,16 @@ public class WeakestLink : MonoBehaviour
 
 			currentTrivia = GetQuestion();
 
-			questionPhaseQuestionText.font = GetQuestionFont();
+			stage2QuestionText.font = GetQuestionFont();
 
-			questionPhaseQuestionText.color = Color.white;
+			stage2QuestionText.color = Color.white;
 
-			questionPhaseQuestionText.text = currentTrivia.Question;
+			stage2QuestionText.text = currentTrivia.Question;
 
-			questionPhaseAnswerText.text = "";
+			stage2AnswerText.text = "";
+			stage2ColorBlindText.text = "";
+
+
 		}
 
 		else if (stage == 5)
@@ -691,14 +706,15 @@ public class WeakestLink : MonoBehaviour
 
 			currentTrivia = GetQuestion(categoryList[categoryCurrentIndex]);
 
-			moneyPhaseQuestionText.color = Color.white;
+			stage5QuestionText.color = Color.white;
 
-			moneyPhaseQuestionText.text = currentTrivia.Question;
+			stage5QuestionText.text = currentTrivia.Question;
 
-			moneyPhaseQuestionText.font = GetQuestionFont();
+			stage5QuestionText.font = GetQuestionFont();
 
 			moneyPhaseAnswerText.text = "";
-
+			
+			stage5ColorBlindText.text = "";
 		}
 
 		else
@@ -763,22 +779,22 @@ public class WeakestLink : MonoBehaviour
 	{
 		if (stage == 2)
 		{
-			questionPhasePlayerText.color = questionPhaseContestant1Text.color = questionPhaseContestant2Text.color = inactiveColor;
+			stage2PlayerText.color = stage2Contestant1Text.color = stage2Contestant2Text.color = inactiveColor;
 
 			switch (questionPhaseCurrentTurn)
 			{
 				case QuestionPhaseTurn.Player:
-					questionPhasePlayerText.color = Color.white;
-					questionPhaseAnswerText.font = playerContestant.HandWritingFont;
+					stage2PlayerText.color = Color.white;
+					stage2AnswerText.font = playerContestant.HandWritingFont;
 					break;
 				case QuestionPhaseTurn.C1:
-					questionPhaseContestant1Text.color = Color.white;
-					questionPhaseAnswerText.font = c1.HandWritingFont;
+					stage2Contestant1Text.color = Color.white;
+					stage2AnswerText.font = c1.HandWritingFont;
 
 					break;
 				case QuestionPhaseTurn.C2:
-					questionPhaseContestant2Text.color = Color.white;
-					questionPhaseAnswerText.font = c2.HandWritingFont;
+					stage2Contestant2Text.color = Color.white;
+					stage2AnswerText.font = c2.HandWritingFont;
 					break;
 			}
 		}
@@ -909,7 +925,7 @@ public class WeakestLink : MonoBehaviour
 		{
 			bool turnChanged = false;
 
-			string response = questionPhaseAnswerText.text;
+			string response = stage2AnswerText.text;
 
 			string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
 
@@ -928,14 +944,24 @@ public class WeakestLink : MonoBehaviour
 
 			if (answers.Contains(response))
 			{
-				questionPhaseQuestionText.color = correctColor;
+				if(colorBlindOn)
+                {
+					stage2ColorBlindText.text = "Correct";
+                }
+
+				stage2QuestionText.color = correctColor;
 				currentContestant.CorrectAnswer++;
 				log += "which is correct";
 			}
 
 			else
 			{
-				questionPhaseQuestionText.color = incorrectColor;
+				if (colorBlindOn)
+				{
+					stage2ColorBlindText.text = "Incorrect";
+				}
+
+				stage2QuestionText.color = incorrectColor;
 				log += "which is incorrect";
 			}
 
@@ -944,7 +970,7 @@ public class WeakestLink : MonoBehaviour
 
 			Logging(log);
 
-			questionPhaseAnswerText.text = "";
+			stage2AnswerText.text = "";
 			yield return new WaitForSeconds(2f);
 
 			if (currentTime <= 0)
@@ -974,7 +1000,7 @@ public class WeakestLink : MonoBehaviour
 					if (currentTime <= 0)
 						yield break;
 
-					questionPhaseAnswerText.text += "" + ch;
+					stage2AnswerText.text += "" + ch;
 					yield return new WaitForSeconds(0.1f);
 				}
 
@@ -1090,24 +1116,30 @@ public class WeakestLink : MonoBehaviour
 
 			if (correct)
 			{
-				moneyPhaseQuestionText.color = correctColor;
+				if (colorBlindOn)
+				{
+					stage5ColorBlindText.text = "Correct";
+				}
+
+				stage5QuestionText.color = correctColor;
 				log += "which is correct";
 			}
 
 			else
 			{
-				moneyPhaseQuestionText.color = incorrectColor;
-				log += "which is incorrect";
+				if (colorBlindOn)
+				{
+					stage5ColorBlindText.text = "Incorrect";
+				}
 
-				
+				stage5QuestionText.color = incorrectColor;
+				log += "which is incorrect";
 			}
 
 			if (!turnChanged && !correct)
 			{
 				log += $". This is their {(aliveConestant.WrongNum == 1 ? "1st" : aliveConestant.WrongNum == 2 ? "2nd" : "3rd")} wrong question";
 			}
-
-
 
 			Logging(log);
 
@@ -1449,7 +1481,7 @@ public class WeakestLink : MonoBehaviour
 
 	void GetKeyboardInput(int stage)
 	{
-		string currentText = stage == 2 ? questionPhaseAnswerText.text : stage == 3 ? eliminationText.text : stage == 5 ? moneyPhaseAnswerText.text : stage6AnswerText.text;
+		string currentText = stage == 2 ? stage2AnswerText.text : stage == 3 ? eliminationText.text : stage == 5 ? moneyPhaseAnswerText.text : stage6AnswerText.text;
 
 		foreach (KeyCode keyCode in TypableKeys)
 		{
@@ -1461,7 +1493,7 @@ public class WeakestLink : MonoBehaviour
 
 					if (stage == 2)
 					{
-						questionPhaseAnswerText.text = newText;
+						stage2AnswerText.text = newText;
 					}
 
 					else if (stage == 3)
@@ -1492,7 +1524,7 @@ public class WeakestLink : MonoBehaviour
 
 				if (stage == 2)
 				{
-					questionPhaseAnswerText.text += newText;
+					stage2AnswerText.text += newText;
 				}
 				else if (stage == 3)
 				{
@@ -1514,7 +1546,7 @@ public class WeakestLink : MonoBehaviour
 			{
 				if (stage == 2)
 				{
-					questionPhaseAnswerText.text += " ";
+					stage2AnswerText.text += " ";
 				}
 				else if (stage == 3)
 				{
@@ -1536,7 +1568,7 @@ public class WeakestLink : MonoBehaviour
 			{
 				if (stage == 2)
 				{
-					questionPhaseAnswerText.text += "-";
+					stage2AnswerText.text += "-";
 				}
 				else if (stage == 3)
 				{
@@ -1560,7 +1592,7 @@ public class WeakestLink : MonoBehaviour
 
 				if (stage == 2)
 				{
-					questionPhaseAnswerText.text += newString;
+					stage2AnswerText.text += newString;
 				}
 				else if (stage == 3)
 				{
