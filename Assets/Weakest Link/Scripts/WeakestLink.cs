@@ -55,7 +55,6 @@ public class WeakestLink : MonoBehaviour
 	[SerializeField]
 	AudioClip musicClip2;
 
-
 	[SerializeField]
 	List<AudioClip> playAudioList;
 	
@@ -64,6 +63,12 @@ public class WeakestLink : MonoBehaviour
 	
 	[SerializeField]
 	List<AudioClip> startClockAudioList;
+
+	[SerializeField]
+	List<AudioClip> friendPlayAudioList;
+
+	[SerializeField]
+	List<AudioClip> friendStartClockAudioList;
 
 	QuestionPhaseTurn questionPhaseCurrentTurn = QuestionPhaseTurn.Player;
 
@@ -125,10 +130,7 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-
-
 	const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
-
 
 	bool inQuestionPhase;
 	Text questionPhaseTimerText;
@@ -325,22 +327,40 @@ public class WeakestLink : MonoBehaviour
 
 	IEnumerator StageButton(int stage)
 	{
-		//let's play the weakest link
-		AudioClip playClip = playAudioList[Rnd.Range(0, playAudioList.Count)];
+		bool friend = Rnd.Range(0, 9) == 0;
 
+		AudioClip playClip;
+		int friendIndex;
+		AudioClip clockClip;
+
+		if (friend)
+		{
+			friendIndex = Rnd.Range(0, friendPlayAudioList.Count);
+			playClip = friendPlayAudioList[friendIndex];
+			clockClip = friendStartClockAudioList[friendIndex];
+		}
+
+		else
+		{ 
+			playClip = playAudioList[Rnd.Range(0, playAudioList.Count)];
+			clockClip = startClockAudioList[Rnd.Range(0, startClockAudioList.Count)];
+		}
+
+
+		//let's play the weakest link
 		audioPlaying = true;
 		Audio.PlaySoundAtTransform(playClip.name, transform);
 		yield return new WaitForSeconds(playClip.length + .5f);
 
+		//do do do do
 		Audio.PlaySoundAtTransform(musicClip1.name, transform);
 		yield return new WaitForSeconds(musicClip1.length + .5f);
 
 		//start the clock
-		AudioClip clockClip = startClockAudioList[Rnd.Range(0, startClockAudioList.Count)];
-
 		Audio.PlaySoundAtTransform(clockClip.name, transform);
 		yield return new WaitForSeconds(clockClip.length + 0.1f);
 
+		//dun dun
 		Audio.PlaySoundAtTransform(musicClip2.name, transform);
 		yield return new WaitForSeconds(musicClip2.length + 0.5f);
 

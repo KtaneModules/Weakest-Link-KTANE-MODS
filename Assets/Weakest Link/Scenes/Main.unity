@@ -201,6 +201,26 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: goodbyeAudioList.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: startClockAudioList.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: friendPlayAudioList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: friendStartClockAudioList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4257340207950476, guid: 1c2208c64e22bca478f824b6c4943b7d, type: 2}
       propertyPath: m_LocalPosition.x
       value: -0.047302
@@ -233,6 +253,36 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: musicClip1
+      value: 
+      objectReference: {fileID: 8300000, guid: 8c26e5a16d7f5e94e8764802d4a6e668, type: 3}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: musicClip2
+      value: 
+      objectReference: {fileID: 8300000, guid: e0f73df318d007d449a629a10b0b20e7, type: 3}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: goodbyeAudioList.Array.data[7]
+      value: 
+      objectReference: {fileID: 8300000, guid: 55413c91de617cf46acf586e6d694e97, type: 3}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: goodbyeAudioList.Array.data[8]
+      value: 
+      objectReference: {fileID: 8300000, guid: a04e89b5211339a41bcf4e283cf5fba0, type: 3}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: friendPlayAudioList.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6a7b41c0c4381b244ac1ca37c19ac2ed, type: 3}
+    - target: {fileID: 114846405590615918, guid: 1c2208c64e22bca478f824b6c4943b7d,
+        type: 2}
+      propertyPath: friendPlayAudioList.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: e9a6f662fff75bb4aa581c1c8b1d7ad6, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1c2208c64e22bca478f824b6c4943b7d, type: 2}
   m_IsPrefabParent: 0
