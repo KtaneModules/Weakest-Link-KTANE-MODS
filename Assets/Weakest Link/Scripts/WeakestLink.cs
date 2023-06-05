@@ -238,7 +238,11 @@ public class WeakestLink : MonoBehaviour
 	int quesetionsAsked;
 	#endregion
 
-	Text failText;
+	#region Stage 7
+	GameObject stage7Objects;
+    #endregion
+
+    Text failText;
 
 	List<GameObject> stageObjectsList;
 
@@ -464,7 +468,11 @@ public class WeakestLink : MonoBehaviour
 		stage6AnswerText = stage6Canvas.transform.Find("Answer").GetComponent<Text>();
 		#endregion
 
-		stageObjectsList = new List<GameObject>() { stage1Objects, stage2Objects, stage3Objects, stage4Objects, stage5Objects, stage6Objects };
+		#region Stage 7
+		stage7Objects = transform.Find("Solve Phase").gameObject;
+		#endregion
+
+		stageObjectsList = new List<GameObject>() { stage1Objects, stage2Objects, stage3Objects, stage4Objects, stage5Objects, stage6Objects, stage7Objects };
 	}
 
 	void ShowSpecifcStage(int stage)
@@ -1383,6 +1391,7 @@ public class WeakestLink : MonoBehaviour
 
 	void Solve()
 	{
+		GoToNextStage(6);
 		GetComponent<KMBombModule>().HandlePass();
 		ModuleSolved = true;
 	}
