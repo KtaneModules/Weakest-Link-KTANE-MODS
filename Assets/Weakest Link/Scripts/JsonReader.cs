@@ -63,7 +63,6 @@ public class JsonReader : MonoBehaviour
 
         }
 
-
         else
         {
             Debug.Log("Gotten info!");
