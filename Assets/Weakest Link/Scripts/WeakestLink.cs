@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UnityEngine;
 using KModkit;
-using Rnd = UnityEngine.Random;
-using static UnityEngine.Debug;
+using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Debug;
+using Rnd = UnityEngine.Random;
 
 public class WeakestLink : MonoBehaviour 
 {
@@ -523,7 +523,7 @@ public class WeakestLink : MonoBehaviour
 		longestQuestionLength = GetLongestQuestionLength();
 
 		#region stage1
-		stage1NextStageButton.OnInteract += delegate () { StartCoroutine(StageButton(1)); return false; };
+		stage1NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(1)); }; return false; };
 		#endregion
 
 		#region stage2
