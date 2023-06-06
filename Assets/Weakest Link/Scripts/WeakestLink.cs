@@ -97,9 +97,12 @@ public class WeakestLink : MonoBehaviour
 
 	JsonReader jsonData;
 
+
+	Contestant[] contestants;
 	Contestant c1;
 	Contestant c2;
 	Contestant playerContestant;
+
 
 	string day; // the day of the week
 
@@ -110,10 +113,13 @@ public class WeakestLink : MonoBehaviour
 	const int TIME_READ = 5; //the amount of time it would take the contestants to read the longest question 
 	float currentTime;
 
+	private readonly Color correctColor = new Color(.38f, .97f, .43f); //the color the qustion will be if the answer is correct
+	private readonly Color incorrectColor = new Color(1, 0, 0); //the color the qustion will be if the answer is wrong
+	private readonly Color mainTextLit = new Color(0.82f, 0.82f, 0.82f);
+	private readonly Color mainTextUnlit = new Color(0.55f, 0.55f, 0.55f);
+	private readonly Color shadowTextLit = new Color(0.71f, 0.71f, 0.71f);
+	private readonly Color shadowTextUnlit = new Color(0.34f, 0.34f, 0.34f);
 
-	Color inactiveColor = new Color(.55f, .55f, .55f); //the color the player's names will be when it's not their turn
-	Color correctColor = new Color(.38f, .97f, .43f); //the color the qustion will be if the answer is correct
-	Color incorrectColor = new Color(1, 0, 0); //the color the qustion will be if the answer is wrong
 	Trivia currentTrivia;
 
 	bool colorBlindOn;
@@ -140,30 +146,27 @@ public class WeakestLink : MonoBehaviour
 	Text stage2QuestionText;
 	Text stage2AnswerText;
 
-	Text stage2PlayerText;
-	Text stage2Contestant1Text;
-	Text stage2Contestant2Text;
+	NameDisplay[] stage2NameDisplays;
 	
 	Text stage2ColorBlindText;
-
 	#endregion
 
 	#region Stage 3
 
 	GameObject stage3Objects;
 
-	Text contestant1Display;
+	NameDisplay contestant1Display;
 
-	Text contestant1EliminationText;
+	NameDisplay contestant1EliminationText;
 
-	Text contestant2Display;
+	NameDisplay contestant2Display;
 
-	Text contestant2EliminationText;
+	NameDisplay contestant2EliminationText;
+
+	NameDisplay eliminationText;
 
 	Contestant personToEliminate;
 	bool inEliminationPhase;
-
-	Text eliminationText;
 
 	Dictionary<char, char> numberToLettter = new Dictionary<char, char>()
 	{
@@ -190,11 +193,12 @@ public class WeakestLink : MonoBehaviour
 
 	#region Stage 5
 	GameObject stage5Objects;
+
+	NameDisplay[] stage5NameDisplays;
+
 	GameObject moneyCanvas;
 	List<Money> moneyObjects;
 	int currentMoneyIndex;
-	Text playerDisplay;
-	Text contestantDisplay;
 	GameObject bankGameObject;
 	KMSelectable bankButton;
 	TextMesh bankMoneyAmountTextMesh;
@@ -203,7 +207,7 @@ public class WeakestLink : MonoBehaviour
 	MoneyPhaseTurn moneyPhaseCurrentTurn;
 
 	Text stage5QuestionText;
-	Text moneyPhaseAnswerText;
+	Text stage5AnswerText;
 
 	const int moneyPhaseTimerMax = 180; //the starting time for the money phase
 
@@ -409,13 +413,17 @@ public class WeakestLink : MonoBehaviour
 		#region stage2
 		stage2Objects = transform.Find("Question Phase").gameObject;
 
+		stage2NameDisplays = new NameDisplay[] { stage2Objects.transform.Find("Player").GetComponent<NameDisplay>(),
+												 stage2Objects.transform.Find("Contestant 1").GetComponent<NameDisplay>(),
+												 stage2Objects.transform.Find("Contestant 2").GetComponent<NameDisplay>()};
+
+		stage2NameDisplays.ToList().ForEach(g => { g.InitializeVariables(); g.SetLit(true); });
+
+
 		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
 		stage2QuestionText = canvas.transform.Find("Question").GetComponent<Text>();
 		stage2AnswerText = canvas.transform.Find("Answer").GetComponent<Text>();
 		stage2TimerText = canvas.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
-		stage2PlayerText = canvas.transform.Find("Player").transform.Find("Player Name").GetComponent<Text>();
-		stage2Contestant1Text = canvas.transform.Find("Contestant 1").transform.Find("Contestant 1 Name").GetComponent<Text>();
-		stage2Contestant2Text = canvas.transform.Find("Contestant 2").transform.Find("Contestant 2 Name").GetComponent<Text>();
 
 		stage2ColorBlindText = canvas.transform.Find("Color Blind Text").transform.GetComponent<Text>();
 		#endregion
@@ -424,15 +432,21 @@ public class WeakestLink : MonoBehaviour
 
 		stage3Objects = transform.Find("Elimination Phase").gameObject;
 
-		GameObject stage3Canvas = stage3Objects.transform.Find("Canvas").gameObject;
-
-		eliminationText = stage3Canvas.transform.Find("Image").transform.Find("Elimination Name").GetComponent<Text>();
-
-		contestant1Display = stage3Canvas.transform.Find("Contestant 1 Name").transform.Find("Name").GetComponent<Text>();
-		contestant1EliminationText = stage3Canvas.transform.Find("Contestant 1 Elimination").transform.Find("Elimination Text").GetComponent<Text>();
-
-		contestant2Display = stage3Canvas.transform.Find("Contestant 2 Name").transform.Find("Name").GetComponent<Text>();
-		contestant2EliminationText = stage3Canvas.transform.Find("Contestant 2 Elimination").transform.Find("Elimination Text").GetComponent<Text>();
+		contestant1Display = stage3Objects.transform.Find("Contestant 1 Name").GetComponent<NameDisplay>();
+		contestant1Display.InitializeVariables();
+		contestant1Display.SetLit(true);
+		contestant1EliminationText = stage3Objects.transform.Find("Contestant 1 Elimination").GetComponent<NameDisplay>();
+		contestant1EliminationText.InitializeVariables();
+		contestant1EliminationText.SetLit(true);
+		contestant2Display = stage3Objects.transform.Find("Contestant 2 Name").GetComponent<NameDisplay>();
+		contestant2Display.InitializeVariables();
+		contestant2Display.SetLit(true);
+		contestant2EliminationText = stage3Objects.transform.Find("Contestant 2 Elimination").GetComponent<NameDisplay>();
+		contestant2EliminationText.InitializeVariables();
+		contestant2EliminationText.SetLit(true);
+		eliminationText = stage3Objects.transform.Find("Player Elimination").GetComponent<NameDisplay>();
+		eliminationText.InitializeVariables();
+		eliminationText.SetLit(true);
 		#endregion
 
 		#region stage 4
@@ -453,13 +467,15 @@ public class WeakestLink : MonoBehaviour
 
 		bankButton = bankGameObject.transform.GetComponent<KMSelectable>();
 
+		stage5NameDisplays = new NameDisplay[] { stage5Objects.transform.Find("Player").GetComponent<NameDisplay>(),
+												 stage5Objects.transform.Find("Contestant").GetComponent<NameDisplay>()};
+
+		stage5NameDisplays.ToList().ForEach(g => g.InitializeVariables());
+
 		GameObject c = stage5Objects.transform.Find("Canvas").gameObject;
 
 		stage5QuestionText = c.transform.Find("Question").GetComponent<Text>();
-		moneyPhaseAnswerText = c.transform.Find("Answer").GetComponent<Text>();
-
-		playerDisplay = c.transform.Find("Player").Find("Player Name").GetComponent<Text>();
-		contestantDisplay = c.transform.Find("Contestant").Find("Contestant Name").GetComponent<Text>();
+		stage5AnswerText = c.transform.Find("Answer").GetComponent<Text>();
 
 		moneyPhaseTimerText = c.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
 
@@ -529,9 +545,9 @@ public class WeakestLink : MonoBehaviour
 		#region stage2
 		inQuestionPhase = false;
 
-		stage2PlayerText.text = "PLAYER";
-		stage2Contestant1Text.text = c1.Name.ToUpper();
-		stage2Contestant2Text.text = c2.Name.ToUpper();
+		stage2NameDisplays[0].Text = "PLAYER";
+		stage2NameDisplays[1].Text = c1.Name.ToUpper();
+		stage2NameDisplays[2].Text = c2.Name.ToUpper();
 		#endregion
 
 		#region stage3
@@ -583,7 +599,11 @@ public class WeakestLink : MonoBehaviour
 		int playerFont = Rnd.Range(0, handWritingFonts.Count);
 		playerContestant = new Contestant("", GetPlayerSkill(), null, handWritingMaterials[playerFont], handWritingFonts[playerFont], null, null, false);
 
+		contestants = new Contestant[] { playerContestant, c1, c2 };
+
 		//make sure the right game objects are visible
+
+
 		GoToNextStage(0);
 
 		Logging($"First contestant is {c1.Name} who specializes in {c1.Category}");
@@ -623,17 +643,20 @@ public class WeakestLink : MonoBehaviour
 				break;
 
 			case 2:
-				eliminationText.font = playerContestant.HandWritingFont;
-				eliminationText.text = "";
+				eliminationText.SetFont(playerContestant.HandWritingFont, playerContestant.HandWritingMaterial);
+				eliminationText.Text = "";
 
-				contestant1Display.text = c1.Name.ToUpper();
-				contestant2Display.text = c2.Name.ToUpper();
+				contestant1Display.SetFont(c1.NameDisplayFont, c1.NameDisplayMaterial);
+				contestant1Display.Text = c1.Name.ToUpper();
 
-				contestant1EliminationText.font = c1.HandWritingFont;
-				contestant1EliminationText.text = "";
+				contestant1EliminationText.SetFont(c1.HandWritingFont, c1.HandWritingMaterial);
+				contestant1EliminationText.Text = "";
 
-				contestant2EliminationText.font = c2.HandWritingFont;
-				contestant2EliminationText.text = "";
+				contestant2Display.SetFont(c2.NameDisplayFont, c2.NameDisplayMaterial);
+				contestant2Display.Text = c2.Name.ToUpper();
+
+				contestant2EliminationText.SetFont(c2.HandWritingFont, c2.HandWritingMaterial);
+				contestant2EliminationText.Text = "";
 
 				Logging("Elimination Phase");
 				break;
@@ -712,7 +735,7 @@ public class WeakestLink : MonoBehaviour
 
 			stage5QuestionText.font = GetQuestionFont();
 
-			moneyPhaseAnswerText.text = "";
+			stage5AnswerText.text = "";
 			
 			stage5ColorBlindText.text = "";
 		}
@@ -758,7 +781,9 @@ public class WeakestLink : MonoBehaviour
 				moneyPhaseCurrentTurn = MoneyPhaseTurn.Player;
 				aliveConestant = c1.Eliminated ? c2 : c1;
 
-				contestantDisplay.text = aliveConestant.Name.ToUpper();
+
+
+				stage5NameDisplays[1].Text = aliveConestant.Name.ToUpper();
 			}
 
 			else
@@ -779,43 +804,16 @@ public class WeakestLink : MonoBehaviour
 	{
 		if (stage == 2)
 		{
-			stage2PlayerText.color = stage2Contestant1Text.color = stage2Contestant2Text.color = inactiveColor;
-
-			switch (questionPhaseCurrentTurn)
-			{
-				case QuestionPhaseTurn.Player:
-					stage2PlayerText.color = Color.white;
-					stage2AnswerText.font = playerContestant.HandWritingFont;
-					break;
-				case QuestionPhaseTurn.C1:
-					stage2Contestant1Text.color = Color.white;
-					stage2AnswerText.font = c1.HandWritingFont;
-
-					break;
-				case QuestionPhaseTurn.C2:
-					stage2Contestant2Text.color = Color.white;
-					stage2AnswerText.font = c2.HandWritingFont;
-					break;
-			}
+			stage2NameDisplays.ToList().ForEach(g => g.GetComponent<NameDisplay>().SetLit(false));
+			stage2NameDisplays[(int)questionPhaseCurrentTurn].GetComponent<NameDisplay>().SetLit(true);
+			stage2AnswerText.font = contestants[(int)questionPhaseCurrentTurn].HandWritingFont;
 		}
 
 		else if (stage == 5)
 		{
-			playerDisplay.color = contestantDisplay.color = inactiveColor;
-
-			bool playerTurn = moneyPhaseCurrentTurn == MoneyPhaseTurn.Player;
-
-			if (playerTurn)
-			{
-				playerDisplay.color = Color.white;
-				moneyPhaseAnswerText.font = playerContestant.HandWritingFont;
-			}
-
-			else
-			{
-				contestantDisplay.color = Color.white;
-				moneyPhaseAnswerText.font = aliveConestant.HandWritingFont;
-			}
+			stage5NameDisplays.ToList().ForEach(g => g.SetLit(false));
+			stage5NameDisplays[(int)moneyPhaseCurrentTurn].GetComponent<NameDisplay>().SetLit(true);
+			stage5AnswerText.font = contestants[(int)moneyPhaseCurrentTurn].HandWritingFont;
 		}
 	}
 
@@ -1017,7 +1015,7 @@ public class WeakestLink : MonoBehaviour
 		{
 			string log;
 
-			if (eliminationText.text == personToEliminate.Name.ToUpper())
+			if (eliminationText.Text == personToEliminate.Name.ToUpper())
 			{
 
 				if (personToEliminate == c1) //first person picks player
@@ -1026,7 +1024,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in input)
 					{
-						contestant1EliminationText.text += "" + ch;
+						contestant1EliminationText.Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1034,7 +1032,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in c1.Name.ToUpper())
 					{
-						contestant2EliminationText.text += "" + ch;
+						contestant2EliminationText.Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1047,7 +1045,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in c2.Name.ToUpper())
 					{
-						contestant1EliminationText.text += "" + ch;
+						contestant1EliminationText.Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1055,7 +1053,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in input)
 					{
-						contestant2EliminationText.text += "" + ch;
+						contestant2EliminationText.Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1064,7 +1062,7 @@ public class WeakestLink : MonoBehaviour
 
 				inEliminationPhase = false;
 				personToEliminate.Eliminated = true;
-				log = $"You entered \"{eliminationText.text}\". Which is correct.";
+				log = $"You entered \"{eliminationText.Text}\". Which is correct.";
 				GoToNextStage(3);
 			}
 
@@ -1072,7 +1070,7 @@ public class WeakestLink : MonoBehaviour
 			{
 				foreach (char ch in "PLAYER")
 				{
-					contestant1EliminationText.text += "" + ch;
+					contestant1EliminationText.Text += "" + ch;
 					yield return new WaitForSeconds(0.1f);
 				}
 
@@ -1080,13 +1078,13 @@ public class WeakestLink : MonoBehaviour
 
 				foreach (char ch in "PLAYER")
 				{
-					contestant2EliminationText.text += "" + ch;
+					contestant2EliminationText.Text += "" + ch;
 					yield return new WaitForSeconds(0.1f);
 				}
 
 				yield return new WaitForSeconds(1f);
 
-				log = $"Strike! You entered \"{eliminationText.text}\".";
+				log = $"Strike! You entered \"{eliminationText.Text}\".";
 				StartCoroutine(Strike(3));
 				
 			}
@@ -1098,7 +1096,7 @@ public class WeakestLink : MonoBehaviour
 		{
 			bool turnChanged = false;
 
-			string response = moneyPhaseAnswerText.text;
+			string response = stage5AnswerText.text;
 
 			string[] answers = currentTrivia.AcceptedAnswers.Select(x => x.ToUpper()).ToArray();
 
@@ -1145,7 +1143,7 @@ public class WeakestLink : MonoBehaviour
 
 			UpdateMoney(correct);
 
-			moneyPhaseAnswerText.text = "";
+			stage5AnswerText.text = "";
 			yield return new WaitForSeconds(2f);
 
 			if (!inMoneyPhase || currentTime <= 0)
@@ -1189,7 +1187,7 @@ public class WeakestLink : MonoBehaviour
 					if (!inMoneyPhase || currentTime <= 0)
 						yield break;
 
-					moneyPhaseAnswerText.text += "" + ch;
+					stage5AnswerText.text += "" + ch;
 					yield return new WaitForSeconds(0.1f);
 				}
 
@@ -1481,7 +1479,7 @@ public class WeakestLink : MonoBehaviour
 
 	void GetKeyboardInput(int stage)
 	{
-		string currentText = stage == 2 ? stage2AnswerText.text : stage == 3 ? eliminationText.text : stage == 5 ? moneyPhaseAnswerText.text : stage6AnswerText.text;
+		string currentText = stage == 2 ? stage2AnswerText.text : stage == 3 ? eliminationText.Text : stage == 5 ? stage5AnswerText.text : stage6AnswerText.text;
 
 		foreach (KeyCode keyCode in TypableKeys)
 		{
@@ -1498,12 +1496,12 @@ public class WeakestLink : MonoBehaviour
 
 					else if (stage == 3)
 					{
-						eliminationText.text = newText;
+						eliminationText.Text = newText;
 					}
 
 					else if (stage == 5)
 					{
-						moneyPhaseAnswerText.text = newText;
+						stage5AnswerText.text = newText;
 					}
 
 					else
@@ -1528,12 +1526,12 @@ public class WeakestLink : MonoBehaviour
 				}
 				else if (stage == 3)
 				{
-					eliminationText.text += newText;
+					eliminationText.Text += newText;
 				}
 
 				else if (stage == 5)
 				{ 
-					moneyPhaseAnswerText.text += newText;
+					stage5AnswerText.text += newText;
 				}
 
 				else
@@ -1550,12 +1548,12 @@ public class WeakestLink : MonoBehaviour
 				}
 				else if (stage == 3)
 				{
-					eliminationText.text += " ";
+					eliminationText.Text += " ";
 				}
 
 				else if (stage == 5)
 				{
-					moneyPhaseAnswerText.text += " ";
+					stage5AnswerText.text += " ";
 				}
 
 				else
@@ -1572,12 +1570,12 @@ public class WeakestLink : MonoBehaviour
 				}
 				else if (stage == 3)
 				{
-					eliminationText.text += "-";
+					eliminationText.Text += "-";
 				}
 
 				else if (stage == 5)
 				{
-					moneyPhaseAnswerText.text += "-";
+					stage5AnswerText.text += "-";
 				}
 
 				else
@@ -1596,12 +1594,12 @@ public class WeakestLink : MonoBehaviour
 				}
 				else if (stage == 3)
 				{
-					eliminationText.text += newString;
+					eliminationText.Text += newString;
 				}
 
 				else if (stage == 5)
 				{ 
-					moneyPhaseAnswerText.text += newString;
+					stage5AnswerText.text += newString;
 				}
 
 				else
