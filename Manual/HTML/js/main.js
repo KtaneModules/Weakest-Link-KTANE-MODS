@@ -9,17 +9,16 @@ const init = () => {
     json = JSON.parse(str);
     initalizeKtaneTables(json);
     initalizeGeographyTables(json);
-    initalizeLanguageTables(json);
+    /*initalizeLanguageTables(json);
     initalizeWildlifeTables(json);
     initalizeBiologyTables(json);
     initalizeHistoryTables(json);
     initalizeMathTables(json);
-    initalizeOtherTables(json);
+    initalizeOtherTables(json); */
   });
   
 
 
-  //todo delete stupidJson 
 };
 
 const downloadFile = (url, callbackRef) => {
@@ -38,10 +37,23 @@ const downloadFile = (url, callbackRef) => {
 
 const initalizeKtaneTables = (json) => {
   let table1 = document.querySelector("#ktane-table1");
+  let table2 = document.querySelector("#ktane-table2");
+  let table3 = document.querySelector("#ktane-table3");
+  let table4 = document.querySelector("#ktane-table4");
+  let table5 = document.querySelector("#ktane-table5");
+
 
   let ktaneData = json.QuizBank.filter((s) => s.Category == "KTANE");
 
-  initialzeTable(table1, ktaneData, 0, 1000);
+  let num1 = initialzeTable(table1, ktaneData, 0, 19);
+  let num2 = initialzeTable(table2, ktaneData, num1, 20);
+  let num3 = initialzeTable(table3, ktaneData, num1 + num2, 19);
+  let num4 = initialzeTable(table4, ktaneData, num1 + num2 + num3, 15);
+  let num5 = initialzeTable(table5, ktaneData, num1 + num2 + num3 + num4, 15);
+
+
+  console.log("KTANE questions shown: ", num1 + num2 + num3 + num4 + num5)
+  console.log("Total KTANE questions: ", ktaneData.length)
 };
 
 const initalizeGeographyTables = (json) => {
@@ -103,6 +115,8 @@ const initialzeTable = (tableElement, dataArr, startIndex = 0, length = 0) => {
   let html = "<tbody> <tr> <th>Question</th> <th>Accepted Answers </th> </tr>";
   let dataNum = dataArr.length;
 
+  let num = 0;
+
   for (let i = startIndex; i < length + startIndex && i < dataNum; i++) {
     let q = dataArr[i];
 
@@ -110,10 +124,12 @@ const initialzeTable = (tableElement, dataArr, startIndex = 0, length = 0) => {
     let answers = q.Answers.join(", ");
 
     html += `<tr><td>${question}</td><td>${answers}</td></tr>`;
+    num++;
   }
 
   html += "</tbody>";
   tableElement.innerHTML = html;
+  return num;
 };
 
 window.onload = () => {

@@ -359,19 +359,19 @@ public class WeakestLink : MonoBehaviour
 		//let's play the weakest link
 		audioPlaying = true;
 		Audio.PlaySoundAtTransform(playClip.name, transform);
-		yield return new WaitForSeconds(playClip.length + .5f);
+		yield return new WaitForSeconds(playClip.length);
 
 		//do do do do
 		Audio.PlaySoundAtTransform(musicClip1.name, transform);
-		yield return new WaitForSeconds(musicClip1.length + .5f);
+		yield return new WaitForSeconds(musicClip1.length);
 
 		//start the clock
 		Audio.PlaySoundAtTransform(clockClip.name, transform);
-		yield return new WaitForSeconds(clockClip.length + 0.1f);
+		yield return new WaitForSeconds(clockClip.length);
 
 		//dun dun
 		Audio.PlaySoundAtTransform(musicClip2.name, transform);
-		yield return new WaitForSeconds(musicClip2.length + 0.5f);
+		yield return new WaitForSeconds(musicClip2.length);
 
 		audioPlaying = false;
 
