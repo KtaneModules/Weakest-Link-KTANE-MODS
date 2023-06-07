@@ -1014,6 +1014,7 @@ public class WeakestLink : MonoBehaviour
 
 		else if (stage == 3)
 		{
+			inEliminationPhase = false;
 			string log;
 
 			if (eliminationText.Text == personToEliminate.Name.ToUpper())
