@@ -1526,7 +1526,7 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage2AnswerText.text += newText;
 				}
-				else if (stage == 3)
+				else if (stage == 3 && eliminationText.Text.Length < 9)
 				{
 					eliminationText.Text += newText;
 				}
@@ -1548,7 +1548,7 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage2AnswerText.text += " ";
 				}
-				else if (stage == 3)
+				else if (stage == 3 && eliminationText.Text.Length < 9)
 				{
 					eliminationText.Text += " ";
 				}
@@ -1570,7 +1570,7 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage2AnswerText.text += "-";
 				}
-				else if (stage == 3)
+				else if (stage == 3 && eliminationText.Text.Length < 9)
 				{
 					eliminationText.Text += "-";
 				}
@@ -1594,7 +1594,8 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage2AnswerText.text += newString;
 				}
-				else if (stage == 3)
+
+				else if (stage == 3 && eliminationText.Text.Length < 9)
 				{
 					eliminationText.Text += newString;
 				}
