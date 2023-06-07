@@ -142,7 +142,7 @@ public class WeakestLink : MonoBehaviour
 
 	bool inQuestionPhase;
 
-	Text stage2TimerText;
+	TextMesh stage2TimerText;
 	Text stage2QuestionText;
 	Text stage2AnswerText;
 
@@ -216,7 +216,7 @@ public class WeakestLink : MonoBehaviour
 
 	Contestant aliveConestant;
 
-	Text moneyPhaseTimerText;
+	TextMesh stage5TimerText;
 
 	int moneyStored;
 
@@ -310,7 +310,7 @@ public class WeakestLink : MonoBehaviour
 			else if (inMoneyPhase)
 			{
 				currentTime -= Time.deltaTime;
-				moneyPhaseTimerText.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
+				stage5TimerText.text = string.Format("{0:0}:{1:00}", (int)(currentTime / 60), (int)currentTime % 60);
 
 				if (currentTime <= 0f)
 				{
@@ -419,11 +419,11 @@ public class WeakestLink : MonoBehaviour
 
 		stage2NameDisplays.ToList().ForEach(g => { g.InitializeVariables(); g.SetLit(true); });
 
+		stage2TimerText = stage2Objects.transform.Find("TimeBox").transform.Find("Time Text").GetComponent<TextMesh>();
 
 		GameObject canvas = stage2Objects.transform.Find("Canvas").gameObject;
 		stage2QuestionText = canvas.transform.Find("Question").GetComponent<Text>();
 		stage2AnswerText = canvas.transform.Find("Answer").GetComponent<Text>();
-		stage2TimerText = canvas.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
 
 		stage2ColorBlindText = canvas.transform.Find("Color Blind Text").transform.GetComponent<Text>();
 		#endregion
@@ -472,12 +472,13 @@ public class WeakestLink : MonoBehaviour
 
 		stage5NameDisplays.ToList().ForEach(g => g.InitializeVariables());
 
+		stage5TimerText = stage5Objects.transform.Find("TimeBox").transform.Find("Time Text").GetComponent<TextMesh>();
+
 		GameObject c = stage5Objects.transform.Find("Canvas").gameObject;
 
 		stage5QuestionText = c.transform.Find("Question").GetComponent<Text>();
 		stage5AnswerText = c.transform.Find("Answer").GetComponent<Text>();
 
-		moneyPhaseTimerText = c.transform.Find("Timer").transform.Find("Text").GetComponent<Text>();
 
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 
