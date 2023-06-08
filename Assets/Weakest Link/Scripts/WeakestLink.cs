@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using static UnityEngine.Debug;
 using Rnd = UnityEngine.Random;
 
-public class WeakestLink : MonoBehaviour 
+public class WeakestLink : MonoBehaviour
 {
 
 	//todo get rid of uncessary code
@@ -40,7 +40,7 @@ public class WeakestLink : MonoBehaviour
 	};
 
 	enum MoneyPhaseTurn
-	{ 
+	{
 		Player,
 		Conestant
 	}
@@ -57,10 +57,10 @@ public class WeakestLink : MonoBehaviour
 
 	[SerializeField]
 	List<AudioClip> playAudioList;
-	
+
 	[SerializeField]
 	List<AudioClip> goodbyeAudioList;
-	
+
 	[SerializeField]
 	List<AudioClip> startClockAudioList;
 
@@ -147,7 +147,7 @@ public class WeakestLink : MonoBehaviour
 	Text stage2AnswerText;
 
 	NameDisplay[] stage2NameDisplays;
-	
+
 	Text stage2ColorBlindText;
 	#endregion
 
@@ -249,13 +249,14 @@ public class WeakestLink : MonoBehaviour
 
 	#region Stage 7
 	GameObject stage7Objects;
-    #endregion
+	#endregion
 
-    Text failText;
+	Text failText;
 
 	List<GameObject> stageObjectsList;
 
-	IEnumerator Start() {
+	IEnumerator Start()
+	{
 		ModuleId = ModuleIdCounter++;
 
 		//hide other stages
@@ -271,7 +272,8 @@ public class WeakestLink : MonoBehaviour
 		SetUpModule();
 	}
 
-	void Update() {
+	void Update()
+	{
 		if (!ModuleSolved && !audioPlaying)
 		{
 			if (inQuestionPhase)
@@ -354,7 +356,7 @@ public class WeakestLink : MonoBehaviour
 		}
 
 		else
-		{ 
+		{
 			playClip = playAudioList[Rnd.Range(0, playAudioList.Count)];
 			clockClip = startClockAudioList[Rnd.Range(0, startClockAudioList.Count)];
 		}
@@ -506,7 +508,7 @@ public class WeakestLink : MonoBehaviour
 		stageObjectsList[stage - 1].SetActive(true);
 	}
 
-    void SetUpModule()
+	void SetUpModule()
 	{
 		if (!jsonData.Success)
 		{
@@ -735,7 +737,7 @@ public class WeakestLink : MonoBehaviour
 			stage5QuestionText.font = GetQuestionFont();
 
 			stage5AnswerText.text = "";
-			
+
 			stage5ColorBlindText.text = "";
 		}
 
@@ -795,7 +797,7 @@ public class WeakestLink : MonoBehaviour
 	}
 
 	Font GetQuestionFont()
-	{ 
+	{
 		return Rnd.Range(0, 100) > 0 ? questionFonts[1] : questionFonts[0];
 	}
 
@@ -898,7 +900,7 @@ public class WeakestLink : MonoBehaviour
 		{
 			Logging("New Serial Number: " + convertedSerial);
 		}
-		
+
 		Logging($"{contestant.Name}'s base elimination value: {baseContestantValue}");
 
 
@@ -941,10 +943,10 @@ public class WeakestLink : MonoBehaviour
 
 			if (answers.Contains(response))
 			{
-				if(colorBlindOn)
-                {
+				if (colorBlindOn)
+				{
 					stage2ColorBlindText.text = "Correct";
-                }
+				}
 
 				stage2QuestionText.color = correctColor;
 				currentContestant.CorrectAnswer++;
@@ -1086,7 +1088,7 @@ public class WeakestLink : MonoBehaviour
 
 				log = $"Strike! You entered \"{eliminationText.Text}\".";
 				StartCoroutine(Strike(3));
-				
+
 			}
 
 			Logging(log);
@@ -1246,7 +1248,7 @@ public class WeakestLink : MonoBehaviour
 			}
 
 			else
-			{ 
+			{
 				UpdateQuestion(false, 6);
 			}
 		}
@@ -1264,14 +1266,14 @@ public class WeakestLink : MonoBehaviour
 
 			moneyObject.ToggleCorrect(true);
 
-				for (int i = 0; i < currentMoneyIndex; i++)
-				{
-					moneyObjects[i].ToggleColor(false);
-				}
+			for (int i = 0; i < currentMoneyIndex; i++)
+			{
+				moneyObjects[i].ToggleColor(false);
+			}
 
 			int money = moneyObject.MoneyAmount;
 
-			log = $"Streak is now at {money}"; 
+			log = $"Streak is now at {money}";
 
 			if (money == 1000)
 			{
@@ -1449,7 +1451,7 @@ public class WeakestLink : MonoBehaviour
 		inMoneyPhase = false;
 
 		if (log != "")
-		{ 
+		{
 			Logging(log);
 		}
 
@@ -1530,12 +1532,12 @@ public class WeakestLink : MonoBehaviour
 				}
 
 				else if (stage == 5)
-				{ 
+				{
 					stage5AnswerText.text += newText;
 				}
 
 				else
-                {
+				{
 					stage6AnswerText.text += newText;
 				}
 			}
@@ -1557,7 +1559,7 @@ public class WeakestLink : MonoBehaviour
 				}
 
 				else
-				{ 
+				{
 					stage6AnswerText.text += " ";
 				}
 			}
@@ -1599,7 +1601,7 @@ public class WeakestLink : MonoBehaviour
 				}
 
 				else if (stage == 5)
-				{ 
+				{
 					stage5AnswerText.text += newString;
 				}
 
@@ -1685,4 +1687,134 @@ public class WeakestLink : MonoBehaviour
 			}
 		}
 	}
+
+	IEnumerator TwitchHandleForcedSolve()
+	{
+		if (stage1Objects.activeInHierarchy)
+		{
+			yield return SolveStage1();
+		}
+
+		else if (stage2Objects.activeInHierarchy)
+		{
+			yield return SolveStage2();
+		}
+
+		else if (stage3Objects.activeInHierarchy)
+		{
+			yield return SolveStage3();
+		}
+
+		else if (stage4Objects.activeInHierarchy)
+		{
+			yield return SolveStage4();
+		}
+
+		else if (stage5Objects.activeInHierarchy)
+		{
+			yield return SolveStage5();
+		}
+
+		else
+		{ 
+			yield return SolveStage6();
+		}
+	}
+
+	IEnumerator SolveStage1()
+	{
+		yield return ProcessTwitchCommand("START");
+
+		if (jsonData.Success)
+		{
+
+			while (!stage2Objects.activeInHierarchy)
+			{
+				yield return true;
+			}
+
+			yield return SolveStage2();
+		}
+	}
+
+	IEnumerator SolveStage2()
+	{
+		do
+		{
+			if (stage3Objects.activeInHierarchy)
+			{
+				break;
+			}
+
+			yield return ProcessTwitchCommand(currentTrivia.AcceptedAnswers[0].ToUpper());
+
+			while ((playerContestant.CorrectAnswer == 5 && !stage3Objects.activeInHierarchy) || questionPhaseCurrentTurn != QuestionPhaseTurn.Player)
+			{
+				yield return true;
+			}
+
+		} while (!stage3Objects.activeInHierarchy);
+
+		while (personToEliminate == null)
+		{
+			yield return true;
+		}
+
+		yield return SolveStage3();
+	}
+
+	IEnumerator SolveStage3()
+	{
+		yield return ProcessTwitchCommand(personToEliminate.Name.ToUpper());
+
+		while (!stage4Objects.activeInHierarchy)
+		{
+			yield return true;
+		}
+
+		yield return SolveStage4();
+	}
+
+	IEnumerator SolveStage4()
+	{
+		yield return ProcessTwitchCommand("START");
+
+		while (!stage5Objects.activeInHierarchy)
+		{
+			yield return true;
+		}
+
+		yield return SolveStage5();
+	}
+
+	IEnumerator SolveStage5()
+	{
+		do
+		{
+			yield return ProcessTwitchCommand(currentTrivia.AcceptedAnswers[0].ToUpper());
+
+			while (moneyPhaseCurrentTurn != MoneyPhaseTurn.Player)
+			{
+				if (stage6Objects.activeInHierarchy)
+				{
+					break;
+				}
+
+				yield return true;
+			}
+
+		} while (!stage6Objects.activeInHierarchy);
+
+		yield return SolveStage6();
+	}
+
+	IEnumerator SolveStage6()
+	{
+		do
+		{
+			yield return ProcessTwitchCommand(currentTrivia.AcceptedAnswers[0].ToUpper());
+		} while (!ModuleSolved);
+	}
 }
+
+
