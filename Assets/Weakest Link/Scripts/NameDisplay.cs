@@ -7,10 +7,10 @@ public class NameDisplay : MonoBehaviour {
     private TextMesh mainText;
     private TextMesh shadowText;
 
-    private readonly Color _mainTextLit = new Color(0.82f, 0.82f, 0.82f);
-    private readonly Color _mainTextUnlit = new Color(0.55f, 0.55f, 0.55f);
-    private readonly Color _shadowTextLit = new Color(0.71f, 0.71f, 0.71f);
-    private readonly Color _shadowTextUnlit = new Color(0.34f, 0.34f, 0.34f);
+    private readonly Color _mainTextLit = new Color(0.74f, 0.74f, 0.74f);
+    private readonly Color _mainTextUnlit = new Color(0.27f, 0.27f, 0.27f);
+    private readonly Color _shadowTextLit = new Color(0.5f, 0.5f, 0.5f);
+    private readonly Color _shadowTextUnlit = new Color(0.45f, 0.45f, 0.45f);
 
     public string Text { get { return mainText.text; } set { mainText.text = value; shadowText.text = value;  } }
 
