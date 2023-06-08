@@ -513,7 +513,7 @@ public class WeakestLink : MonoBehaviour
 			Logging("Unable to load data, press the button to solve the module");
 
 			//set button to solve module
-			stage1NextStageButton.OnInteract += delegate () { Solve(); return false; };
+			stage1NextStageButton.OnInteract += delegate () { stage1NextStageButton.AddInteractionPunch(1f); Solve(); return false; };
 
 			//set other text as blank
 			contestant1GameObject.SetActive(false);
@@ -538,7 +538,7 @@ public class WeakestLink : MonoBehaviour
 		longestQuestionLength = GetLongestQuestionLength();
 
 		#region stage1
-		stage1NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(1)); }; return false; };
+		stage1NextStageButton.OnInteract += delegate () { if (!audioPlaying) { stage1NextStageButton.AddInteractionPunch(1f); StartCoroutine(StageButton(1)); }; return false; };
 		#endregion
 
 		#region stage2
@@ -554,7 +554,7 @@ public class WeakestLink : MonoBehaviour
 		#endregion
 
 		#region stage 4
-		stage4NextStageButton.OnInteract += delegate () { if (!audioPlaying) { StartCoroutine(StageButton(4)); } return false; };
+		stage4NextStageButton.OnInteract += delegate () { if (!audioPlaying) { stage4NextStageButton.AddInteractionPunch(1f); StartCoroutine(StageButton(4)); } return false; };
 		#endregion
 
 		#region stage5
@@ -575,7 +575,7 @@ public class WeakestLink : MonoBehaviour
 
 		currentMoneyIndex = -1;
 
-		bankButton.OnInteract += delegate () { BankButtonPressed(); return false; };
+		bankButton.OnInteract += delegate () { bankButton.AddInteractionPunch(1f); BankButtonPressed(); return false; };
 
 		#endregion
 
@@ -1607,6 +1607,81 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage6AnswerText.text += newString;
 				}
+			}
+		}
+	}
+
+#pragma warning disable 414
+	private readonly string TwitchHelpMessage = @"To start question/money phase, use `!{0} start`. To type in an answer/name, use `!{0} [answer]`. To bank, use `!{0} bank`.";
+#pragma warning restore 414
+	IEnumerator ProcessTwitchCommand(string Command)
+	{
+		Command = Command.ToUpper();
+		yield return null;
+
+		//answering question / eliminating someone
+		if (inQuestionPhase || inEliminationPhase || inMoneyPhase || inFaceOffPhase)
+		{
+			if (inQuestionPhase)
+			{
+				foreach (char c in Command)
+				{
+					stage2AnswerText.text += c;
+					yield return new WaitForSeconds(0.1f);
+				}
+				StartCoroutine(Submit(2));
+			}
+
+			else if (inEliminationPhase)
+			{
+				foreach (char c in Command)
+				{
+					eliminationText.Text += c;
+					yield return new WaitForSeconds(0.1f);
+				}
+				StartCoroutine(Submit(3));
+			}
+
+			else if (inMoneyPhase)
+			{
+				if (Command == "BANK")
+				{
+					bankButton.OnInteract();
+				}
+
+				else
+				{
+					foreach (char c in Command)
+					{
+						stage5AnswerText.text += c;
+						yield return new WaitForSeconds(0.1f);
+					}
+
+					StartCoroutine(Submit(5));
+				}
+			}
+
+			else if (inFaceOffPhase)
+			{
+				foreach (char c in Command)
+				{
+					stage6AnswerText.text += c;
+					yield return new WaitForSeconds(0.1f);
+				}
+				StartCoroutine(Submit(6));
+			}
+		}
+
+		else if (Command == "START")
+		{
+			if (stage1Objects.activeInHierarchy)
+			{
+				stage1NextStageButton.OnInteract();
+			}
+
+			else
+			{
+				stage4NextStageButton.OnInteract();
 			}
 		}
 	}
