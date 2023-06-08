@@ -138,7 +138,7 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	const int questionPhaseTimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
+	const int stage2TimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
 	bool inQuestionPhase;
 
@@ -461,29 +461,27 @@ public class WeakestLink : MonoBehaviour
 
 		moneyCanvas = stage5Objects.transform.Find("Canvas").gameObject;
 
-		bankGameObject = moneyCanvas.transform.Find("Bank Button").gameObject;
+		bankGameObject = stage5Objects.transform.Find("Bank Button").gameObject;
 
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 
 		bankButton = bankGameObject.transform.GetComponent<KMSelectable>();
 
+		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
+
+
 		stage5NameDisplays = new NameDisplay[] { stage5Objects.transform.Find("Player").GetComponent<NameDisplay>(),
 												 stage5Objects.transform.Find("Contestant").GetComponent<NameDisplay>()};
 
 		stage5NameDisplays.ToList().ForEach(g => g.InitializeVariables());
+		stage5NameDisplays[0].Text = "PLAYER";
 
 		stage5TimerText = stage5Objects.transform.Find("TimeBox").transform.Find("Time Text").GetComponent<TextMesh>();
 
 		GameObject c = stage5Objects.transform.Find("Canvas").gameObject;
-
 		stage5QuestionText = c.transform.Find("Question").GetComponent<Text>();
 		stage5AnswerText = c.transform.Find("Answer").GetComponent<Text>();
-
-
-		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
-
 		stage5ColorBlindText = c.transform.Find("Color Blind Text").transform.GetComponent<Text>();
-
 		#endregion
 
 		#region Stage 6
@@ -694,7 +692,7 @@ public class WeakestLink : MonoBehaviour
 		{
 			if (init)
 			{
-				currentTime = questionPhaseTimerMax;
+				currentTime = stage2TimerMax;
 				inQuestionPhase = true;
 			}
 

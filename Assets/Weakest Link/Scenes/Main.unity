@@ -433,7 +433,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 56416892}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.23, z: 0}
+  m_LocalPosition: {x: -0, y: 0.75, z: -0}
   m_LocalScale: {x: 1.0961215, y: 0.9878487, z: 1}
   m_Children: []
   m_Father: {fileID: 1854095389}
@@ -779,7 +779,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &103659301
 Transform:
   m_ObjectHideFlags: 0
@@ -2760,7 +2760,7 @@ RectTransform:
   - {fileID: 681497608}
   - {fileID: 1911385854}
   m_Father: {fileID: 899076491}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3561,7 +3561,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &821021852
 Transform:
   m_ObjectHideFlags: 0
@@ -3762,7 +3762,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &878853650
 Transform:
   m_ObjectHideFlags: 0
@@ -3809,8 +3809,8 @@ Transform:
   - {fileID: 1576119376}
   - {fileID: 1805126577}
   - {fileID: 147080496}
-  - {fileID: 718338242}
   - {fileID: 1854095389}
+  - {fileID: 718338242}
   m_Father: {fileID: 1838449342}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3996,7 +3996,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &934100446
 Transform:
   m_ObjectHideFlags: 0
@@ -6227,7 +6227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1576119375
 GameObject:
   m_ObjectHideFlags: 0
@@ -6906,7 +6906,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1664104614
 Transform:
   m_ObjectHideFlags: 0
@@ -7920,7 +7920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Parent: {fileID: 1838449338}
   Children:
-  - {fileID: 0}
+  - {fileID: 1854095390}
   - {fileID: 1179835051}
   - {fileID: 28474977}
   IsPassThrough: 0
@@ -8084,7 +8084,7 @@ GameObject:
   - component: {fileID: 1854095391}
   - component: {fileID: 1854095390}
   m_Layer: 0
-  m_Name: Bank Box
+  m_Name: Bank Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8098,14 +8098,14 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1854095388}
   m_LocalRotation: {x: -0.000000026692543, y: -0.70710665, z: 0.000000026692529, w: 0.70710695}
-  m_LocalPosition: {x: -0.0652, y: 0.017, z: -0.0513}
+  m_LocalPosition: {x: -0.0652, y: 0.0138, z: -0.0513}
   m_LocalScale: {x: 0.007243332, y: -0.0051727328, z: 0.012932687}
   m_Children:
   - {fileID: 1687049942}
   - {fileID: 1663527241}
   - {fileID: 56416893}
   m_Father: {fileID: 899076491}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -90.00001, z: 0}
 --- !u!114 &1854095390
 MonoBehaviour:

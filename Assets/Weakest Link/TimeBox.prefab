@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4938689717154120}
   - component: {fileID: 33606412772981940}
   - component: {fileID: 23536689480522178}
+  - component: {fileID: 114770288556790890}
   m_Layer: 0
   m_Name: TimeBox
   m_TagString: Untagged
@@ -38,6 +39,7 @@ GameObject:
   - component: {fileID: 4635755823755712}
   - component: {fileID: 23123226828450142}
   - component: {fileID: 102370053967583076}
+  - component: {fileID: 114104567678726184}
   m_Layer: 0
   m_Name: Time Text
   m_TagString: Untagged
@@ -168,3 +170,29 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4291875024
+--- !u!114 &114104567678726184
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1996936888875396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - GUI/KT 3D Text Diffuse
+--- !u!114 &114770288556790890
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1852120033254784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Standard
