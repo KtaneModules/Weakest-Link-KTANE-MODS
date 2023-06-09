@@ -1735,21 +1735,41 @@ public class WeakestLink : MonoBehaviour
 		else if (stage2Objects.activeInHierarchy)
 		{
 			StartCoroutine(SolveStage2());
+
+			while (stage2Objects.activeInHierarchy)
+			{
+				yield return true;
+			}
 		}
 
 		else if (stage3Objects.activeInHierarchy)
 		{
 			StartCoroutine(SolveStage3());
+
+			while (stage3Objects.activeInHierarchy)
+			{
+				yield return true;
+			}
 		}
 
 		else if (stage4Objects.activeInHierarchy)
 		{
 			StartCoroutine(SolveStage4());
+
+			while (stage4Objects.activeInHierarchy)
+			{
+				yield return true;
+			}
 		}
 
 		else if (stage5Objects.activeInHierarchy)
 		{
 			StartCoroutine(SolveStage5());
+
+			while (stage5Objects.activeInHierarchy)
+			{
+				yield return true;
+			}
 		}
 
 		else
