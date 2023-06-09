@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using KModkit;
 using UnityEngine;
 using UnityEngine.UI;
@@ -155,15 +154,7 @@ public class WeakestLink : MonoBehaviour
 
 	GameObject stage3Objects;
 
-	NameDisplay contestant1Display;
-
-	NameDisplay contestant1EliminationText;
-
-	NameDisplay contestant2Display;
-
-	NameDisplay contestant2EliminationText;
-
-	NameDisplay eliminationText;
+	NameDisplay[] stage3NameDisplays;
 
 	Contestant personToEliminate;
 	bool inEliminationPhase;
@@ -419,7 +410,7 @@ public class WeakestLink : MonoBehaviour
 												 stage2Objects.transform.Find("Contestant 1").GetComponent<NameDisplay>(),
 												 stage2Objects.transform.Find("Contestant 2").GetComponent<NameDisplay>()};
 
-		stage2NameDisplays.ToList().ForEach(g => { g.InitializeVariables(); g.SetLit(true); });
+		stage2NameDisplays.ToList().ForEach(g => { g.InitializeVariables(); g.SetLit(true, false); });
 
 		stage2TimerText = stage2Objects.transform.Find("TimeBox").transform.Find("Time Text").GetComponent<TextMesh>();
 
@@ -434,21 +425,14 @@ public class WeakestLink : MonoBehaviour
 
 		stage3Objects = transform.Find("Elimination Phase").gameObject;
 
-		contestant1Display = stage3Objects.transform.Find("Contestant 1 Name").GetComponent<NameDisplay>();
-		contestant1Display.InitializeVariables();
-		contestant1Display.SetLit(true);
-		contestant1EliminationText = stage3Objects.transform.Find("Contestant 1 Elimination").GetComponent<NameDisplay>();
-		contestant1EliminationText.InitializeVariables();
-		contestant1EliminationText.SetLit(true);
-		contestant2Display = stage3Objects.transform.Find("Contestant 2 Name").GetComponent<NameDisplay>();
-		contestant2Display.InitializeVariables();
-		contestant2Display.SetLit(true);
-		contestant2EliminationText = stage3Objects.transform.Find("Contestant 2 Elimination").GetComponent<NameDisplay>();
-		contestant2EliminationText.InitializeVariables();
-		contestant2EliminationText.SetLit(true);
-		eliminationText = stage3Objects.transform.Find("Player Elimination").GetComponent<NameDisplay>();
-		eliminationText.InitializeVariables();
-		eliminationText.SetLit(true);
+		stage3NameDisplays = new NameDisplay[] { stage3Objects.transform.Find("Player Elimination").GetComponent<NameDisplay>(),
+												 stage3Objects.transform.Find("Contestant 1 Name").GetComponent<NameDisplay>(),
+											     stage3Objects.transform.Find("Contestant 1 Elimination").GetComponent<NameDisplay>(),
+												 stage3Objects.transform.Find("Contestant 2 Name").GetComponent<NameDisplay>(),
+												 stage3Objects.transform.Find("Contestant 2 Elimination").GetComponent<NameDisplay>(),
+	 };
+
+		Array.ForEach(stage3NameDisplays, x => { x.InitializeVariables(); x.SetLit(true, true); });
 		#endregion
 
 		#region stage 4
@@ -467,15 +451,14 @@ public class WeakestLink : MonoBehaviour
 
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 
+		Debug.Log("bankMoneyAmountTextMesh TEXT: " + bankMoneyAmountTextMesh.text);
+
 		bankButton = bankGameObject.transform.GetComponent<KMSelectable>();
-
-		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
-
 
 		stage5NameDisplays = new NameDisplay[] { stage5Objects.transform.Find("Player").GetComponent<NameDisplay>(),
 												 stage5Objects.transform.Find("Contestant").GetComponent<NameDisplay>()};
 
-		stage5NameDisplays.ToList().ForEach(g => g.InitializeVariables());
+		stage5NameDisplays.ToList().ForEach(g => {g.InitializeVariables(); g.SetLit(true, false); });
 		stage5NameDisplays[0].Text = "PLAYER";
 
 		stage5TimerText = stage5Objects.transform.Find("TimeBox").transform.Find("Time Text").GetComponent<TextMesh>();
@@ -644,26 +627,59 @@ public class WeakestLink : MonoBehaviour
 				break;
 
 			case 2:
-				eliminationText.SetFont(playerContestant.HandWritingFont, playerContestant.HandWritingMaterial);
-				eliminationText.Text = "";
+				for (int i = 0; i < 5; i++)
+				{
+					Font font;
+					Material material;
 
-				contestant1Display.SetFont(c1.NameDisplayFont, c1.NameDisplayMaterial);
-				contestant1Display.Text = c1.Name.ToUpper();
+					//set the fonts
+					switch (i)
+					{
+						case 0:
+							font = playerContestant.HandWritingFont;
+							material = playerContestant.HandWritingMaterial;
+							break;
 
-				contestant1EliminationText.SetFont(c1.HandWritingFont, c1.HandWritingMaterial);
-				contestant1EliminationText.Text = "";
+						case 1:
+						case 2:
+							font = c1.HandWritingFont;
+							material = c1.HandWritingMaterial;
+							break;
 
-				contestant2Display.SetFont(c2.NameDisplayFont, c2.NameDisplayMaterial);
-				contestant2Display.Text = c2.Name.ToUpper();
+						default:
+							font = c2.HandWritingFont;
+							material = c2.HandWritingMaterial;
+							break;
+					}
 
-				contestant2EliminationText.SetFont(c2.HandWritingFont, c2.HandWritingMaterial);
-				contestant2EliminationText.Text = "";
+					stage3NameDisplays[i].SetFont(font, material);
 
+					if (i % 2 == 0)
+					{
+						stage3NameDisplays[i].Text = "";
+					}
+
+					else
+					{
+						switch (i)
+						{
+							case 1:
+								stage3NameDisplays[1].Text = c1.Name.ToUpper();
+								break;
+
+							case 3:
+								stage3NameDisplays[3].Text = c2.Name.ToUpper();
+								break;
+						}
+					}
+
+				}
 				Logging("Elimination Phase");
 				break;
 
 			case 4:
 				Logging("Money Phase");
+				bankMoneyAmountTextMesh.text = "£0";
 				UpdateQuestion(true, 5);
 				UpdateTurn(true, 5);
 				break;
@@ -805,15 +821,15 @@ public class WeakestLink : MonoBehaviour
 	{
 		if (stage == 2)
 		{
-			stage2NameDisplays.ToList().ForEach(g => g.GetComponent<NameDisplay>().SetLit(false));
-			stage2NameDisplays[(int)questionPhaseCurrentTurn].GetComponent<NameDisplay>().SetLit(true);
+			stage2NameDisplays.ToList().ForEach(g => g.GetComponent<NameDisplay>().SetLit(false, false));
+			stage2NameDisplays[(int)questionPhaseCurrentTurn].GetComponent<NameDisplay>().SetLit(true, false);
 			stage2AnswerText.font = contestants[(int)questionPhaseCurrentTurn].HandWritingFont;
 		}
 
 		else if (stage == 5)
 		{
-			stage5NameDisplays.ToList().ForEach(g => g.SetLit(false));
-			stage5NameDisplays[(int)moneyPhaseCurrentTurn].GetComponent<NameDisplay>().SetLit(true);
+			stage5NameDisplays.ToList().ForEach(g => g.SetLit(false, false));
+			stage5NameDisplays[(int)moneyPhaseCurrentTurn].GetComponent<NameDisplay>().SetLit(true, false);
 			stage5AnswerText.font = contestants[(int)moneyPhaseCurrentTurn].HandWritingFont;
 		}
 	}
@@ -1017,7 +1033,7 @@ public class WeakestLink : MonoBehaviour
 			inEliminationPhase = false;
 			string log;
 
-			if (eliminationText.Text == personToEliminate.Name.ToUpper())
+			if (stage3NameDisplays[0].Text == personToEliminate.Name.ToUpper())
 			{
 
 				if (personToEliminate == c1) //first person picks player
@@ -1026,7 +1042,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in input)
 					{
-						contestant1EliminationText.Text += "" + ch;
+						stage3NameDisplays[2].Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1034,7 +1050,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in c1.Name.ToUpper())
 					{
-						contestant2EliminationText.Text += "" + ch;
+						stage3NameDisplays[4].Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1047,7 +1063,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in c2.Name.ToUpper())
 					{
-						contestant1EliminationText.Text += "" + ch;
+						stage3NameDisplays[2].Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1055,7 +1071,7 @@ public class WeakestLink : MonoBehaviour
 
 					foreach (char ch in input)
 					{
-						contestant2EliminationText.Text += "" + ch;
+						stage3NameDisplays[4].Text += "" + ch;
 						yield return new WaitForSeconds(0.1f);
 					}
 
@@ -1064,7 +1080,7 @@ public class WeakestLink : MonoBehaviour
 
 				inEliminationPhase = false;
 				personToEliminate.Eliminated = true;
-				log = $"You entered \"{eliminationText.Text}\". Which is correct.";
+				log = $"You entered \"{stage3NameDisplays[0].Text}\". Which is correct.";
 				GoToNextStage(3);
 			}
 
@@ -1072,7 +1088,7 @@ public class WeakestLink : MonoBehaviour
 			{
 				foreach (char ch in "PLAYER")
 				{
-					contestant1EliminationText.Text += "" + ch;
+					stage3NameDisplays[2].Text += "" + ch;
 					yield return new WaitForSeconds(0.1f);
 				}
 
@@ -1080,13 +1096,13 @@ public class WeakestLink : MonoBehaviour
 
 				foreach (char ch in "PLAYER")
 				{
-					contestant2EliminationText.Text += "" + ch;
+					stage3NameDisplays[4].Text += "" + ch;
 					yield return new WaitForSeconds(0.1f);
 				}
 
 				yield return new WaitForSeconds(1f);
 
-				log = $"Strike! You entered \"{eliminationText.Text}\".";
+				log = $"Strike! You entered \"{stage3NameDisplays[0].Text}\".";
 				StartCoroutine(Strike(3));
 
 			}
@@ -1470,8 +1486,6 @@ public class WeakestLink : MonoBehaviour
 	{
 		currentMoneyIndex = -1;
 
-		bankMoneyAmountTextMesh.text = "£0";
-
 		foreach (Money m in moneyObjects)
 		{
 			m.ToggleCorrect(false);
@@ -1481,7 +1495,7 @@ public class WeakestLink : MonoBehaviour
 
 	void GetKeyboardInput(int stage)
 	{
-		string currentText = stage == 2 ? stage2AnswerText.text : stage == 3 ? eliminationText.Text : stage == 5 ? stage5AnswerText.text : stage6AnswerText.text;
+		string currentText = stage == 2 ? stage2AnswerText.text : stage == 3 ? stage3NameDisplays[0].Text : stage == 5 ? stage5AnswerText.text : stage6AnswerText.text;
 
 		foreach (KeyCode keyCode in TypableKeys)
 		{
@@ -1498,7 +1512,7 @@ public class WeakestLink : MonoBehaviour
 
 					else if (stage == 3)
 					{
-						eliminationText.Text = newText;
+						stage3NameDisplays[0].Text = newText;
 					}
 
 					else if (stage == 5)
@@ -1526,9 +1540,9 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage2AnswerText.text += newText;
 				}
-				else if (stage == 3 && eliminationText.Text.Length < 9)
+				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
 				{
-					eliminationText.Text += newText;
+					stage3NameDisplays[0].Text += newText;
 				}
 
 				else if (stage == 5)
@@ -1548,9 +1562,9 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage2AnswerText.text += " ";
 				}
-				else if (stage == 3 && eliminationText.Text.Length < 9)
+				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
 				{
-					eliminationText.Text += " ";
+					stage3NameDisplays[0].Text += " ";
 				}
 
 				else if (stage == 5)
@@ -1570,9 +1584,9 @@ public class WeakestLink : MonoBehaviour
 				{
 					stage2AnswerText.text += "-";
 				}
-				else if (stage == 3 && eliminationText.Text.Length < 9)
+				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
 				{
-					eliminationText.Text += "-";
+					stage3NameDisplays[0].Text += "-";
 				}
 
 				else if (stage == 5)
@@ -1595,9 +1609,9 @@ public class WeakestLink : MonoBehaviour
 					stage2AnswerText.text += newString;
 				}
 
-				else if (stage == 3 && eliminationText.Text.Length < 9)
+				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
 				{
-					eliminationText.Text += newString;
+					stage3NameDisplays[0].Text += newString;
 				}
 
 				else if (stage == 5)
@@ -1638,7 +1652,7 @@ public class WeakestLink : MonoBehaviour
 			{
 				foreach (char c in Command)
 				{
-					eliminationText.Text += c;
+					stage3NameDisplays[0].Text += c;
 					yield return new WaitForSeconds(0.1f);
 				}
 				StartCoroutine(Submit(3));
@@ -1748,7 +1762,12 @@ public class WeakestLink : MonoBehaviour
 
 			yield return ProcessTwitchCommand(currentTrivia.AcceptedAnswers[0].ToUpper());
 
-			while ((playerContestant.CorrectAnswer == 5 && !stage3Objects.activeInHierarchy) || questionPhaseCurrentTurn != QuestionPhaseTurn.Player)
+			float correct = playerContestant.CorrectAnswer;
+			float questions = playerContestant.QuestionsAsked;
+
+			int percetnage = (int)(correct / questions * 100);
+
+			while ((questions >= 5 && percetnage >= 60  && !stage3Objects.activeInHierarchy) || questionPhaseCurrentTurn != QuestionPhaseTurn.Player)
 			{
 				yield return true;
 			}

@@ -12,6 +12,9 @@ public class NameDisplay : MonoBehaviour {
     private readonly Color _shadowTextLit = new Color(0.5f, 0.5f, 0.5f);
     private readonly Color _shadowTextUnlit = new Color(0.45f, 0.45f, 0.45f);
 
+    private readonly Color _eliminationTextLit = new Color(0.9f, 0.9f, 0.9f);
+    private readonly Color _shadowEliminationTextUnlit = new Color(0.5f, 0.5f, 0.5f);
+
     public string Text { get { return mainText.text; } set { mainText.text = value; shadowText.text = value;  } }
 
     public void InitializeVariables()
@@ -28,9 +31,18 @@ public class NameDisplay : MonoBehaviour {
         Text = "";
     }
 
-    public void SetLit(bool setLit)
+    public void SetLit(bool setLit, bool elimination)
     {
-        mainText.color = setLit ? _mainTextLit : _mainTextUnlit;
-        shadowText.color = setLit ? _shadowTextLit : _shadowTextUnlit;
+        if (elimination)
+        {
+            mainText.color = _eliminationTextLit;
+            shadowText.color = _shadowEliminationTextUnlit;
+        }
+
+        else
+        {
+            mainText.color = setLit ? _mainTextLit : _mainTextUnlit;
+            shadowText.color = setLit ? _shadowTextLit : _shadowTextUnlit;
+        }
     }
 }
