@@ -7,10 +7,13 @@ using Newtonsoft.Json;
 public class JsonReader : MonoBehaviour
 {
 
-    public List<Trivia> TriviaList { get; private set; }
-    public List<string> ContestantNames { get; private set; }
+    public static List<Trivia> TriviaList { get; private set; }
+    public static List<string> ContestantNames { get; private set; }
 
-    public bool Success = false;
+    public static bool Success = false;
+    public static bool Loading = false;
+    public static bool LoadingDone = false;
+
 
     //object used in order to read data from json
 
@@ -39,14 +42,10 @@ public class JsonReader : MonoBehaviour
         }
     }
 
-    public void GetDataFromURL(string url)
-    {
-        StartCoroutine(LoadData(url));
-    }
-
     //Loads the data from the json
     public IEnumerator LoadData(string url)
     {
+        Loading = true;
 
         //Stores the raw text of the grabbed json.
         string dataString;
@@ -82,6 +81,9 @@ public class JsonReader : MonoBehaviour
 
             deserial.QuizBank.ForEach(t => TriviaList.Add(ConvertJsonToTrivia(t)));
         }
+
+        Loading = false;
+        LoadingDone = true;
     }
 
     private bool FoundQuestion(string question)

@@ -94,7 +94,7 @@ public class WeakestLink : MonoBehaviour
 
 	QuestionPhaseTurn questionPhaseCurrentTurn = QuestionPhaseTurn.Player;
 
-	JsonReader jsonData;
+	static JsonReader jsonData;
 
 
 	Contestant[] contestants;
@@ -258,7 +258,25 @@ public class WeakestLink : MonoBehaviour
 		//get json data
 		jsonData = gameObject.GetComponent<JsonReader>();
 
-		yield return jsonData.LoadData(url);
+		//if data is not done loaded
+		if (!JsonReader.LoadingDone)
+		{
+			//if not already loading, load
+			if (!JsonReader.Loading)
+			{
+				yield return jsonData.LoadData(url);
+			}
+
+			//if aleady loading, wait until loading is done
+			else
+			{
+				do
+				{
+					yield return new WaitForSeconds(0.1f);
+
+				} while (!JsonReader.LoadingDone);
+			}
+		}
 
 		SetUpModule();
 	}
@@ -493,7 +511,7 @@ public class WeakestLink : MonoBehaviour
 
 	void SetUpModule()
 	{
-		if (!jsonData.Success)
+		if (!JsonReader.Success)
 		{
 			Logging("Unable to load data, press the button to solve the module");
 
@@ -1310,13 +1328,13 @@ public class WeakestLink : MonoBehaviour
 
 	Trivia GetQuestion()
 	{
-		List<Trivia> a = jsonData.TriviaList.Where(x => !x.Asked).ToList();
+		List<Trivia> a = JsonReader.TriviaList.Where(x => !x.Asked).ToList();
 
 		if (a.Count == 0)
 		{
 			ResetQuestions();
 			a = new List<Trivia>();
-			jsonData.TriviaList.ForEach(x => a.Add(x));
+			JsonReader.TriviaList.ForEach(x => a.Add(x));
 		}
 
 		Trivia t = a[Rnd.Range(0, a.Count)];
@@ -1327,13 +1345,13 @@ public class WeakestLink : MonoBehaviour
 
 	Trivia GetQuestion(Category category)
 	{
-		List<Trivia> a = jsonData.TriviaList.Where(s => s.Category == category && !s.Asked).ToList();
+		List<Trivia> a = JsonReader.TriviaList.Where(s => s.Category == category && !s.Asked).ToList();
 
 
 		if (a.Count == 0)
 		{
 			ResetQuestions(category);
-			a = jsonData.TriviaList.Where(s => s.Category == category).ToList();
+			a = JsonReader.TriviaList.Where(s => s.Category == category).ToList();
 		}
 
 		Trivia t = a[Rnd.Range(0, a.Count)];
@@ -1365,7 +1383,7 @@ public class WeakestLink : MonoBehaviour
 
 	int GetLongestQuestionLength()
 	{
-		return jsonData.TriviaList.OrderByDescending(x => x.Question.Length).First().Question.Length;
+		return JsonReader.TriviaList.OrderByDescending(x => x.Question.Length).First().Question.Length;
 	}
 
 	float CalculateReadingTime()
@@ -1378,14 +1396,14 @@ public class WeakestLink : MonoBehaviour
 	void GetNewContestants(bool updatePlayer)
 	{
 		int categoryCount = Enum.GetNames(typeof(Category)).Length;
-		int nameCount = jsonData.ContestantNames.Count;
+		int nameCount = JsonReader.ContestantNames.Count;
 
 		int randomFont = Rnd.Range(0, handWritingMaterials.Count);
 		int randomFont2 = Rnd.Range(0, handWritingMaterials.Count);
 
-		c1 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
+		c1 = new Contestant(JsonReader.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant1GameObject, handWritingMaterials[randomFont], handWritingFonts[randomFont], nameDisplayMaterial, nameDisplayFont, true);
 
-		c2 = new Contestant(jsonData.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont, true);
+		c2 = new Contestant(JsonReader.ContestantNames[Rnd.Range(0, nameCount)], (Category)Rnd.Range(0, categoryCount), contestant2GameObject, handWritingMaterials[randomFont2], handWritingFonts[randomFont2], nameDisplayMaterial, nameDisplayFont, true);
 
 		if (updatePlayer)
 		{
@@ -1396,12 +1414,12 @@ public class WeakestLink : MonoBehaviour
 
 	public void ResetQuestions()
 	{
-		jsonData.TriviaList.ForEach(x => x.Asked = false);
+		JsonReader.TriviaList.ForEach(x => x.Asked = false);
 	}
 
 	public void ResetQuestions(Category c)
 	{
-		jsonData.TriviaList.Where(x => x.Category == c).ToList().ForEach(x => x.Asked = false);
+		JsonReader.TriviaList.Where(x => x.Category == c).ToList().ForEach(x => x.Asked = false);
 	}
 
 	void Logging(string s)
@@ -1706,32 +1724,37 @@ public class WeakestLink : MonoBehaviour
 	{
 		if (stage1Objects.activeInHierarchy)
 		{
-			yield return SolveStage1();
+			StartCoroutine(SolveStage1());
+
+			while(stage1Objects.activeInHierarchy)
+			{
+				yield return true;
+			}
 		}
 
 		else if (stage2Objects.activeInHierarchy)
 		{
-			yield return SolveStage2();
+			StartCoroutine(SolveStage2());
 		}
 
 		else if (stage3Objects.activeInHierarchy)
 		{
-			yield return SolveStage3();
+			StartCoroutine(SolveStage3());
 		}
 
 		else if (stage4Objects.activeInHierarchy)
 		{
-			yield return SolveStage4();
+			StartCoroutine(SolveStage4());
 		}
 
 		else if (stage5Objects.activeInHierarchy)
 		{
-			yield return SolveStage5();
+			StartCoroutine(SolveStage5());
 		}
 
 		else
-		{ 
-			yield return SolveStage6();
+		{
+			StartCoroutine(SolveStage6());
 		}
 	}
 
@@ -1739,7 +1762,7 @@ public class WeakestLink : MonoBehaviour
 	{
 		yield return ProcessTwitchCommand("START");
 
-		if (jsonData.Success)
+		if (JsonReader.Success)
 		{
 
 			while (!stage2Objects.activeInHierarchy)
