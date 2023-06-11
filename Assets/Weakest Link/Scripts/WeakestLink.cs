@@ -84,9 +84,6 @@ public class WeakestLink : MonoBehaviour
 	List<Font> handWritingFonts;
 
 	[SerializeField]
-	List<Material> questionMaterials;
-
-	[SerializeField]
 	List<Font> questionFonts;
 
 	[SerializeField]
@@ -1775,6 +1772,11 @@ public class WeakestLink : MonoBehaviour
 		else
 		{
 			StartCoroutine(SolveStage6());
+		}
+
+		while (!ModuleSolved)
+		{
+			yield return true;
 		}
 	}
 
