@@ -1853,7 +1853,15 @@ public class WeakestLink : MonoBehaviour
 	{
 		do
 		{
-			yield return ProcessTwitchCommand(currentTrivia.AcceptedAnswers[0].ToUpper());
+			if (currentMoneyIndex > -1 && moneyStored + moneyObjects[currentMoneyIndex].MoneyAmount >= 1000)
+			{
+				yield return ProcessTwitchCommand("BANK");
+			}
+
+			else
+			{ 
+				yield return ProcessTwitchCommand(currentTrivia.AcceptedAnswers[0].ToUpper());
+			}
 
 			while (moneyPhaseCurrentTurn != MoneyPhaseTurn.Player)
 			{
