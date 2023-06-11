@@ -240,6 +240,9 @@ public class WeakestLink : MonoBehaviour
 
 	#region Stage 7
 	GameObject stage7Objects;
+	MeshRenderer puzzleBackgroundMeshRender;  
+	[SerializeField]
+	Material solvedMaaterial;
 	#endregion
 
 	Text failText;
@@ -299,7 +302,6 @@ public class WeakestLink : MonoBehaviour
 					Logging($"{c2.Name}: {c2.CorrectAnswer}/{c2.QuestionsAsked}");
 
 					GoToNextStage(2);
-
 
 					if (CalculatePersonToEliminate())
 					{
@@ -396,7 +398,6 @@ public class WeakestLink : MonoBehaviour
 			UpdateTurn(true, 2);
 			UpdateQuestion(true, 2);
 		}
-
 
 		else
 		{
@@ -498,6 +499,8 @@ public class WeakestLink : MonoBehaviour
 
 		#region Stage 7
 		stage7Objects = transform.Find("Solve Phase").gameObject;
+
+		puzzleBackgroundMeshRender = transform.Find("Ancillary").transform.Find("Component_PuzzleBackground").GetComponent<MeshRenderer>();
 		#endregion
 
 		stageObjectsList = new List<GameObject>() { stage1Objects, stage2Objects, stage3Objects, stage4Objects, stage5Objects, stage6Objects, stage7Objects };
@@ -604,7 +607,6 @@ public class WeakestLink : MonoBehaviour
 		contestants = new Contestant[] { playerContestant, c1, c2 };
 
 		//make sure the right game objects are visible
-
 
 		GoToNextStage(0);
 
@@ -806,7 +808,6 @@ public class WeakestLink : MonoBehaviour
 			{
 				questionPhaseCurrentTurn = (QuestionPhaseTurn)(((int)questionPhaseCurrentTurn + 1) % 3);
 			}
-
 		}
 
 		else if (stage == 5)
@@ -815,8 +816,6 @@ public class WeakestLink : MonoBehaviour
 			{
 				moneyPhaseCurrentTurn = MoneyPhaseTurn.Player;
 				aliveConestant = c1.Eliminated ? c2 : c1;
-
-
 
 				stage5NameDisplays[1].Text = aliveConestant.Name.ToUpper();
 			}
@@ -1271,7 +1270,7 @@ public class WeakestLink : MonoBehaviour
 
 			if (correctAnswers == 3)
 			{
-				Logging("You have answered 3 question. Solving module...");
+				Logging("You have answered 3 questions correctly. Solving module...");
 				Solve();
 			}
 
@@ -1458,6 +1457,7 @@ public class WeakestLink : MonoBehaviour
 	void Solve()
 	{
 		GoToNextStage(6);
+		puzzleBackgroundMeshRender.material = solvedMaaterial;
 		GetComponent<KMBombModule>().HandlePass();
 		ModuleSolved = true;
 	}
