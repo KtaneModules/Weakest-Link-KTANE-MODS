@@ -69,6 +69,9 @@ public class WeakestLink : MonoBehaviour
 	[SerializeField]
 	List<AudioClip> friendStartClockAudioList;
 
+	[SerializeField]
+	List<AudioClip> friendGoodbyeAudioList;
+
 
 	[SerializeField]
 	Material nameDisplayMaterial;
@@ -1426,7 +1429,9 @@ public class WeakestLink : MonoBehaviour
 	IEnumerator Strike(int stage)
 	{
 		//you are the weakest link, goodbye
-		AudioClip goodbye = goodbyeAudioList[Rnd.Range(0, goodbyeAudioList.Count)];
+
+		AudioClip goodbye = Rnd.Range(0, 9) == 0 ? friendGoodbyeAudioList[Rnd.Range(0, friendGoodbyeAudioList.Count)] :
+												   goodbyeAudioList[Rnd.Range(0, goodbyeAudioList.Count)];
 
 		audioPlaying = true;
 		Audio.PlaySoundAtTransform(goodbye.name, transform);

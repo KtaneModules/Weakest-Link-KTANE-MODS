@@ -7671,8 +7671,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 46b8af3360635374e9dc9bb0f8ebd7fd, type: 3}
   - {fileID: 8300000, guid: c4350baffa11ef140952ee9a5eb02b1c, type: 3}
   - {fileID: 8300000, guid: 777b9b525d83ccd4191bba5ade5c2bfe, type: 3}
-  - {fileID: 8300000, guid: 55413c91de617cf46acf586e6d694e97, type: 3}
-  - {fileID: 8300000, guid: a04e89b5211339a41bcf4e283cf5fba0, type: 3}
   startClockAudioList:
   - {fileID: 8300000, guid: 8fc824c4693e9db4e97d360c2ebbf168, type: 3}
   - {fileID: 8300000, guid: c5923fbdb74ccaa4e98389aa6db85966, type: 3}
@@ -7681,9 +7679,15 @@ MonoBehaviour:
   friendPlayAudioList:
   - {fileID: 8300000, guid: 6a7b41c0c4381b244ac1ca37c19ac2ed, type: 3}
   - {fileID: 8300000, guid: e9a6f662fff75bb4aa581c1c8b1d7ad6, type: 3}
+  - {fileID: 8300000, guid: 09e362b24cbbce24bb2adb402e5838ba, type: 3}
   friendStartClockAudioList:
   - {fileID: 8300000, guid: 27f728c52fceb9348a2612c703aaead8, type: 3}
   - {fileID: 8300000, guid: 0f3d749860fb7a340a967e739038d537, type: 3}
+  - {fileID: 8300000, guid: 6379e9d9121b4184aa4e10d0c8a5b7e3, type: 3}
+  friendGoodbyeAudioList:
+  - {fileID: 8300000, guid: d4307a8691a8cfd409be3ad1b55fa2bf, type: 3}
+  - {fileID: 8300000, guid: 55413c91de617cf46acf586e6d694e97, type: 3}
+  - {fileID: 8300000, guid: a04e89b5211339a41bcf4e283cf5fba0, type: 3}
   nameDisplayMaterial: {fileID: 2100000, guid: c4780ac88b1e8694da49e8c7813f580c, type: 2}
   nameDisplayFont: {fileID: 12800000, guid: 705441aeaf02fca44beb5f4d2d57d692, type: 3}
   handWritingMaterials:
