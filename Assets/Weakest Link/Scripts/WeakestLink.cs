@@ -470,8 +470,6 @@ public class WeakestLink : MonoBehaviour
 
 		bankMoneyAmountTextMesh = bankGameObject.transform.Find("Money Amount").GetComponent<TextMesh>();
 
-		Debug.Log("bankMoneyAmountTextMesh TEXT: " + bankMoneyAmountTextMesh.text);
-
 		bankButton = bankGameObject.transform.GetComponent<KMSelectable>();
 
 		stage5NameDisplays = new NameDisplay[] { stage5Objects.transform.Find("Player").GetComponent<NameDisplay>(),
@@ -1310,6 +1308,7 @@ public class WeakestLink : MonoBehaviour
 
 			if (money == 1000)
 			{
+				Logging(log);
 				EndMoneyPhase(true, "");
 			}
 		}
@@ -1321,7 +1320,10 @@ public class WeakestLink : MonoBehaviour
 		}
 
 
-		Logging(log);
+		if (currentMoneyIndex < 8)
+		{ 
+			Logging(log);
+		}
 	}
 
 
