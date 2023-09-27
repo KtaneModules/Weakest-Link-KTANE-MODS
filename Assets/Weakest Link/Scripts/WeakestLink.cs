@@ -137,9 +137,9 @@ public class WeakestLink : MonoBehaviour
 	#region Stage 2 Objects
 	GameObject stage2Objects;
 
-	const int stage2TimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
+    const int stage2TimerMax = 120; // the amount of time the user has to answers qustions in the first stage 
 
-	bool inQuestionPhase;
+    bool inQuestionPhase;
 
 	TextMesh stage2TimerText;
 	Text stage2QuestionText;
@@ -200,9 +200,10 @@ public class WeakestLink : MonoBehaviour
 	Text stage5QuestionText;
 	Text stage5AnswerText;
 
-	const int moneyPhaseTimerMax = 180; //the starting time for the money phase
+	//const int moneyPhaseTimerMax = 180; //the starting time for the money phase
+    const int moneyPhaseTimerMax = 30; //the starting time for the money phase
 
-	List<Category> categoryList;
+    List<Category> categoryList;
 	int categoryCurrentIndex;
 
 	Contestant aliveConestant;
@@ -1449,8 +1450,8 @@ public class WeakestLink : MonoBehaviour
 				GetNewContestants(true);
 				GoToNextStage(0);
 				break;
-			case 5:
-				GoToNextStage(4);
+			case 5: //money intermission phase
+				GoToNextStage(3);
 				break;
 			case 6: //face off phase
 				GoToNextStage(5);
