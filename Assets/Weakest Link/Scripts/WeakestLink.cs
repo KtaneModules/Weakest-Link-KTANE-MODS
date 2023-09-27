@@ -200,8 +200,7 @@ public class WeakestLink : MonoBehaviour
 	Text stage5QuestionText;
 	Text stage5AnswerText;
 
-	//const int moneyPhaseTimerMax = 180; //the starting time for the money phase
-    const int moneyPhaseTimerMax = 30; //the starting time for the money phase
+	const int moneyPhaseTimerMax = 180; //the starting time for the money phase
 
     List<Category> categoryList;
 	int categoryCurrentIndex;
