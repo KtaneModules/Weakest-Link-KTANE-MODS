@@ -28,8 +28,8 @@ public class WeakestLink : MonoBehaviour
 
 	KeyCode[] TypableKeys =
 	{
-		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Period, KeyCode.Return, KeyCode.Minus, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space
-	};
+		KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L, KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Period, KeyCode.Return, KeyCode.Minus, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Backspace, KeyCode.Space, KeyCode.Quote
+    };
 
 	enum QuestionPhaseTurn
 	{
@@ -114,10 +114,6 @@ public class WeakestLink : MonoBehaviour
 
 	private readonly Color correctColor = new Color(.38f, .97f, .43f); //the color the qustion will be if the answer is correct
 	private readonly Color incorrectColor = new Color(1, 0, 0); //the color the qustion will be if the answer is wrong
-	private readonly Color mainTextLit = new Color(0.82f, 0.82f, 0.82f);
-	private readonly Color mainTextUnlit = new Color(0.55f, 0.55f, 0.55f);
-	private readonly Color shadowTextLit = new Color(0.71f, 0.71f, 0.71f);
-	private readonly Color shadowTextUnlit = new Color(0.34f, 0.34f, 0.34f);
 
 	Trivia currentTrivia;
 
@@ -1329,7 +1325,7 @@ public class WeakestLink : MonoBehaviour
 
 	Trivia GetQuestion()
 	{
-		List<Trivia> a = JsonReader.TriviaList.Where(x => !x.Asked).ToList();
+        List<Trivia> a = JsonReader.TriviaList.Where(x => !x.Asked).ToList();
 
 		if (a.Count == 0)
 		{
@@ -1521,136 +1517,75 @@ public class WeakestLink : MonoBehaviour
 
 		foreach (KeyCode keyCode in TypableKeys)
 		{
-			if (keyCode == KeyCode.Backspace && Input.GetKeyDown(keyCode))
+			if (Input.GetKeyDown(keyCode))
 			{
-				if (currentText != "")
+				if (keyCode == KeyCode.Backspace && currentText != "")
 				{
 					string newText = currentText.Substring(0, currentText.Length - 1);
+                    AppendText(newText, stage);
+                }
 
-					if (stage == 2)
-					{
-						stage2AnswerText.text = newText;
-					}
-
-					else if (stage == 3)
-					{
-						stage3NameDisplays[0].Text = newText;
-					}
-
-					else if (stage == 5)
-					{
-						stage5AnswerText.text = newText;
-					}
-
-					else
-					{
-						stage6AnswerText.text = newText;
-					}
-				}
-			}
-
-			else if (keyCode == KeyCode.Return && Input.GetKeyDown(keyCode))
-			{
-				StartCoroutine(Submit(stage));
-			}
-
-			else if ((int)keyCode >= 48 && (int)keyCode <= 57 && Input.GetKeyDown(keyCode))
-			{
-				string newText = keyCode.ToString().Substring(5, 1);
-
-				if (stage == 2)
+                else if (keyCode == KeyCode.Return)
 				{
-					stage2AnswerText.text += newText;
-				}
-				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
-				{
-					stage3NameDisplays[0].Text += newText;
+					StartCoroutine(Submit(stage));
 				}
 
-				else if (stage == 5)
+				else if ((int)keyCode >= 48 && (int)keyCode <= 57)
 				{
-					stage5AnswerText.text += newText;
+					string newText = keyCode.ToString().Substring(5, 1);
+                    AppendText(newText, stage);
+                }
+
+                else if (keyCode == KeyCode.Space)
+				{
+					AppendText(" ", stage);
 				}
 
-				else
+				else if (keyCode == KeyCode.Minus)
 				{
-					stage6AnswerText.text += newText;
-				}
-			}
+                    AppendText("-", stage);
+                }
 
-			else if (keyCode == KeyCode.Space && Input.GetKeyDown(keyCode))
-			{
-				if (stage == 2)
-				{
-					stage2AnswerText.text += " ";
-				}
-				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
-				{
-					stage3NameDisplays[0].Text += " ";
-				}
 
-				else if (stage == 5)
+                else if (keyCode == KeyCode.Quote)
 				{
-					stage5AnswerText.text += " ";
-				}
+                    AppendText("'", stage);
+                }
 
-				else
+                else
 				{
-					stage6AnswerText.text += " ";
+					string newString = keyCode.ToString().ToUpper();
+                    AppendText(newString, stage);
 				}
-			}
-
-			else if (keyCode == KeyCode.Minus && Input.GetKeyDown(keyCode))
-			{
-				if (stage == 2)
-				{
-					stage2AnswerText.text += "-";
-				}
-				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
-				{
-					stage3NameDisplays[0].Text += "-";
-				}
-
-				else if (stage == 5)
-				{
-					stage5AnswerText.text += "-";
-				}
-
-				else
-				{
-					stage6AnswerText.text += "-";
-				}
-			}
-
-			else if (Input.GetKeyDown(keyCode))
-			{
-				string newString = keyCode.ToString().ToUpper();
-
-				if (stage == 2)
-				{
-					stage2AnswerText.text += newString;
-				}
-
-				else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
-				{
-					stage3NameDisplays[0].Text += newString;
-				}
-
-				else if (stage == 5)
-				{
-					stage5AnswerText.text += newString;
-				}
-
-				else
-				{
-					stage6AnswerText.text += newString;
-				}
-			}
+            }
 		}
 	}
 
+    void AppendText(string text, int stage)
+    {
+        if (stage == 2)
+        {
+            stage2AnswerText.text += text;
+        }
+
+        else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
+        {
+            stage3NameDisplays[0].Text += text;
+        }
+
+        else if (stage == 5)
+        {
+            stage5AnswerText.text += text;
+        }
+
+        else
+        {
+            stage6AnswerText.text += text;
+        }
+    }
+
 #pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"To start question/money phase, use `!{0} start`. To type in an answer/name, use `!{0} [answer]`. To bank, use `!{0} bank`.";
+    private readonly string TwitchHelpMessage = @"To start question/money phase, use `!{0} start`. To type in an answer/name, use `!{0} [answer]`. To bank, use `!{0} bank`.";
 #pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string Command)
 	{
