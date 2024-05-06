@@ -6371,8 +6371,8 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 45
     m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
+    m_BestFit: 1
+    m_MinSize: 40
     m_MaxSize: 45
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -7551,7 +7551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colorblindMode: 1
+  _colorblindMode: 0
 --- !u!114 &114795866197054780
 MonoBehaviour:
   m_ObjectHideFlags: 1
