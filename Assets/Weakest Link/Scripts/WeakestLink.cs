@@ -1519,10 +1519,12 @@ public class WeakestLink : MonoBehaviour
 		{
 			if (Input.GetKeyDown(keyCode))
 			{
-				if (keyCode == KeyCode.Backspace && currentText != "")
+				if (keyCode == KeyCode.Backspace)
 				{
+					if (currentText == "")
+						return;
 					string newText = currentText.Substring(0, currentText.Length - 1);
-                    AppendText(newText, stage);
+                    OverwriteText(newText, stage, false);
                 }
 
                 else if (keyCode == KeyCode.Return)
@@ -1533,54 +1535,54 @@ public class WeakestLink : MonoBehaviour
 				else if ((int)keyCode >= 48 && (int)keyCode <= 57)
 				{
 					string newText = keyCode.ToString().Substring(5, 1);
-                    AppendText(newText, stage);
+                    OverwriteText(newText, stage);
                 }
 
                 else if (keyCode == KeyCode.Space)
 				{
-					AppendText(" ", stage);
+					OverwriteText(" ", stage);
 				}
 
 				else if (keyCode == KeyCode.Minus)
 				{
-                    AppendText("-", stage);
+                    OverwriteText("-", stage);
                 }
 
 
                 else if (keyCode == KeyCode.Quote)
 				{
-                    AppendText("'", stage);
+                    OverwriteText("'", stage);
                 }
 
                 else
 				{
 					string newString = keyCode.ToString().ToUpper();
-                    AppendText(newString, stage);
+					OverwriteText(newString, stage);
 				}
             }
 		}
 	}
 
-    void AppendText(string text, int stage)
+    void OverwriteText(string text, int stage, bool append = true)
     {
         if (stage == 2)
         {
-            stage2AnswerText.text += text;
+            stage2AnswerText.text = append ? stage2AnswerText.text + text : text;
         }
 
         else if (stage == 3 && stage3NameDisplays[0].Text.Length < 9)
         {
-            stage3NameDisplays[0].Text += text;
+            stage3NameDisplays[0].Text = append ? stage3NameDisplays[0].Text + text : text;
         }
 
         else if (stage == 5)
         {
-            stage5AnswerText.text += text;
+            stage5AnswerText.text = append ? stage5AnswerText.text + text : text;
         }
 
         else
         {
-            stage6AnswerText.text += text;
+            stage6AnswerText.text = append ? stage6AnswerText.text + text : text;
         }
     }
 
