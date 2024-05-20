@@ -118,6 +118,7 @@ public class WeakestLink : MonoBehaviour
 	Trivia currentTrivia;
 
 	bool colorBlindOn;
+	bool TwitchPlaysActive;
 
 	#endregion
 
@@ -725,6 +726,8 @@ public class WeakestLink : MonoBehaviour
 			if (init)
 			{
 				currentTime = stage2TimerMax;
+				if (TwitchPlaysActive)
+					currentTime += 30;
 				inQuestionPhase = true;
 			}
 
@@ -747,6 +750,8 @@ public class WeakestLink : MonoBehaviour
 			if (init)
 			{
 				currentTime = moneyPhaseTimerMax;
+				if (TwitchPlaysActive)
+					currentTime += 30;
 				inMoneyPhase = true;
 				categoryCurrentIndex = 0;
 				categoryList = GetCategoryList();
@@ -1587,7 +1592,7 @@ public class WeakestLink : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"To start question/money phase, use `!{0} start`. To type in an answer/name, use `!{0} [answer]`. To bank, use `!{0} bank`.";
+    private readonly string TwitchHelpMessage = @"To start question/money phase, use `!{0} start`. To type in an answer/name, use `!{0} [answer]`. To bank, use `!{0} bank`. On TP you have an extra 30 seconds in the question and money phases.";
 #pragma warning restore 414
 	IEnumerator ProcessTwitchCommand(string Command)
 	{
