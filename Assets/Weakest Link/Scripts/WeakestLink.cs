@@ -815,6 +815,7 @@ public class WeakestLink : MonoBehaviour
 			{
 				moneyPhaseCurrentTurn = MoneyPhaseTurn.Player;
 				aliveConestant = c1.Eliminated ? c2 : c1;
+				aliveConestant.WrongNum = 0;
 
 				stage5NameDisplays[1].Text = aliveConestant.Name.ToUpper();
 			}
