@@ -13,7 +13,7 @@ public class Contestant {
     public int QuestionsAsked { get; set; } //the number of questions answered in the first stage
 
     public int WrongNum { get;  set; }  //the amount of questions they have gotton wrong for the money stage
-    public const int MAX_WRONG = 3; // the max amount of questions the contestant can get wrong in the money stage
+    public const int MAX_WRONG = 2; // the max amount of questions the contestant can get wrong in the money stage
 
     //used to hold the handwriting of this contestant
     public Material HandWritingMaterial { get; private set; }
